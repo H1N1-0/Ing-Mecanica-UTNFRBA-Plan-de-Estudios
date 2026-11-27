@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Recursos que el código pide por nombre (getIdentifier) y que shrinkResources no puede ver:
+  los íconos de los perfiles del test vocacional salen de perfiles.json ("icono": "robot" → ic_robot).
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_*" />

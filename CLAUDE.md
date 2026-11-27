@@ -4,6 +4,13 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023): los datos del plan 
 Android (Kotlin + Jetpack Compose) gamificada, con widget, para marcar materias y ver qué se puede
 cursar y rendir. Todo el código, los textos y los commits están en español rioplatense.
 
+## Cómo trabajar
+
+- Responder siempre en español.
+- No usar el emulador en cada cambio: alcanza con los tests unitarios y compilar
+  (`./gradlew testDebugUnitTest :app:assembleRelease`). Usarlo solo si el usuario lo pide o si
+  el cambio toca el Baseline Profile.
+
 ## Estructura
 
 ```
@@ -13,7 +20,11 @@ frases.json              Frases motivacionales
 *.mhtml.mht              Versión web original de las correlativas
 app/
   build.gradle.kts       Copia los tres JSON a los assets en cada build (tarea copiarDatos)
-  debug.keystore         Clave de debug versionada: todas las builds se instalan encima
+  debug.keystore         Clave versionada: firma debug Y release, todas se instalan encima
+  proguard-rules.pro     Reglas de R8 para la release
+  estabilidad_compose.conf  Clases que Compose trata como estables (data/ es inmutable)
+  src/main/res/raw/keep.xml  Recursos pedidos por nombre (getIdentifier) que el shrinker no ve
+  src/release/generated/baselineProfiles/  Baseline Profile generado (se versiona)
   src/main/java/ar/correlativas/mecanica/
     MainActivity.kt      Calcula el WindowSizeClass y arranca AppCorrelativas
     data/
@@ -33,6 +44,7 @@ app/
       Tema.kt            Paletas clara y oscura (objeto C), tipografía Chakra Petch
     widget/              Widget de Glance
   src/test/              Tests JVM (JUnit) que leen el correlativas.json real
+baselineprofile/         Módulo de test: genera el Baseline Profile y mide el arranque (necesita dispositivo)
 ```
 
 ## Datos
@@ -83,12 +95,35 @@ Solo lee las correlativas; no modifica ninguna regla de `Avance`.
 ## Compilar y probar
 
 ```
-./gradlew testDebugUnitTest assembleDebug
+./gradlew testDebugUnitTest :app:assembleRelease   # lo que corre CI
+./gradlew assembleDebug                            # build de desarrollo, sin R8
 ```
 
 Necesita JDK 17+ y el SDK de Android (`ANDROID_HOME` o `local.properties`, que no se versiona).
-El APK queda en `app/build/outputs/apk/debug/app-debug.apk`. CI (`.github/workflows/android.yml`)
-corre lo mismo en cada PR y publica el APK en Releases en cada push a `main`.
+La release (`app/build/outputs/apk/release/app-release.apk`) va con R8 (`isMinifyEnabled` y
+`isShrinkResources`), el Baseline Profile y la firma de `app/debug.keystore`. CI
+(`.github/workflows/android.yml`) corre tests y la release en cada PR, y publica el APK release en
+Releases en cada push a `main`.
+
+### Baseline Profile
+
+Con un celular o emulador conectado (Android 9+; en emulador conviene una imagen con `adb root`):
+
+```
+./gradlew :app:generateReleaseBaselineProfile                # regenera el perfil
+./gradlew :baselineprofile:connectedBenchmarkReleaseAndroidTest  # compara arranque con y sin perfil
+```
+
+El recorrido está en `baselineprofile/.../GeneradorBaselineProfile.kt`. Regeneralo cuando cambien
+mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido.
+
+## Rendimiento
+
+- Lo que cambia cada frame (pan/zoom del mapa, pulso de los nodos, animaciones) se lee en
+  `graphicsLayer` o dentro de `Canvas`, nunca en la composición.
+- Las correlativas no se recalculan en la UI: `Avance` y `CaminoCritico` se crean una vez por cambio
+  de progreso (en `Dispatchers.Default`) y los derivados caros van en `remember(avance)`.
+- Las listas perezosas llevan `key` estable (id de materia/logro) y `contentType`.
 
 ## Reglas
 
@@ -96,6 +131,9 @@ corre lo mismo en cada PR y publica el APK en Releases en cada push a `main`.
   `CodecEstados` (`id:ESTADO` separados por coma). Cambiarlo borraría el avance de quien actualice.
 - No cambiar la lógica de correlativas de `Calculo.kt` sin que lo pidan; funciones nuevas van
   aparte y solo leen el plan y el avance.
-- No cambiar `applicationId` ni `app/debug.keystore`: la app nueva tiene que instalarse encima.
+- No cambiar `applicationId` ni `app/debug.keystore`, ni la firma de la release: la app nueva
+  tiene que instalarse encima de la que ya tiene el usuario.
+- R8: si algo se lee por nombre o reflexión (recursos con `getIdentifier`, enums guardados por
+  nombre), agregá la regla en `proguard-rules.pro` o `res/raw/keep.xml` y probá la release.
 - Respetar los dos temas: colores siempre desde `C` (Tema.kt), nunca fijos en las pantallas.
 - Agregar tests en `app/src/test` para cualquier cálculo nuevo.

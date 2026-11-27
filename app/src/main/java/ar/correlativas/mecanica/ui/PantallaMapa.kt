@@ -66,6 +66,7 @@ import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.Mapa
+import ar.correlativas.mecanica.data.NodoMapa
 import ar.correlativas.mecanica.data.Nivel
 import ar.correlativas.mecanica.data.estadoNodo
 import kotlinx.coroutines.launch
@@ -134,9 +135,10 @@ fun PantallaMapa(
             return Offset(x, y)
         }
 
-        val inicial = limitar(Offset(0f, with(densidad) { 92.dp.toPx() }), vista.escala)
-        val escala = vista.escala
-        val desplazamiento = vista.desplazamiento.takeIf { it.isSpecified } ?: inicial
+        // Ojo: el zoom y la posición NO se leen en la composición, solo en graphicsLayer y en los
+        // gestos. Así mover el mapa redibuja una capa en vez de recomponer toda la pantalla.
+        fun inicial() = limitar(Offset(0f, with(densidad) { 92.dp.toPx() }), vista.escala)
+        fun actual() = vista.desplazamiento.takeIf { it.isSpecified } ?: inicial()
         // Al girar o abrir el panel de detalle cambia el tamaño: se reacomoda sin perder el zoom.
         LaunchedEffect(vistaW, vistaH) {
             if (vista.desplazamiento.isSpecified) vista.desplazamiento = limitar(vista.desplazamiento, vista.escala)
@@ -146,7 +148,7 @@ fun PantallaMapa(
             scope.launch {
                 val desde = vista.escala
                 val centro = Offset(vistaW / 2, vistaH / 2)
-                val base = vista.desplazamiento.takeIf { it.isSpecified } ?: inicial
+                val base = actual()
                 val anim = Animatable(0f)
                 anim.animateTo(1f, tween(250)) {
                     val s = desde + (nueva - desde) * value
@@ -178,7 +180,7 @@ fun PantallaMapa(
             val centroMapa = Offset((minX + maxX) / 2, (minY + maxY) / 2)
             val centroVista = Offset(vistaW / 2, arriba + altoUtil / 2)
             val desdeS = vista.escala
-            val desdeD = vista.desplazamiento.takeIf { it.isSpecified } ?: inicial
+            val desdeD = actual()
             val hastaD = limitar(centroVista - centroMapa * destino, destino)
             Animatable(0f).animateTo(1f, tween(450)) {
                 vista.escala = desdeS + (destino - desdeS) * value
@@ -194,10 +196,10 @@ fun PantallaMapa(
                 .fillMaxSize()
                 .pointerInput(vistaW, vistaH) {
                     detectTransformGestures { centroide, pan, zoom, _ ->
-                        val actual = vista.escala
-                        val d = vista.desplazamiento.takeIf { it.isSpecified } ?: inicial
-                        val nueva = (actual * zoom).coerceIn(ESCALA_MIN, ESCALA_MAX)
-                        val p = (centroide - d) / actual
+                        val antes = vista.escala
+                        val d = actual()
+                        val nueva = (antes * zoom).coerceIn(ESCALA_MIN, ESCALA_MAX)
+                        val p = (centroide - d) / antes
                         vista.escala = nueva
                         vista.desplazamiento = limitar(centroide - p * nueva + pan, nueva)
                     }
@@ -209,10 +211,11 @@ fun PantallaMapa(
                     .requiredSize(mapa.ancho.dp, mapa.alto.dp)
                     .graphicsLayer {
                         transformOrigin = TransformOrigin(0f, 0f)
-                        scaleX = escala
-                        scaleY = escala
-                        translationX = desplazamiento.x
-                        translationY = desplazamiento.y
+                        val d = actual()
+                        scaleX = vista.escala
+                        scaleY = vista.escala
+                        translationX = d.x
+                        translationY = d.y
                     },
             ) {
                 ContenidoMapa(avance, mapa, critico, vista.verCritico, seleccionada, onAbrir)
@@ -365,33 +368,50 @@ private fun ContenidoMapa(
     onAbrir: (Int) -> Unit,
 ) {
     val porId = remember(mapa) { mapa.nodos.associateBy { it.materia.id } }
-    val estados = mapa.nodos.associate { it.materia.id to avance.estadoNodo(it.materia) }
+    // Las correlativas se evalúan una vez por cambio de avance, no en cada recomposición ni en cada frame.
+    val estados = remember(avance, mapa) { mapa.nodos.associate { it.materia.id to avance.estadoNodo(it.materia) } }
     // Con el camino crítico a la vista se atenúa todo lo demás.
     val resaltar = verCritico && critico.camino.isNotEmpty()
     val atenuado = 0.22f
-    val pasos = critico.camino.withIndex().associate { (i, m) -> m.id to i + 1 }
+    val pasos = remember(critico) { critico.camino.withIndex().associate { (i, m) -> m.id to i + 1 } }
+    // Geometría de las conexiones: depende solo del mapa y la densidad, se arma una vez.
+    val d = LocalDensity.current.density
+    val trazos = remember(mapa, d) {
+        mapa.aristas.mapNotNull { a ->
+            val o = porId[a.desde] ?: return@mapNotNull null
+            val t = porId[a.hasta] ?: return@mapNotNull null
+            a to curva(o, t, d)
+        }
+    }
+    // Qué correlativas ya se cumplen: una vez por cambio de avance.
+    val cumplidas = remember(avance, mapa) {
+        mapa.aristas.associateWith { a ->
+            when (a.pide) {
+                Nivel.REGULARIZADA -> avance.estado(a.desde) != Estado.SIN_CURSAR
+                Nivel.APROBADA -> avance.estado(a.desde) == Estado.APROBADA
+            }
+        }
+    }
+    val trazosCriticos = remember(critico, mapa, d) {
+        critico.camino.zipWithNext().mapNotNull { (m1, m2) ->
+            val o = porId[m1.id] ?: return@mapNotNull null
+            val t = porId[m2.id] ?: return@mapNotNull null
+            curva(o, t, d)
+        }
+    }
+    val guiones = remember(d) { PathEffect.dashPathEffect(floatArrayOf(7f * d, 5f * d)) }
 
     // Fondo: bandas por nivel y conexiones.
     Canvas(Modifier.fillMaxSize()) {
-        val d = density
         (0 until 5).forEach { f ->
             val top = (Mapa.MARGEN_Y + f * Mapa.PASO_Y - 22f) * d
             if (f % 2 == 0) {
                 drawRect(C.banda, Offset(0f, top), androidx.compose.ui.geometry.Size(size.width, Mapa.PASO_Y * d))
             }
         }
-        val radio = TAM_NODO / 2 * d
-        mapa.aristas.forEach { a ->
-            val o = porId[a.desde] ?: return@forEach
-            val t = porId[a.hasta] ?: return@forEach
-            val desde = Offset(o.x * d, o.y * d + radio)
-            val hasta = Offset(t.x * d, t.y * d - radio)
-            val cumple = when (a.pide) {
-                Nivel.REGULARIZADA -> avance.estado(a.desde) != Estado.SIN_CURSAR
-                Nivel.APROBADA -> avance.estado(a.desde) == Estado.APROBADA
-            }
-            val destino = estados[a.hasta]
-            val recorrida = destino == EstadoNodo.APROBADA
+        trazos.forEach { (a, camino) ->
+            val cumple = cumplidas.getValue(a)
+            val recorrida = estados[a.hasta] == EstadoNodo.APROBADA
             val base = when {
                 !cumple -> C.borde.copy(alpha = 0.5f)
                 recorrida -> C.oro.copy(alpha = 0.16f)
@@ -399,32 +419,18 @@ private fun ContenidoMapa(
                 else -> C.regular.copy(alpha = 0.8f)
             }
             val color = if (resaltar) base.copy(alpha = base.alpha * atenuado) else base
-            val medio = (hasta.y - desde.y) / 2
-            val camino = Path().apply {
-                moveTo(desde.x, desde.y)
-                cubicTo(desde.x, desde.y + medio, hasta.x, hasta.y - medio, hasta.x, hasta.y)
-            }
             drawPath(
                 camino,
                 color,
                 style = Stroke(
                     width = (if (cumple && !recorrida) 2.6f else 1.6f) * d,
-                    pathEffect = if (a.pide == Nivel.REGULARIZADA) PathEffect.dashPathEffect(floatArrayOf(7f * d, 5f * d)) else null,
+                    pathEffect = if (a.pide == Nivel.REGULARIZADA) guiones else null,
                 ),
             )
         }
         // El camino crítico, encima de todo: un trazo con halo entre cada cursada.
         if (resaltar) {
-            critico.camino.zipWithNext().forEach { (m1, m2) ->
-                val o = porId[m1.id] ?: return@forEach
-                val t = porId[m2.id] ?: return@forEach
-                val desde = Offset(o.x * d, o.y * d + radio)
-                val hasta = Offset(t.x * d, t.y * d - radio)
-                val medio = (hasta.y - desde.y) / 2
-                val camino = Path().apply {
-                    moveTo(desde.x, desde.y)
-                    cubicTo(desde.x, desde.y + medio, hasta.x, hasta.y - medio, hasta.x, hasta.y)
-                }
+            trazosCriticos.forEach { camino ->
                 drawPath(camino, C.critico.copy(alpha = 0.22f), style = Stroke(width = 12f * d, cap = StrokeCap.Round))
                 drawPath(camino, C.critico, style = Stroke(width = 4f * d, cap = StrokeCap.Round))
             }
@@ -501,5 +507,17 @@ private fun ContenidoMapa(
                 )
             }
         }
+    }
+}
+
+/** Curva entre dos nodos (de abajo del primero a arriba del segundo), en px. */
+private fun curva(o: NodoMapa, t: NodoMapa, d: Float): Path {
+    val radio = TAM_NODO / 2 * d
+    val desde = Offset(o.x * d, o.y * d + radio)
+    val hasta = Offset(t.x * d, t.y * d - radio)
+    val medio = (hasta.y - desde.y) / 2
+    return Path().apply {
+        moveTo(desde.x, desde.y)
+        cubicTo(desde.x, desde.y + medio, hasta.x, hasta.y - medio, hasta.x, hasta.y)
     }
 }

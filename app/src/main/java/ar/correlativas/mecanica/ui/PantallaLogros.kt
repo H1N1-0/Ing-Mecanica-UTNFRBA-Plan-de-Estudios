@@ -106,7 +106,7 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
                 }
             }
         }
-        items(logros, key = { it.id }) { l ->
+        items(logros, key = { it.id }, contentType = { "logro" }) { l ->
             val ok = l.cumplido(avance, testHecho)
             val (h, t) = l.progreso(avance, testHecho)
             Tarjeta(Modifier.fillMaxWidth(), fondo = if (ok) C.tarjetaAlta else C.tarjeta) {

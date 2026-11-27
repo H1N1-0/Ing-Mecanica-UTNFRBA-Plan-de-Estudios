@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("androidx.baselineprofile")
 }
 
 // En CI cada build sube el versionCode, así el APK nuevo se instala encima del anterior.
@@ -36,8 +37,14 @@ android {
         debug {
             signingConfig = signingConfigs.getByName("debug")
         }
+        // Release optimizada: R8 (código y recursos) + Baseline Profile. Se firma con la MISMA
+        // clave que las builds de debug (app/debug.keystore) y tiene el mismo applicationId, así
+        // que se instala encima de la versión que ya tenés sin perder el progreso.
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -82,6 +89,17 @@ extensions.getByType<ApplicationAndroidComponentsExtension>().onVariants { varia
     variant.sources.assets?.addGeneratedSourceDirectory(copiarDatos, CopiarDatos::outputDir)
 }
 
+composeCompiler {
+    // Las clases de data/ son inmutables: marcarlas estables evita recomposiciones innecesarias.
+    stabilityConfigurationFile = layout.projectDirectory.file("estabilidad_compose.conf")
+}
+
+baselineProfile {
+    // El perfil se genera a mano con un dispositivo (ver baselineprofile/) y queda versionado en
+    // src/release/generated/baselineProfiles: CI solo lo empaqueta, no necesita un emulador.
+    automaticGenerationDuringBuild = false
+}
+
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
     implementation(composeBom)
@@ -93,6 +111,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     implementation("androidx.core:core-ktx:1.15.0")
+    // Instala el Baseline Profile al abrir la app aunque no venga de Play Store (APK de Releases).
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
+    baselineProfile(project(":baselineprofile"))
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
