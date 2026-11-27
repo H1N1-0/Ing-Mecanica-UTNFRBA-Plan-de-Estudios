@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="papel">#F3F5F8</color>
-    <color name="icono_fondo">#1F5FAD</color>
+    <color name="fondo">#0A0E1F</color>
+    <color name="fondo_alto">#10162E</color>
+    <color name="tarjeta">#161D3A</color>
+    <color name="borde">#2B3566</color>
+    <color name="texto">#EEF1FF</color>
+    <color name="texto2">#A3ACD9</color>
+    <color name="disponible">#22E1F0</color>
+    <color name="rendir">#7CFF9B</color>
+    <color name="oro">#FFCB3D</color>
+    <color name="violeta">#8B5CF6</color>
+    <color name="rosa">#FF4D9D</color>
 </resources>
