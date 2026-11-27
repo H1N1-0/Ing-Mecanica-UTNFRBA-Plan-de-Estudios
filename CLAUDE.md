@@ -92,7 +92,7 @@ Solo lee las correlativas; no modifica ninguna regla de `Avance`.
 
 Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinables con el tema
 (`ModoTema`: sistema, claro, oscuro). Se guardan por nombre en el DataStore `ajustes` (clave
-`estilo`), junto con `nombre` para el rótulo; el progreso no se toca. El cambio es instantáneo:
+`estilo`), junto con `nombre` y `nombre_preguntado` para el rótulo; el progreso no se toca. El cambio es instantáneo:
 `TemaJuego` actualiza `C.tema` y todo lo que lee `C` se redibuja. El widget usa las mismas paletas.
 
 - **Tokens** (`TemaVisual`): `paleta` (colores), `fuente` y `fuenteDatos`, `formas`, `movimiento`
@@ -153,6 +153,11 @@ mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido
 
 ## Reglas
 
+- **Nada de datos personales en el repo**: ni nombres ni mails reales en código, tests, capturas
+  versionadas o commits. El nombre del rótulo lo carga cada usuario: se pregunta una vez en el
+  primer uso (`PreguntaNombre`, opcional), se cambia en Ajustes y se guarda solo en el DataStore
+  `ajustes`. Sin nombre, el rótulo dice "Estudiante" (`nombreParaRotulo`). En tests y capturas
+  usar datos de ejemplo genéricos.
 - **No cambiar cómo se guarda el progreso**: DataStore `progreso`, clave `estados`, formato de
   `CodecEstados` (`id:ESTADO` separados por coma). Cambiarlo borraría el avance de quien actualice.
 - No cambiar la lógica de correlativas de `Calculo.kt` sin que lo pidan; funciones nuevas van

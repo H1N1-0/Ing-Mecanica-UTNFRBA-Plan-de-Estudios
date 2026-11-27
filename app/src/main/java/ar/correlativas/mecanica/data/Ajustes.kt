@@ -1,6 +1,7 @@
 package ar.correlativas.mecanica.data
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -30,15 +31,25 @@ data class Preferencias(
     val tema: ModoTema,
     val perfil: ResultadoPerfil?,
     val estilo: Estilo = Estilo.PREDETERMINADO,
-    /** Nombre para el rótulo de la lámina (estilo Plano técnico); vacío si no lo cargó. */
+    /** Nombre para el rótulo de la lámina; vacío si no lo cargó. Solo se guarda en el celular. */
     val nombre: String = "",
-)
+    /** Si ya se le preguntó el nombre en el primer uso (lo haya cargado o no). */
+    val nombrePreguntado: Boolean = true,
+) {
+    /** Lo que muestra el rótulo: el nombre cargado o "Estudiante". */
+    val nombreRotulo: String get() = nombreParaRotulo(nombre)
+}
+
+const val NOMBRE_PREDETERMINADO = "Estudiante"
+
+fun nombreParaRotulo(nombre: String?): String = nombre?.trim().orEmpty().ifEmpty { NOMBRE_PREDETERMINADO }
 
 /** DataStore separado del progreso: el progreso de materias sigue en "progreso", sin cambios. */
 private val Context.ajustesStore by preferencesDataStore(name = "ajustes")
 private val TEMA = stringPreferencesKey("tema")
 private val ESTILO = stringPreferencesKey("estilo")
 private val NOMBRE = stringPreferencesKey("nombre")
+private val NOMBRE_PREGUNTADO = booleanPreferencesKey("nombre_preguntado")
 private val PERFIL = stringPreferencesKey("perfil")
 private val PERFIL_FECHA = longPreferencesKey("perfil_fecha")
 private val PERFIL_VECES = intPreferencesKey("perfil_veces")
@@ -54,6 +65,7 @@ class Ajustes(context: Context) {
             perfil = ResultadoPerfil.decodificar(p[PERFIL], p[PERFIL_FECHA] ?: 0L, p[PERFIL_VECES] ?: 0),
             estilo = Estilo.de(p[ESTILO]),
             nombre = p[NOMBRE].orEmpty(),
+            nombrePreguntado = p[NOMBRE_PREGUNTADO] ?: false,
         )
     }
 
@@ -67,8 +79,17 @@ class Ajustes(context: Context) {
         CorrelativasWidget().updateAll(context)
     }
 
+    /** Guarda el nombre (vacío = "Estudiante") y da por hecha la pregunta del primer uso. */
     suspend fun cambiarNombre(nombre: String) {
-        context.ajustesStore.edit { it[NOMBRE] = nombre.trim().take(MAX_NOMBRE) }
+        context.ajustesStore.edit {
+            it[NOMBRE] = nombre.trim().take(MAX_NOMBRE)
+            it[NOMBRE_PREGUNTADO] = true
+        }
+    }
+
+    /** "Ahora no" en la pregunta del primer uso: no se vuelve a preguntar. */
+    suspend fun omitirNombre() {
+        context.ajustesStore.edit { it[NOMBRE_PREGUNTADO] = true }
     }
 
     suspend fun guardarPerfil(porcentajes: Map<String, Int>, fecha: Long) {

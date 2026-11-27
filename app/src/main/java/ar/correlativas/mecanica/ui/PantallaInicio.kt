@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.nombreParaRotulo
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import ar.correlativas.mecanica.data.CaminoCritico
@@ -413,7 +414,7 @@ private fun RotuloLamina(avance: Avance, nombre: String) {
                         .weight(1f)
                         .border(1.dp, C.tinta.copy(alpha = 0.6f)),
                 ) {
-                    CeldaRotulo("NOMBRE", nombre.ifBlank { "—" }, destacado = true)
+                    CeldaRotulo("NOMBRE", nombreParaRotulo(nombre), destacado = true)
                     CeldaRotulo("CARRERA", "${plan.carrera} · ${plan.facultad}")
                     CeldaRotulo("PLAN", plan.plan.substringBefore(" ").ifBlank { plan.plan })
                     CeldaRotulo("AVANCE", "${(pct * 100).roundToInt()} % · ${rango.nombre}")

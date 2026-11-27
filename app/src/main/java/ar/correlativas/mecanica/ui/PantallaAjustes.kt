@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.MAX_NOMBRE
+import ar.correlativas.mecanica.data.NOMBRE_PREDETERMINADO
 import ar.correlativas.mecanica.data.ModoTema
 import ar.correlativas.mecanica.data.ResultadoPerfil
 import ar.correlativas.mecanica.data.TestVocacional
@@ -98,7 +99,7 @@ fun PantallaAjustes(
                 onValueChange = { if (it.length <= MAX_NOMBRE) { texto = it; onNombre(it) } },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Tu nombre", fontFamily = C.fuente) },
-                placeholder = { Text("Aparece en el rótulo del inicio", fontFamily = C.fuente) },
+                placeholder = { Text(NOMBRE_PREDETERMINADO, fontFamily = C.fuente) },
                 singleLine = true,
                 shape = C.formas.chica,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -110,7 +111,7 @@ fun PantallaAjustes(
                 ),
             )
             Text(
-                "Se muestra en el rótulo tipo lámina del estilo Plano técnico.",
+                "Opcional. Se muestra en el rótulo tipo lámina del estilo Plano técnico y se guarda solo en este celular. Si lo dejás vacío, dice «$NOMBRE_PREDETERMINADO».",
                 color = C.texto2,
                 fontFamily = C.fuente,
                 fontSize = 13.5.sp,

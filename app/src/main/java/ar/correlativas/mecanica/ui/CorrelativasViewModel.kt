@@ -124,6 +124,10 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { ajustes.cambiarNombre(nombre) }
     }
 
+    fun omitirNombre() {
+        viewModelScope.launch { ajustes.omitirNombre() }
+    }
+
     /** Guarda el resultado del test. Devuelve los porcentajes calculados. */
     fun terminarTest(respuestas: List<Int>): Map<String, Int> {
         val porcentajes = test.calcular(respuestas)

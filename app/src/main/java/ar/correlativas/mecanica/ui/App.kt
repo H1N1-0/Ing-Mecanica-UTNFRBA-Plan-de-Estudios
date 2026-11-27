@@ -340,6 +340,11 @@ fun AppCorrelativas(
             desbloqueo?.let { d ->
                 Celebracion(d, a, onCerrar = vm::cerrarDesbloqueo, onAbrir = { vm.cerrarDesbloqueo(); detalle = it })
             }
+            // Primer uso: se pregunta el nombre una sola vez (es opcional y queda solo en el celular).
+            val prefs = preferencias
+            if (prefs != null && !prefs.nombrePreguntado && superpuesta == null && desbloqueo == null) {
+                PreguntaNombre(onGuardar = vm::cambiarNombre, onOmitir = vm::omitirNombre)
+            }
         }
     }
 }

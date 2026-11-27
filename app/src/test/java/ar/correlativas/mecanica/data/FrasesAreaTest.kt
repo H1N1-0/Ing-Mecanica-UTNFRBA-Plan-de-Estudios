@@ -50,6 +50,14 @@ class FrasesAreaTest {
         frases.todas.forEach { assertEquals(it.autor, 2, iniciales(it.autor).length) }
     }
 
+    @Test fun rotuloSinNombreDiceEstudiante() {
+        assertEquals("Estudiante", nombreParaRotulo(null))
+        assertEquals("Estudiante", nombreParaRotulo(""))
+        assertEquals("Estudiante", nombreParaRotulo("   "))
+        assertEquals("Ana", nombreParaRotulo("  Ana "))
+        assertEquals("Estudiante", Preferencias(ModoTema.SISTEMA, null).nombreRotulo)
+    }
+
     @Test fun estiloPorNombre() {
         assertEquals(Estilo.PLANO, Estilo.PREDETERMINADO)
         assertEquals(Estilo.PLANO, Estilo.de(null))
