@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reloj de arena: cuello de botella. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M5,3 H19 M5,21 H19 M7,3 C7,8 10.5,10 12,12 C13.5,10 17,8 17,3 M7,21 C7,16 10.5,14 12,12 C13.5,14 17,16 17,21" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9.2,19.5 C9.8,17.2 11,16 12,15.4 C13,16 14.2,17.2 14.8,19.5 Z" />
+</vector>

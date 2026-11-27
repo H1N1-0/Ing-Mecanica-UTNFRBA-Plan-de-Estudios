@@ -11,6 +11,8 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023).
 - Lista por nivel (1 a 5 y Electivas). Cada materia se marca como sin cursar, regularizada o aprobada; la PPS, pendiente o acreditada.
 - Calcula qué podés cursar y rendir según las reglas del JSON (Proyecto Final pide además 10 hs anuales de electivas aprobadas).
 - Detalle de cada materia: qué te pide y qué habilita.
+- Camino crítico: cuántas materias traba cada una, la cadena más larga hasta recibirte (años mínimos de cursada), cuellos de botella y una tarjeta de prioridad con las 3 materias que más conviene aprobar.
+- Versión para tablet y horizontal: barra lateral, lista y detalle lado a lado, mapa con panel de detalle e inicio en columnas.
 - El progreso se guarda en el celular (DataStore). El widget muestra qué podés cursar, qué podés rendir y tu avance, y se actualiza al cambiar algo en la app.
 
 ### Descargar el APK

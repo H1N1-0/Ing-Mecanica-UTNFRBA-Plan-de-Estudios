@@ -119,6 +119,7 @@ fun ContenidoDetalle(
         }
 
         Banner(materia, avance, e)
+        BloqueCritico(materia, avance)
 
         SelectorEstado(materia.tipo, avance.estado(materia.id), onCambio, Modifier.fillMaxWidth().padding(top = 14.dp))
 

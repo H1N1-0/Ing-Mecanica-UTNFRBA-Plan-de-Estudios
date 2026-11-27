@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -63,6 +66,10 @@ fun PantallaLista(
     onFiltro: (EstadoNodo?) -> Unit,
     onCambio: (Int, Estado) -> Unit,
     onAbrir: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    /** Materia abierta en el panel de al lado (tablet), para marcarla. */
+    seleccionada: Int? = null,
+    scroll: LazyListState = rememberLazyListState(),
 ) {
     val plan = avance.plan
     var busqueda by rememberSaveable { mutableStateOf("") }
@@ -78,7 +85,7 @@ fun PantallaLista(
         })
     }.filter { it.materias.isNotEmpty() }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(modifier.fillMaxSize()) {
         Column(Modifier.background(C.fondo).padding(top = 12.dp)) {
             OutlinedTextField(
                 value = busqueda,
@@ -132,7 +139,7 @@ fun PantallaLista(
             }
             HorizontalDivider(color = C.borde)
         }
-        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
+        LazyColumn(Modifier.fillMaxSize(), state = scroll, contentPadding = PaddingValues(bottom = 24.dp)) {
             if (grupos.isEmpty()) {
                 item { Text("No hay materias con ese filtro.", Modifier.padding(24.dp), color = C.texto2, fontFamily = Chakra) }
             }
@@ -146,18 +153,19 @@ fun PantallaLista(
                         Text("${g.materias.size}", color = C.apagado, fontFamily = Chakra, fontSize = 13.sp)
                     }
                 }
-                items(g.materias, key = { it.id }) { m -> FilaLista(m, avance, onCambio, onAbrir) }
+                items(g.materias, key = { it.id }) { m -> FilaLista(m, avance, m.id == seleccionada, onCambio, onAbrir) }
             }
         }
     }
 }
 
 @Composable
-private fun FilaLista(m: Materia, avance: Avance, onCambio: (Int, Estado) -> Unit, onAbrir: (Int) -> Unit) {
+private fun FilaLista(m: Materia, avance: Avance, elegida: Boolean, onCambio: (Int, Estado) -> Unit, onAbrir: (Int) -> Unit) {
     val e = avance.estadoNodo(m)
     Row(
         Modifier
             .fillMaxWidth()
+            .background(if (elegida) C.disponible.copy(alpha = 0.12f) else Color.Transparent)
             .clickable(onClickLabel = "Ver detalle") { onAbrir(m.id) }
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,

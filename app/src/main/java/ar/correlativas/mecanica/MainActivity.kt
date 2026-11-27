@@ -7,6 +7,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +21,7 @@ import ar.correlativas.mecanica.ui.esOscuro
 class MainActivity : ComponentActivity() {
     private val vm: CorrelativasViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,7 +36,9 @@ class MainActivity : ComponentActivity() {
                 enableEdgeToEdge(statusBarStyle = estilo, navigationBarStyle = estilo)
                 onDispose {}
             }
-            TemaJuego(modo) { AppCorrelativas(vm) }
+            // Tamaño de pantalla: celular, tablet, horizontal. Se recalcula al girar.
+            val ventana = calculateWindowSizeClass(this)
+            TemaJuego(modo) { AppCorrelativas(vm, ventana) }
         }
     }
 }

@@ -5,9 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.Frase
 import ar.correlativas.mecanica.data.Frases
+import ar.correlativas.mecanica.data.GrafoPlan
 import ar.correlativas.mecanica.data.Logro
 import ar.correlativas.mecanica.data.Mapa
 import ar.correlativas.mecanica.data.Materia
@@ -60,6 +62,7 @@ fun calcularDesbloqueo(
 class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     val plan: Plan = Plan.cargar(app)
     val mapa: Mapa = Mapa(plan)
+    val grafo: GrafoPlan = GrafoPlan(plan)
     val logros: List<Logro> = logros(plan)
     val frases: Frases = Frases.cargar(app)
     val test: TestVocacional = TestVocacional.cargar(app)
@@ -69,6 +72,11 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     /** null mientras DataStore no terminó de leer. */
     val avance: StateFlow<Avance?> = progreso.estados
         .map { Avance(plan, it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Camino crítico: se recalcula solo cada vez que cambia el avance. */
+    val critico: StateFlow<CaminoCritico?> = avance
+        .map { a -> a?.let { CaminoCritico(it, grafo) } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val preferencias: StateFlow<Preferencias?> = ajustes.preferencias

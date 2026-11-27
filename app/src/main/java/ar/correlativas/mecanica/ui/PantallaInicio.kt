@@ -17,7 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -45,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.ResultadoPerfil
 import ar.correlativas.mecanica.data.TestVocacional
@@ -63,6 +68,7 @@ import kotlin.math.roundToInt
 @Composable
 fun PantallaInicio(
     avance: Avance,
+    critico: CaminoCritico,
     logros: List<Logro>,
     onAbrir: (Int) -> Unit,
     onLista: (EstadoNodo?) -> Unit,
@@ -70,39 +76,53 @@ fun PantallaInicio(
     onAjustes: () -> Unit,
     onTest: () -> Unit,
     onPerfil: () -> Unit,
+    onVerCamino: () -> Unit,
     frases: Frases,
     test: TestVocacional,
     perfil: ResultadoPerfil?,
+    /** 1 en el celular; 2 o 3 en tablet y en horizontal. */
+    columnas: Int = 1,
+    scroll: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
 ) {
     val plan = avance.plan
-    LazyColumn(
-        Modifier.fillMaxSize(),
+    // Una sola columna en el celular (igual que antes); en pantallas anchas las tarjetas se reparten.
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(columnas),
+        modifier = Modifier.fillMaxSize(),
+        state = scroll,
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalItemSpacing = 14.dp,
     ) {
-        item { Cabecera(onAjustes) }
-        item { TarjetaJugador(avance) }
-        item { Contadores(avance, onLista) }
-        item { FraseDelDia(frases) }
-        item { TarjetaPerfil(test, perfil, onTest, onPerfil) }
-        item {
-            Seccion("Disponibles ahora", R.drawable.ic_rayo, C.disponible, "${avance.cursables.size}")
-            Spacer(Modifier.height(8.dp))
-            if (avance.cursables.isEmpty()) {
-                Vacio("No hay materias para cursar: marcá las que ya regularizaste.")
-            } else {
-                FilaMaterias(avance.cursables, avance, onAbrir)
+        item(key = "cabecera", span = StaggeredGridItemSpan.FullLine) { Cabecera(onAjustes) }
+        item(key = "jugador") { TarjetaJugador(avance) }
+        item(key = "contadores") { Contadores(avance, onLista) }
+        item(key = "prioridad") { TarjetaPrioridad(critico, avance, onAbrir) }
+        item(key = "critico") { TarjetaCaminoCritico(critico, onVerCamino) }
+        item(key = "frase") { FraseDelDia(frases) }
+        item(key = "perfil") { TarjetaPerfil(test, perfil, onTest, onPerfil) }
+        item(key = "disponibles", span = StaggeredGridItemSpan.FullLine) {
+            Column {
+                Seccion("Disponibles ahora", R.drawable.ic_rayo, C.disponible, "${avance.cursables.size}")
+                Spacer(Modifier.height(8.dp))
+                if (avance.cursables.isEmpty()) {
+                    Vacio("No hay materias para cursar: marcá las que ya regularizaste.")
+                } else {
+                    FilaMaterias(avance.cursables, avance, onAbrir)
+                }
             }
         }
         if (avance.rendibles.isNotEmpty()) {
-            item {
-                Seccion("Finales para rendir", R.drawable.ic_llama, C.rendir, "${avance.rendibles.size}")
-                Spacer(Modifier.height(8.dp))
-                FilaMaterias(avance.rendibles, avance, onAbrir)
+            item(key = "finales", span = StaggeredGridItemSpan.FullLine) {
+                Column {
+                    Seccion("Finales para rendir", R.drawable.ic_llama, C.rendir, "${avance.rendibles.size}")
+                    Spacer(Modifier.height(8.dp))
+                    FilaMaterias(avance.rendibles, avance, onAbrir)
+                }
             }
         }
-        item { ProximoLogro(avance, logros, perfil != null, onLogros) }
-        item { Camino(avance, plan) }
+        item(key = "logro") { ProximoLogro(avance, logros, perfil != null, onLogros) }
+        item(key = "camino") { Camino(avance, plan) }
     }
 }
 
