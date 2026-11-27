@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -75,7 +76,8 @@ fun PantallaLista(
     var busqueda by rememberSaveable { mutableStateOf("") }
     val q = normalizar(busqueda.trim())
 
-    val grupos = ((1..5).map { n ->
+    // Filtrar recorre todas las materias: se recalcula solo si cambia el avance, el filtro o la búsqueda.
+    val grupos = remember(avance, filtro, q) { ((1..5).map { n ->
         Grupo("Nivel $n", plan.obligatorias.filter { it.nivel == n } + if (n == 5) listOf(plan.pps) else emptyList())
     } + Grupo("Electivas", plan.electivas)).map { g ->
         g.copy(materias = g.materias.filter { m ->
@@ -83,7 +85,7 @@ fun PantallaLista(
                 (filtro == EstadoNodo.REGULARIZADA && avance.estadoNodo(m) == EstadoNodo.PARA_RENDIR)) &&
                 (q.isEmpty() || normalizar(m.nombre).contains(q) || m.id.toString() == q)
         })
-    }.filter { it.materias.isNotEmpty() }
+    }.filter { it.materias.isNotEmpty() } }
 
     Column(modifier.fillMaxSize()) {
         Column(Modifier.background(C.fondo).padding(top = 12.dp)) {
@@ -144,7 +146,7 @@ fun PantallaLista(
                 item { Text("No hay materias con ese filtro.", Modifier.padding(24.dp), color = C.texto2, fontFamily = Chakra) }
             }
             grupos.forEach { g ->
-                stickyHeader(key = "h-${g.titulo}") {
+                stickyHeader(key = "h-${g.titulo}", contentType = "nivel") {
                     Row(
                         Modifier.fillMaxWidth().background(C.fondo).padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -153,7 +155,7 @@ fun PantallaLista(
                         Text("${g.materias.size}", color = C.apagado, fontFamily = Chakra, fontSize = 13.sp)
                     }
                 }
-                items(g.materias, key = { it.id }) { m -> FilaLista(m, avance, m.id == seleccionada, onCambio, onAbrir) }
+                items(g.materias, key = { it.id }, contentType = { "materia" }) { m -> FilaLista(m, avance, m.id == seleccionada, onCambio, onAbrir) }
             }
         }
     }

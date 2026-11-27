@@ -19,7 +19,10 @@ import ar.correlativas.mecanica.data.Preferencias
 import ar.correlativas.mecanica.data.Progreso
 import ar.correlativas.mecanica.data.TestVocacional
 import ar.correlativas.mecanica.data.logros
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -71,12 +74,15 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
 
     /** null mientras DataStore no terminó de leer. */
     val avance: StateFlow<Avance?> = progreso.estados
+        .distinctUntilChanged()
         .map { Avance(plan, it) }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     /** Camino crítico: se recalcula solo cada vez que cambia el avance. */
     val critico: StateFlow<CaminoCritico?> = avance
         .map { a -> a?.let { CaminoCritico(it, grafo) } }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val preferencias: StateFlow<Preferencias?> = ajustes.preferencias

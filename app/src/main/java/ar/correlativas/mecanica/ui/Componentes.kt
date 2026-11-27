@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,11 +79,12 @@ fun Nodo(
 ) {
     val color by animateColorAsState(colorEstado(estado), tween(400), label = "color")
     val late = animado && (estado == EstadoNodo.DISPONIBLE || estado == EstadoNodo.PARA_RENDIR)
-    val pulso = if (late) {
+    // El pulso se lee solo dentro del Canvas: cada frame redibuja el nodo, sin recomponerlo.
+    val pulso: State<Float>? = if (late) {
         rememberInfiniteTransition(label = "pulso").animateFloat(
             0f, 1f, infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Restart), label = "p",
-        ).value
-    } else 0f
+        )
+    } else null
     val carga by animateFloatAsState(
         when (estado) {
             EstadoNodo.REGULARIZADA, EstadoNodo.PARA_RENDIR -> 0.5f
@@ -95,8 +97,9 @@ fun Nodo(
         Canvas(Modifier.matchParentSize()) {
             val r = size.minDimension / 2
             val anillo = (r * 0.12f).coerceAtLeast(2.5f)
-            if (late) {
-                drawCircle(color.copy(alpha = 0.40f * (1 - pulso)), radius = r * (1f + 0.45f * pulso))
+            if (pulso != null) {
+                val p = pulso.value
+                drawCircle(color.copy(alpha = 0.40f * (1 - p)), radius = r * (1f + 0.45f * p))
                 drawCircle(color.copy(alpha = 0.18f), radius = r * 1.12f)
             }
             drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.bloqueada else C.fondoAlto, radius = r)

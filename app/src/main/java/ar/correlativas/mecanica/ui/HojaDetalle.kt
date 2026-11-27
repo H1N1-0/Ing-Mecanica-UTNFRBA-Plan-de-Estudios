@@ -22,6 +22,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -150,7 +151,7 @@ fun ContenidoDetalle(
             }
         }
 
-        val habilita = avance.habilita(materia.id)
+        val habilita = remember(avance, materia.id) { avance.habilita(materia.id) }
         Titulo("Desbloquea", R.drawable.ic_candado, C.oro, extra = habilita.size.takeIf { it > 0 }?.toString())
         if (habilita.isEmpty()) {
             Text("No es correlativa de ninguna materia.", color = C.texto2, fontFamily = Chakra, fontSize = 14.sp)

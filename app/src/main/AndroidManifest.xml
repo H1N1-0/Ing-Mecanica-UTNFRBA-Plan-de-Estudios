@@ -9,6 +9,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Correlativas">
 
+        <!-- Permite medir la release con Macrobenchmark (baselineprofile/) sin hacerla depurable. -->
+        <profileable android:shell="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

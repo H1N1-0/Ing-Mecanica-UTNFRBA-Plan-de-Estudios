@@ -296,7 +296,7 @@ private fun Vacio(texto: String) {
 @Composable
 private fun FilaMaterias(materias: List<Materia>, avance: Avance, onAbrir: (Int) -> Unit) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(end = 8.dp)) {
-        items(materias, key = { it.id }) { m ->
+        items(materias, key = { it.id }, contentType = { "materia" }) { m ->
             val e = avance.estadoNodo(m)
             Tarjeta(Modifier.width(132.dp).clickable { onAbrir(m.id) }) {
                 Column(Modifier.padding(12.dp)) {

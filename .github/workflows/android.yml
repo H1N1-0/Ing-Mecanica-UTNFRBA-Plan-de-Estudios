@@ -1,4 +1,4 @@
-name: APK de debug
+name: APK release
 
 on:
   push:
@@ -36,12 +36,14 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Tests y APK
-        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+      # La release va optimizada con R8 y el Baseline Profile, firmada con la misma clave
+      # (app/debug.keystore) que las builds anteriores: se instala encima sin perder el progreso.
+      - name: Tests y APK release
+        run: ./gradlew --no-daemon testDebugUnitTest :app:assembleRelease
 
       - name: Renombrar APK
         if: github.event_name != 'pull_request'
-        run: cp app/build/outputs/apk/debug/app-debug.apk "correlativas-mecanica-${{ github.run_number }}.apk"
+        run: cp app/build/outputs/apk/release/app-release.apk "correlativas-mecanica-${{ github.run_number }}.apk"
 
       - name: Publicar release
         if: github.event_name != 'pull_request'
@@ -52,6 +54,6 @@ jobs:
           target_commitish: ${{ github.sha }}
           make_latest: true
           body: |
-            APK de debug compilado desde ${{ github.sha }}.
+            APK release (optimizado con R8 y Baseline Profile) compilado desde ${{ github.sha }}.
             Desde el celular: descargá el `.apk` de abajo y abrilo para instalar (Android te va a pedir permiso para instalar apps de esta fuente).
           files: correlativas-mecanica-${{ github.run_number }}.apk

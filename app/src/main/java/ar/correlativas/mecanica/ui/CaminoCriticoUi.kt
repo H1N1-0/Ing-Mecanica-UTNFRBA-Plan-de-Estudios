@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -157,7 +158,8 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
 /** Tarjeta "Prioridad": las 3 materias que más conviene aprobar ahora. */
 @Composable
 fun TarjetaPrioridad(critico: CaminoCritico, avance: Avance, onAbrir: (Int) -> Unit, modifier: Modifier = Modifier) {
-    val prioridades = critico.prioridades(3)
+    // prioridades() simula aprobar cada candidata: se calcula una vez por cambio de avance.
+    val prioridades = remember(critico) { critico.prioridades(3) }
     Box(
         modifier
             .fillMaxWidth()

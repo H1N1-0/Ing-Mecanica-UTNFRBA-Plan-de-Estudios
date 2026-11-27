@@ -17,14 +17,14 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023).
 
 ### Descargar el APK
 
-Cada push a `main` compila un APK de debug (GitHub Actions, `.github/workflows/android.yml`) y lo publica en **Releases**. Desde el celular: abrí la última release, descargá el `.apk` e instalalo (Android pide permiso para instalar apps desde el navegador).
+Cada push a `main` compila un APK release optimizado (R8 + Baseline Profile; GitHub Actions, `.github/workflows/android.yml`) y lo publica en **Releases**. Desde el celular: abrí la última release, descargá el `.apk` e instalalo (Android pide permiso para instalar apps desde el navegador).
 
-Todas las builds se firman con la misma clave de debug (`app/debug.keystore`), así que cada versión nueva se instala encima de la anterior sin perder el progreso.
+Todas las builds (debug y release) se firman con la misma clave (`app/debug.keystore`), así que cada versión nueva se instala encima de la anterior sin perder el progreso.
 
 ### Compilar localmente
 
 ```
-./gradlew testDebugUnitTest assembleDebug
+./gradlew testDebugUnitTest :app:assembleRelease
 ```
 
-El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
+El APK queda en `app/build/outputs/apk/release/app-release.apk`.

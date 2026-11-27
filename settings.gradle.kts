@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Correlativas"
 include(":app")
+include(":baselineprofile")
