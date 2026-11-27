@@ -1,0 +1,46 @@
+name: APK de debug
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Tests y APK
+        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+
+      - name: Renombrar APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk "correlativas-mecanica-${{ github.run_number }}.apk"
+
+      - name: Publicar release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Correlativas Mecánica 1.0.${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          make_latest: true
+          body: |
+            APK de debug compilado desde ${{ github.sha }}.
+            Desde el celular: descargá el `.apk` de abajo y abrilo para instalar (Android te va a pedir permiso para instalar apps de esta fuente).
+          files: correlativas-mecanica-${{ github.run_number }}.apk
