@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Correlativas Mecánica</string>
+    <string name="widget_nombre">Correlativas</string>
+    <string name="widget_descripcion">Qué podés cursar, qué podés rendir y tu avance en la carrera</string>
+</resources>
