@@ -4,6 +4,13 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023): los datos del plan 
 Android (Kotlin + Jetpack Compose) gamificada, con widget, para marcar materias y ver qué se puede
 cursar y rendir. Todo el código, los textos y los commits están en español rioplatense.
 
+## Cómo trabajar
+
+- Responder siempre en español.
+- No usar el emulador en cada cambio: alcanza con los tests unitarios y compilar
+  (`./gradlew testDebugUnitTest :app:assembleRelease`). Usarlo solo si el usuario lo pide o si
+  el cambio toca el Baseline Profile.
+
 ## Estructura
 
 ```
