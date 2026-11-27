@@ -49,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.nombreParaRotulo
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.ResultadoPerfil
@@ -80,6 +83,8 @@ fun PantallaInicio(
     frases: Frases,
     test: TestVocacional,
     perfil: ResultadoPerfil?,
+    /** Nombre para el rótulo de la lámina (estilo Plano técnico). */
+    nombre: String = "",
     /** 1 en el celular; 2 o 3 en tablet y en horizontal. */
     columnas: Int = 1,
     scroll: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
@@ -95,7 +100,10 @@ fun PantallaInicio(
         verticalItemSpacing = 14.dp,
     ) {
         item(key = "cabecera", span = StaggeredGridItemSpan.FullLine) { Cabecera(onAjustes) }
-        item(key = "jugador") { TarjetaJugador(avance) }
+        item(key = "jugador") {
+            // El indicador de avance es un token: anillo (Gamificado, Material) o rótulo con manómetro (Plano).
+            if (C.tema.indicador == Indicador.MANOMETRO) RotuloLamina(avance, nombre) else TarjetaJugador(avance)
+        }
         item(key = "contadores") { Contadores(avance, onLista) }
         item(key = "prioridad") { TarjetaPrioridad(critico, avance, onAbrir) }
         item(key = "critico") { TarjetaCaminoCritico(critico, onVerCamino) }
@@ -134,7 +142,7 @@ private fun Cabecera(onAjustes: () -> Unit) {
             "MECÁNICA · UTN FRBA",
             Modifier.padding(start = 8.dp).weight(1f),
             color = C.texto2,
-            fontFamily = Chakra,
+            fontFamily = C.fuente,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             letterSpacing = 2.sp,
@@ -161,28 +169,29 @@ private fun TarjetaJugador(avance: Avance) {
     Box(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .brillo(C.formas.grande)
+            .clip(C.formas.grande)
             .background(C.degradeJugador)
-            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(24.dp))
+            .border(1.dp, C.heroeTexto.copy(alpha = 0.12f), C.formas.grande)
             .padding(18.dp),
     ) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(132.dp), contentAlignment = Alignment.Center) {
-                    Anillo(pct.toFloat(), Modifier.fillMaxSize(), grosor = 13.dp, pista = Color.White.copy(alpha = 0.16f))
+                    Medidor(pct.toFloat(), Modifier.fillMaxSize(), grosor = 13.dp, heroe = true)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.Bottom) {
-                            Text("$pctAnimado", color = C.heroeTexto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 40.sp, lineHeight = 40.sp)
-                            Text("%", color = C.heroeTexto2, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 20.sp, modifier = Modifier.padding(bottom = 4.dp))
+                            Text("$pctAnimado", color = C.heroeTexto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 40.sp, lineHeight = 40.sp)
+                            Text("%", color = C.heroeTexto2, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 20.sp, modifier = Modifier.padding(bottom = 4.dp))
                         }
-                        Text("de la carrera", color = C.heroeTexto2, fontSize = 12.sp, fontFamily = Chakra)
+                        Text("de la carrera", color = C.heroeTexto2, fontSize = 12.sp, fontFamily = C.fuente)
                     }
                 }
                 Column(Modifier.padding(start = 16.dp).weight(1f)) {
                     Text(
                         "RANGO ${rango.numero}/${RANGOS.size}",
                         color = C.heroeAcento,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp,
                         letterSpacing = 2.sp,
@@ -194,7 +203,7 @@ private fun TarjetaJugador(avance: Avance) {
                         lineHeight = 28.sp,
                         modifier = Modifier.semantics { heading() },
                     )
-                    Text(rango.lema, color = C.heroeTexto2, fontSize = 13.sp, fontFamily = Chakra)
+                    Text(rango.lema, color = C.heroeTexto2, fontSize = 13.sp, fontFamily = C.fuente)
                 }
             }
             if (siguiente != null) {
@@ -206,13 +215,13 @@ private fun TarjetaJugador(avance: Avance) {
                         "Próximo: ${siguiente.nombre}",
                         Modifier.padding(start = 6.dp).weight(1f),
                         color = C.heroeTexto,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
                     )
-                    Text("faltan ${falta.roundToInt().coerceAtLeast(1)}%", color = C.heroeTexto2, fontFamily = Chakra, fontSize = 13.sp)
+                    Text("faltan ${falta.roundToInt().coerceAtLeast(1)}%", color = C.heroeTexto2, fontFamily = C.fuente, fontSize = 13.sp)
                 }
-                Barra(tramo, C.heroeOro, Modifier.fillMaxWidth().padding(top = 6.dp), alto = 8.dp, pista = Color.White.copy(alpha = 0.18f))
+                Barra(tramo, C.heroeOro, Modifier.fillMaxWidth().padding(top = 6.dp), alto = 8.dp, pista = C.heroeTexto.copy(alpha = 0.18f))
             } else {
                 Pildora("¡Carrera completa!", C.heroeOro, Modifier.padding(top = 12.dp), R.drawable.ic_corona)
             }
@@ -257,14 +266,14 @@ private fun Contador(titulo: String, valor: String, de: String?, icono: Int, col
         Column(Modifier.fillMaxWidth().padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(color.copy(alpha = 0.16f)),
+                    Modifier.size(30.dp).clip(C.formas.mini).background(color.copy(alpha = 0.16f)),
                     contentAlignment = Alignment.Center,
                 ) { Ic(icono, color, tam = 18.dp) }
-                Text(titulo, Modifier.padding(start = 8.dp), color = C.texto2, fontFamily = Chakra, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(titulo, Modifier.padding(start = 8.dp), color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.Bottom) {
-                Text(valor, color = color, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 34.sp)
-                if (de != null) Text(de, color = C.texto2, fontFamily = Chakra, fontSize = 15.sp, modifier = Modifier.padding(start = 3.dp, bottom = 5.dp))
+                Text(valor, color = color, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 34.sp)
+                if (de != null) Text(de, color = C.texto2, fontFamily = C.fuente, fontSize = 15.sp, modifier = Modifier.padding(start = 3.dp, bottom = 5.dp))
             }
             if (progreso != null) Barra(progreso, color, Modifier.fillMaxWidth().padding(top = 4.dp), alto = 6.dp)
         }
@@ -290,7 +299,7 @@ fun Seccion(titulo: String, icono: Int, color: Color, extra: String? = null) {
 
 @Composable
 private fun Vacio(texto: String) {
-    Text(texto, color = C.texto2, fontFamily = Chakra, fontSize = 14.sp)
+    Text(texto, color = C.texto2, fontFamily = C.fuente, fontSize = 14.sp)
 }
 
 @Composable
@@ -305,7 +314,7 @@ private fun FilaMaterias(materias: List<Materia>, avance: Avance, onAbrir: (Int)
                         m.nombre,
                         Modifier.padding(top = 10.dp).height(40.dp),
                         color = C.texto,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
                         lineHeight = 18.sp,
@@ -315,7 +324,7 @@ private fun FilaMaterias(materias: List<Materia>, avance: Avance, onAbrir: (Int)
                     Text(
                         m.nivel?.let { "Nivel $it" } ?: "Electiva",
                         color = C.texto2,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontSize = 12.sp,
                     )
                 }
@@ -335,15 +344,15 @@ private fun ProximoLogro(avance: Avance, logros: List<Logro>, testHecho: Boolean
             if (proximo != null) {
                 Insignia(proximo.icono, conseguido = false, tam = 52.dp)
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
-                    Text("PRÓXIMO LOGRO · $conseguidos/${logros.size}", color = C.violeta, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp)
-                    Text(proximo.titulo, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                    Text(proximo.descripcion, color = C.texto2, fontFamily = Chakra, fontSize = 13.sp, lineHeight = 16.sp)
+                    Text("PRÓXIMO LOGRO · $conseguidos/${logros.size}", color = C.violeta, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp)
+                    Text(proximo.titulo, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text(proximo.descripcion, color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp, lineHeight = 16.sp)
                     val (h, t) = proximo.progreso(avance, testHecho)
                     Barra((h / t).toFloat(), C.violeta, Modifier.fillMaxWidth().padding(top = 8.dp), alto = 6.dp)
                 }
             } else {
                 Insignia(ar.correlativas.mecanica.data.IconoLogro.CORONA, conseguido = true, tam = 52.dp)
-                Text("¡Conseguiste todos los logros!", Modifier.padding(start = 14.dp), color = C.oro, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                Text("¡Conseguiste todos los logros!", Modifier.padding(start = 14.dp), color = C.oro, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 17.sp)
             }
         }
     }
@@ -363,17 +372,17 @@ private fun Camino(avance: Avance, plan: Plan) {
                         Box(
                             Modifier
                                 .size(34.dp)
-                                .clip(RoundedCornerShape(10.dp))
+                                .clip(C.formas.chica)
                                 .background(if (completo) C.degradeOro else androidx.compose.ui.graphics.SolidColor(C.tarjetaAlta)),
                             contentAlignment = Alignment.Center,
                         ) {
-                            if (completo) Ic(R.drawable.ic_trofeo, Color(0xFF3A2500), tam = 18.dp)
-                            else Text("$n", color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            if (completo) Ic(R.drawable.ic_trofeo, C.sobreOro, tam = 18.dp)
+                            else Text("$n", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         }
                         Column(Modifier.padding(start = 12.dp).weight(1f)) {
                             Row {
-                                Text("Nivel $n", color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, modifier = Modifier.weight(1f))
-                                Text("$hechas/${materias.size}", color = if (completo) C.oro else C.texto2, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                                Text("Nivel $n", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, modifier = Modifier.weight(1f))
+                                Text("$hechas/${materias.size}", color = if (completo) C.oro else C.texto2, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             }
                             Barra(hechas / materias.size.toFloat(), if (completo) C.oro else C.disponible, Modifier.fillMaxWidth().padding(top = 5.dp), alto = 6.dp)
                         }
@@ -384,12 +393,84 @@ private fun Camino(avance: Avance, plan: Plan) {
     }
 }
 
+/**
+ * Rótulo tipo lámina (estilo Plano técnico): manómetro de avance y la tabla de datos que va en
+ * la esquina de un plano: nombre, carrera, plan, avance y fecha.
+ */
+@Composable
+private fun RotuloLamina(avance: Avance, nombre: String) {
+    val pct = avance.porcentajeCarrera
+    val rango = rangoPara(pct)
+    val siguiente = siguienteRango(rango)
+    val hoy = remember { java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
+    val plan = avance.plan
+    Tarjeta(Modifier.fillMaxWidth(), cota = "LÁMINA 01 · ESC. 1:1") {
+        Column(Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Manometro(pct.toFloat(), Modifier.size(132.dp))
+                Column(
+                    Modifier
+                        .padding(start = 12.dp)
+                        .weight(1f)
+                        .border(1.dp, C.tinta.copy(alpha = 0.6f)),
+                ) {
+                    CeldaRotulo("NOMBRE", nombreParaRotulo(nombre), destacado = true)
+                    CeldaRotulo("CARRERA", "${plan.carrera} · ${plan.facultad}")
+                    CeldaRotulo("PLAN", plan.plan.substringBefore(" ").ifBlank { plan.plan })
+                    CeldaRotulo("AVANCE", "${(pct * 100).roundToInt()} % · ${rango.nombre}")
+                    CeldaRotulo("FECHA", hoy, ultima = true)
+                }
+            }
+            if (siguiente != null) {
+                val tramo = ((pct - rango.desde) / (siguiente.desde - rango.desde)).toFloat()
+                val falta = ((siguiente.desde - pct) * 100).coerceAtLeast(0.0)
+                Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        "RANGO ${rango.numero}/${RANGOS.size} → ${siguiente.nombre.uppercase()}",
+                        Modifier.weight(1f),
+                        color = C.texto2,
+                        fontFamily = C.fuenteDatos,
+                        fontSize = 12.sp,
+                    )
+                    Text("faltan ${falta.roundToInt().coerceAtLeast(1)} %", color = C.texto2, fontFamily = C.fuenteDatos, fontSize = 12.sp)
+                }
+                Barra(tramo, C.disponible, Modifier.fillMaxWidth().padding(top = 4.dp), alto = 6.dp)
+            } else {
+                Pildora("¡Carrera completa!", C.oro, Modifier.padding(top = 10.dp), R.drawable.ic_corona)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CeldaRotulo(etiqueta: String, valor: String, destacado: Boolean = false, ultima: Boolean = false) {
+    val linea = C.tinta.copy(alpha = 0.6f)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .then(if (ultima) Modifier else Modifier.drawBehind { drawLine(linea, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) })
+            .padding(horizontal = 6.dp, vertical = 3.dp),
+    ) {
+        Text(etiqueta, color = C.texto2, fontFamily = C.fuenteDatos, fontSize = 9.sp, letterSpacing = 1.sp)
+        Text(
+            valor,
+            color = C.texto,
+            fontFamily = C.fuente,
+            fontWeight = if (destacado) FontWeight.Bold else FontWeight.SemiBold,
+            fontSize = if (destacado) 15.sp else 13.sp,
+            lineHeight = 15.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
 @Composable
 private fun FraseDelDia(frases: Frases) {
     val hoy = remember { java.time.LocalDate.now().toEpochDay() }
     var otra by rememberSaveable { mutableStateOf(0) }
     val frase = frases.delDia(hoy, otra)
-    Tarjeta(Modifier.fillMaxWidth()) {
+    Tarjeta(Modifier.fillMaxWidth(), cota = "DETALLE A") {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Ic(R.drawable.ic_comillas, C.violeta, tam = 20.dp)
@@ -397,7 +478,7 @@ private fun FraseDelDia(frases: Frases) {
                     "FRASE DEL DÍA",
                     Modifier.padding(start = 8.dp).weight(1f),
                     color = C.violeta,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.5.sp,
@@ -417,13 +498,19 @@ private fun FraseDelDia(frases: Frases) {
                         "«${f.texto}»",
                         Modifier.padding(top = 6.dp),
                         color = C.texto,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontWeight = FontWeight.Medium,
                         fontSize = 17.sp,
                         lineHeight = 23.sp,
                     )
-                    Text("— ${f.autor}", Modifier.padding(top = 8.dp), color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                    Text(f.fuente, color = C.texto2, fontFamily = Chakra, fontSize = 12.5.sp, lineHeight = 16.sp)
+                    Row(Modifier.padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Medallon(f.autor, f.area, tam = 48.dp)
+                        Column(Modifier.padding(start = 14.dp)) {
+                            Text(f.autor, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                            Text(f.area.nombre.uppercase(), color = colorArea(f.area), fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.sp)
+                            Text(f.fuente, color = C.texto2, fontFamily = C.fuente, fontSize = 12.5.sp, lineHeight = 16.sp)
+                        }
+                    }
                 }
             }
         }
@@ -437,21 +524,22 @@ private fun TarjetaPerfil(test: TestVocacional, perfil: ResultadoPerfil?, onTest
         Box(
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(Brush.linearGradient(listOf(C.violeta, C.rosa)))
+                .brillo(C.formas.grande, C.rosa)
+                .clip(C.formas.grande)
+                .background(C.destacado)
                 .clickable(role = Role.Button, onClick = onTest)
                 .padding(18.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.size(52.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.2f)),
+                    Modifier.size(52.dp).clip(CircleShape).background(C.sobreDestacado.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center,
-                ) { Ic(R.drawable.ic_brujula, Color.White, tam = 30.dp) }
+                ) { Ic(R.drawable.ic_brujula, C.sobreDestacado, tam = 30.dp) }
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
-                    Text("¿Qué ingeniero mecánico sos?", color = Color.White, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 22.sp)
-                    Text("12 preguntas · 2 minutos · desbloqueá un logro", color = Color.White.copy(alpha = 0.85f), fontFamily = Chakra, fontSize = 13.5.sp)
+                    Text("¿Qué ingeniero mecánico sos?", color = C.sobreDestacado, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 22.sp)
+                    Text("12 preguntas · 2 minutos · desbloqueá un logro", color = C.sobreDestacado.copy(alpha = 0.85f), fontFamily = C.fuente, fontSize = 13.5.sp)
                 }
-                Text("›", color = Color.White, fontSize = 28.sp)
+                Text("›", color = C.sobreDestacado, fontSize = 28.sp)
             }
         }
         return
@@ -460,14 +548,14 @@ private fun TarjetaPerfil(test: TestVocacional, perfil: ResultadoPerfil?, onTest
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val color = colorPerfil(principal)
-                Box(Modifier.size(52.dp).clip(RoundedCornerShape(16.dp)).background(color.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
+                Box(Modifier.size(52.dp).clip(C.formas.media).background(color.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
                     Ic(iconoPerfil(principal), color, tam = 30.dp)
                 }
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
-                    Text("TU PERFIL", color = color, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
-                    Text(principal.nombre, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text("TU PERFIL", color = color, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
+                    Text(principal.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
-                Text("${perfil.porcentajes[principal.id] ?: 0}%", color = color, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 26.sp)
+                Text("${perfil.porcentajes[principal.id] ?: 0}%", color = color, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 26.sp)
             }
             Column(Modifier.padding(top = 8.dp)) {
                 perfil.ordenados.drop(1).take(2).forEach { (id, pct) -> test[id]?.let { FilaPorcentaje(it, pct) } }

@@ -7,6 +7,7 @@ import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
+import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.Frase
 import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.GrafoPlan
@@ -113,6 +114,18 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
 
     fun cambiarTema(tema: ModoTema) {
         viewModelScope.launch { ajustes.cambiarTema(tema) }
+    }
+
+    fun cambiarEstilo(estilo: Estilo) {
+        viewModelScope.launch { ajustes.cambiarEstilo(estilo) }
+    }
+
+    fun cambiarNombre(nombre: String) {
+        viewModelScope.launch { ajustes.cambiarNombre(nombre) }
+    }
+
+    fun omitirNombre() {
+        viewModelScope.launch { ajustes.omitirNombre() }
     }
 
     /** Guarda el resultado del test. Devuelve los porcentajes calculados. */

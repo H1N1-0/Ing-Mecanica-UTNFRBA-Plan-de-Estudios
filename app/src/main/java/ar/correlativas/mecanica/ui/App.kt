@@ -74,13 +74,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.EstadoNodo
+import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.ModoTema
 
-enum class Pestania(val titulo: String, val icono: Int) {
-    INICIO("Inicio", R.drawable.ic_inicio),
-    MAPA("Mapa", R.drawable.ic_mapa),
-    LISTA("Lista", R.drawable.ic_lista),
-    LOGROS("Logros", R.drawable.ic_trofeo),
+/** Cada pestaña tiene su dibujo técnico de fondo (estilo Plano técnico). */
+enum class Pestania(val titulo: String, val icono: Int, val dibujo: Dibujo) {
+    INICIO("Inicio", R.drawable.ic_inicio, Dibujo.ENGRANAJES),
+    MAPA("Mapa", R.drawable.ic_mapa, Dibujo.PISTON),
+    LISTA("Lista", R.drawable.ic_lista, Dibujo.BOMBA),
+    LOGROS("Logros", R.drawable.ic_trofeo, Dibujo.TURBINA),
 }
 
 /** Pantallas que se abren encima de las pestañas. */
@@ -153,10 +155,12 @@ fun AppCorrelativas(
                 CircularProgressIndicator(Modifier.align(Alignment.Center), color = C.disponible)
                 return@Box
             }
-            Crossfade(pestania, animationSpec = tween(220), label = "pestania") { p ->
+            Crossfade(pestania, animationSpec = tween(C.movimiento.rapida), label = "pestania") { p ->
+                Fondo(p.dibujo) {
                 when (p) {
                     Pestania.INICIO -> PantallaInicio(
                         avance = a,
+                        nombre = preferencias?.nombre.orEmpty(),
                         critico = c,
                         logros = vm.logros,
                         frases = vm.frases,
@@ -239,6 +243,7 @@ fun AppCorrelativas(
                     }
                     Pestania.LOGROS -> PantallaLogros(a, vm.logros, testHecho)
                 }
+                }
             }
         }
     }
@@ -252,7 +257,7 @@ fun AppCorrelativas(
                     windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Start + WindowInsetsSides.Vertical),
                     header = {
                         Box(
-                            Modifier.padding(top = 8.dp, bottom = 12.dp).size(44.dp).clip(RoundedCornerShape(14.dp)).background(C.tarjetaAlta),
+                            Modifier.padding(top = 8.dp, bottom = 12.dp).size(44.dp).clip(C.formas.media).background(C.tarjetaAlta),
                             contentAlignment = Alignment.Center,
                         ) { Ic(R.drawable.ic_engranaje, C.disponible, tam = 24.dp) }
                     },
@@ -262,7 +267,7 @@ fun AppCorrelativas(
                         NavigationRailItem(
                             selected = p == pestania,
                             onClick = { irA(p) },
-                            icon = { Ic(p.icono, if (p == pestania) (if (C.oscuro) C.fondo else Color.White) else C.texto2, tam = 22.dp) },
+                            icon = { Ic(p.icono, if (p == pestania) C.sobreAcento else C.texto2, tam = 22.dp) },
                             label = { Text(p.titulo) },
                             colors = NavigationRailItemDefaults.colors(
                                 indicatorColor = C.disponible,
@@ -291,7 +296,7 @@ fun AppCorrelativas(
                             NavigationBarItem(
                                 selected = p == pestania,
                                 onClick = { irA(p) },
-                                icon = { Ic(p.icono, if (p == pestania) (if (C.oscuro) C.fondo else Color.White) else C.texto2, tam = 22.dp) },
+                                icon = { Ic(p.icono, if (p == pestania) C.sobreAcento else C.texto2, tam = 22.dp) },
                                 label = { Text(p.titulo) },
                                 colors = NavigationBarItemDefaults.colors(
                                     indicatorColor = C.disponible,
@@ -335,6 +340,11 @@ fun AppCorrelativas(
             desbloqueo?.let { d ->
                 Celebracion(d, a, onCerrar = vm::cerrarDesbloqueo, onAbrir = { vm.cerrarDesbloqueo(); detalle = it })
             }
+            // Primer uso: se pregunta el nombre una sola vez (es opcional y queda solo en el celular).
+            val prefs = preferencias
+            if (prefs != null && !prefs.nombrePreguntado && superpuesta == null && desbloqueo == null) {
+                PreguntaNombre(onGuardar = vm::cambiarNombre, onOmitir = vm::omitirNombre)
+            }
         }
     }
 }
@@ -363,7 +373,7 @@ private fun PanelDetalle(
                     "Tocá una materia",
                     Modifier.padding(top = 14.dp),
                     color = C.texto,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
@@ -371,7 +381,7 @@ private fun PanelDetalle(
                     "Acá vas a ver qué te pide, qué desbloquea y cuánto traba.",
                     Modifier.padding(top = 4.dp),
                     color = C.texto2,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                 )
@@ -425,14 +435,20 @@ private fun Superpuestas(
         ) { s ->
             if (s == null) return@AnimatedContent
             Box(
-                Modifier.fillMaxSize().background(C.fondo).windowInsetsPadding(WindowInsets.safeDrawing),
+                Modifier.fillMaxSize().background(C.fondo),
                 contentAlignment = Alignment.TopCenter,
             ) {
+                CapaFondo(if (s == Superpuesta.AJUSTES) Dibujo.RODAMIENTO else Dibujo.RESORTE, Modifier.matchParentSize())
+                Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing), contentAlignment = Alignment.TopCenter) {
                 // En tablet las pantallas superpuestas no se estiran de borde a borde.
                 Box(Modifier.widthIn(max = 760.dp)) {
                 when (s) {
                     Superpuesta.AJUSTES -> PantallaAjustes(
                         tema = preferencias?.tema ?: ModoTema.SISTEMA,
+                        estilo = preferencias?.estilo ?: Estilo.PREDETERMINADO,
+                        nombre = preferencias?.nombre.orEmpty(),
+                        onEstilo = vm::cambiarEstilo,
+                        onNombre = vm::cambiarNombre,
                         perfil = perfil,
                         test = vm.test,
                         onTema = vm::cambiarTema,
@@ -466,6 +482,7 @@ private fun Superpuestas(
                             )
                         }
                     }
+                }
                 }
                 }
             }

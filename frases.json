@@ -1,10 +1,11 @@
 {
- "ayuda": "\"verificacion\": \"verificable\" si la frase está en una obra, carta o discurso identificable; \"atribucion_popular\" si llegó por terceros, es una paráfrasis o no tiene fuente original. Las traducciones al español son libres. \"materias\" usa los id de correlativas.json para mostrar la frase al aprobar esa materia.",
+ "ayuda": "\"verificacion\": \"verificable\" si la frase está en una obra, carta o discurso identificable; \"atribucion_popular\" si llegó por terceros, es una paráfrasis o no tiene fuente original. Las traducciones al español son libres. \"materias\" usa los id de correlativas.json para mostrar la frase al aprobar esa materia. \"area\" agrupa al autor para el medallón (color e ícono): fisica, matematica, energia, ingenieria, electricidad, computacion, industria, ciencias o humanidades.",
  "frases": [
   {
    "id": 1,
    "texto": "Si he visto más lejos, es porque estoy sentado sobre los hombros de gigantes.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Carta a Robert Hooke, 5 de febrero de 1676",
    "verificacion": "verificable",
    "materias": [
@@ -15,6 +16,7 @@
    "id": 2,
    "texto": "Todo cuerpo persevera en su estado de reposo o de movimiento uniforme en línea recta, salvo que fuerzas impresas lo obliguen a cambiar ese estado.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Philosophiae Naturalis Principia Mathematica (1687), Ley I",
    "verificacion": "verificable",
    "materias": [
@@ -26,6 +28,7 @@
    "id": 3,
    "texto": "A toda acción se opone siempre una reacción igual.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Philosophiae Naturalis Principia Mathematica (1687), Ley III",
    "verificacion": "verificable",
    "materias": [
@@ -37,6 +40,7 @@
    "id": 4,
    "texto": "No invento hipótesis.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Principia, Escolio General (2.ª ed., 1713)",
    "verificacion": "verificable",
    "nota": "Hypotheses non fingo.",
@@ -48,6 +52,7 @@
    "id": 5,
    "texto": "La naturaleza es simple y no se complace en causas superfluas.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Principia, Libro III, Regla I",
    "verificacion": "verificable",
    "materias": [
@@ -59,6 +64,7 @@
    "id": 6,
    "texto": "No sé cómo me verá el mundo, pero a mí me parece haber sido solo un niño que juega en la orilla del mar, mientras el gran océano de la verdad se extiende ante mí sin descubrir.",
    "autor": "Isaac Newton",
+   "area": "fisica",
    "fuente": "Recogida por Joseph Spence, Anecdotes (publicadas en 1820)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros, no escrita por Newton.",
@@ -68,6 +74,7 @@
    "id": 7,
    "texto": "La filosofía está escrita en ese grandísimo libro que tenemos abierto ante los ojos, el universo; pero no se puede entender si antes no se aprende a entender la lengua en que está escrito: la lengua matemática.",
    "autor": "Galileo Galilei",
+   "area": "fisica",
    "fuente": "Il Saggiatore (1623)",
    "verificacion": "verificable",
    "materias": [
@@ -79,6 +86,7 @@
    "id": 8,
    "texto": "Ni la naturaleza ni el arte pueden aumentar el tamaño de sus obras hasta dimensiones inmensas.",
    "autor": "Galileo Galilei",
+   "area": "fisica",
    "fuente": "Diálogos sobre dos nuevas ciencias (1638), Primera jornada",
    "verificacion": "verificable",
    "nota": "Paráfrasis de su análisis sobre el efecto de la escala en la resistencia.",
@@ -92,6 +100,7 @@
    "id": 9,
    "texto": "La constante actividad que ustedes, los venecianos, despliegan en su famoso arsenal ofrece a la mente estudiosa un amplio campo de investigación, en especial en lo que se refiere a la mecánica.",
    "autor": "Galileo Galilei",
+   "area": "fisica",
    "fuente": "Diálogos sobre dos nuevas ciencias (1638), comienzo de la Primera jornada",
    "verificacion": "verificable",
    "materias": [
@@ -103,6 +112,7 @@
    "id": 10,
    "texto": "Dadme un punto de apoyo y moveré el mundo.",
    "autor": "Arquímedes",
+   "area": "ingenieria",
    "fuente": "Citada por Pappus de Alejandría, Colección, libro VIII",
    "verificacion": "atribucion_popular",
    "nota": "Transmitida por autores muy posteriores.",
@@ -115,6 +125,7 @@
    "id": 11,
    "texto": "Todo cuerpo sumergido en un fluido recibe un empuje hacia arriba igual al peso del fluido que desaloja.",
    "autor": "Arquímedes",
+   "area": "ingenieria",
    "fuente": "Sobre los cuerpos flotantes, libro I (formulación moderna)",
    "verificacion": "verificable",
    "nota": "Enunciado moderno de su proposición.",
@@ -126,6 +137,7 @@
    "id": 12,
    "texto": "Como la extensión, así la fuerza.",
    "autor": "Robert Hooke",
+   "area": "fisica",
    "fuente": "Lectures de Potentia Restitutiva (1678)",
    "verificacion": "verificable",
    "nota": "Ut tensio, sic vis.",
@@ -138,6 +150,7 @@
    "id": 13,
    "texto": "Con la ayuda del microscopio no hay nada tan pequeño que escape a nuestra investigación.",
    "autor": "Robert Hooke",
+   "area": "fisica",
    "fuente": "Micrographia (1665), prefacio",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -151,6 +164,7 @@
    "id": 14,
    "texto": "No se encontrarán figuras en esta obra.",
    "autor": "Joseph-Louis Lagrange",
+   "area": "matematica",
    "fuente": "Mécanique analytique (1788), advertencia",
    "verificacion": "verificable",
    "materias": [
@@ -161,6 +175,7 @@
    "id": 15,
    "texto": "Les bastó un instante para cortar esa cabeza, y quizá cien años no basten para producir otra igual.",
    "autor": "Joseph-Louis Lagrange",
+   "area": "matematica",
    "fuente": "Sobre la ejecución de Lavoisier; relatado por Jean-Baptiste Delambre",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -172,6 +187,7 @@
    "id": 16,
    "texto": "Vivimos sumergidos en el fondo de un océano del elemento aire.",
    "autor": "Evangelista Torricelli",
+   "area": "fisica",
    "fuente": "Carta a Michelangelo Ricci, 11 de junio de 1644",
    "verificacion": "verificable",
    "materias": [
@@ -183,6 +199,7 @@
    "id": 17,
    "texto": "Nada es demasiado maravilloso para ser verdad, si es coherente con las leyes de la naturaleza.",
    "autor": "Michael Faraday",
+   "area": "electricidad",
    "fuente": "Diario de laboratorio, 19 de marzo de 1849",
    "verificacion": "verificable",
    "materias": [
@@ -194,6 +211,7 @@
    "id": 18,
    "texto": "Apenas podemos evitar la conclusión de que la luz consiste en ondulaciones transversales del mismo medio que causa los fenómenos eléctricos y magnéticos.",
    "autor": "James Clerk Maxwell",
+   "area": "electricidad",
    "fuente": "On Physical Lines of Force (1862)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -206,6 +224,7 @@
    "id": 19,
    "texto": "La verdadera lógica de este mundo es el cálculo de probabilidades.",
    "autor": "James Clerk Maxwell",
+   "area": "electricidad",
    "fuente": "Carta a Lewis Campbell, 1850",
    "verificacion": "verificable",
    "materias": [
@@ -216,6 +235,7 @@
    "id": 20,
    "texto": "Cuando podés medir aquello de lo que hablás y expresarlo en números, sabés algo de ello; cuando no podés medirlo, tu conocimiento es escaso e insatisfactorio.",
    "autor": "William Thomson (Lord Kelvin)",
+   "area": "energia",
    "fuente": "Conferencia «Electrical Units of Measurement», 3 de mayo de 1883",
    "verificacion": "verificable",
    "nota": "Traducción libre y abreviada.",
@@ -228,6 +248,7 @@
    "id": 21,
    "texto": "El eterno misterio del mundo es su comprensibilidad.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "«Physics and Reality», Journal of the Franklin Institute (1936)",
    "verificacion": "verificable",
    "materias": [
@@ -238,6 +259,7 @@
    "id": 22,
    "texto": "Él no juega a los dados.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "Carta a Max Born, 4 de diciembre de 1926",
    "verificacion": "verificable",
    "nota": "Se refiere a Dios y a la mecánica cuántica.",
@@ -249,6 +271,7 @@
    "id": 23,
    "texto": "La imaginación es más importante que el conocimiento.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "Entrevista con G. S. Viereck, The Saturday Evening Post (26 de octubre de 1929)",
    "verificacion": "verificable",
    "materias": [
@@ -259,6 +282,7 @@
    "id": 24,
    "texto": "Sutil es el Señor, pero malicioso no es.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "Princeton, 1921; luego grabada en el Fine Hall",
    "verificacion": "verificable",
    "materias": []
@@ -267,6 +291,7 @@
    "id": 25,
    "texto": "Lo importante es no dejar de hacerse preguntas.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "Entrevista de William Miller, revista LIFE (2 de mayo de 1955)",
    "verificacion": "verificable",
    "materias": []
@@ -275,6 +300,7 @@
    "id": 26,
    "texto": "La termodinámica clásica es la única teoría física de contenido universal que, estoy convencido, nunca será derribada dentro de su ámbito de aplicación.",
    "autor": "Albert Einstein",
+   "area": "fisica",
    "fuente": "Notas autobiográficas (1949)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -287,6 +313,7 @@
    "id": 27,
    "texto": "Una nueva verdad científica no triunfa convenciendo a sus oponentes, sino porque estos terminan muriendo y crece una nueva generación familiarizada con ella.",
    "autor": "Max Planck",
+   "area": "fisica",
    "fuente": "Autobiografía científica (1948)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -296,6 +323,7 @@
    "id": 28,
    "texto": "Lo que observamos no es la naturaleza en sí, sino la naturaleza expuesta a nuestro método de interrogación.",
    "autor": "Werner Heisenberg",
+   "area": "fisica",
    "fuente": "Física y filosofía (1958)",
    "verificacion": "verificable",
    "materias": [
@@ -306,6 +334,7 @@
    "id": 29,
    "texto": "Lo opuesto de una afirmación correcta es una afirmación falsa; pero lo opuesto de una verdad profunda puede ser otra verdad profunda.",
    "autor": "Niels Bohr",
+   "area": "fisica",
    "fuente": "Relatado por su hijo Hans Bohr en «Niels Bohr: His life and work» (1967)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -315,6 +344,7 @@
    "id": 30,
    "texto": "Un experto es alguien que cometió todos los errores posibles en un campo muy reducido.",
    "autor": "Niels Bohr",
+   "area": "fisica",
    "fuente": "Atribuida; relatada por Edward Teller",
    "verificacion": "atribucion_popular",
    "nota": "Sin fuente escrita de Bohr.",
@@ -324,6 +354,7 @@
    "id": 31,
    "texto": "Una ley física debe tener belleza matemática.",
    "autor": "Paul Dirac",
+   "area": "fisica",
    "fuente": "Escrita en una pizarra de la Universidad de Moscú (1956)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -335,6 +366,7 @@
    "id": 32,
    "texto": "Lo que no puedo crear, no lo entiendo.",
    "autor": "Richard Feynman",
+   "area": "fisica",
    "fuente": "Escrito en su pizarrón de Caltech al momento de su muerte (1988)",
    "verificacion": "verificable",
    "materias": [
@@ -345,6 +377,7 @@
    "id": 33,
    "texto": "El primer principio es que no debés engañarte a vos mismo, y vos sos la persona más fácil de engañar.",
    "autor": "Richard Feynman",
+   "area": "fisica",
    "fuente": "Discurso «Cargo Cult Science», Caltech (1974)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -356,6 +389,7 @@
    "id": 34,
    "texto": "Para que una tecnología tenga éxito, la realidad debe estar por encima de las relaciones públicas, porque a la naturaleza no se la puede engañar.",
    "autor": "Richard Feynman",
+   "area": "fisica",
    "fuente": "Apéndice F del informe de la Comisión Rogers sobre el Challenger (1986)",
    "verificacion": "verificable",
    "materias": [
@@ -367,6 +401,7 @@
    "id": 35,
    "texto": "Creo que puedo decir con seguridad que nadie entiende la mecánica cuántica.",
    "autor": "Richard Feynman",
+   "area": "fisica",
    "fuente": "The Character of Physical Law (1965)",
    "verificacion": "verificable",
    "materias": []
@@ -375,6 +410,7 @@
    "id": 36,
    "texto": "Afirmaciones extraordinarias requieren evidencia extraordinaria.",
    "autor": "Carl Sagan",
+   "area": "ciencias",
    "fuente": "Serie Cosmos (1980)",
    "verificacion": "verificable",
    "materias": [
@@ -385,6 +421,7 @@
    "id": 37,
    "texto": "Si querés hacer una tarta de manzana desde cero, primero tenés que inventar el universo.",
    "autor": "Carl Sagan",
+   "area": "ciencias",
    "fuente": "Serie Cosmos (1980), episodio 9",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -394,6 +431,7 @@
    "id": 38,
    "texto": "La ciencia es mucho más que un cuerpo de conocimientos: es una manera de pensar.",
    "autor": "Carl Sagan",
+   "area": "ciencias",
    "fuente": "Conferencia «The Burden of Skepticism» (1987)",
    "verificacion": "verificable",
    "materias": []
@@ -402,6 +440,7 @@
    "id": 39,
    "texto": "Toda la ciencia es física o filatelia.",
    "autor": "Ernest Rutherford",
+   "area": "fisica",
    "fuente": "Atribuida; relatada por J. D. Bernal",
    "verificacion": "atribucion_popular",
    "nota": "Sin fuente escrita de Rutherford.",
@@ -411,6 +450,7 @@
    "id": 40,
    "texto": "Nadie ignora que el calor puede ser causa de movimiento.",
    "autor": "Sadi Carnot",
+   "area": "energia",
    "fuente": "Reflexiones sobre la potencia motriz del fuego (1824)",
    "verificacion": "verificable",
    "nota": "Primera frase del libro.",
@@ -423,6 +463,7 @@
    "id": 41,
    "texto": "La potencia motriz del calor es independiente de los agentes empleados para producirla; su cantidad está fijada únicamente por las temperaturas de los cuerpos entre los que se efectúa el transporte del calórico.",
    "autor": "Sadi Carnot",
+   "area": "energia",
    "fuente": "Reflexiones sobre la potencia motriz del fuego (1824)",
    "verificacion": "verificable",
    "materias": [
@@ -434,6 +475,7 @@
    "id": 42,
    "texto": "La energía del universo es constante. La entropía del universo tiende a un máximo.",
    "autor": "Rudolf Clausius",
+   "area": "energia",
    "fuente": "Annalen der Physik (1865)",
    "verificacion": "verificable",
    "materias": [
@@ -444,6 +486,7 @@
    "id": 43,
    "texto": "La ley de que la entropía siempre aumenta ocupa, creo, la posición suprema entre las leyes de la naturaleza.",
    "autor": "Arthur Eddington",
+   "area": "fisica",
    "fuente": "The Nature of the Physical World (1928)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -455,6 +498,7 @@
    "id": 44,
    "texto": "El calor penetra, como la gravedad, todas las sustancias del universo; sus rayos ocupan todas las partes del espacio.",
    "autor": "Joseph Fourier",
+   "area": "energia",
    "fuente": "Théorie analytique de la chaleur (1822), discurso preliminar",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -466,6 +510,7 @@
    "id": 45,
    "texto": "El estudio profundo de la naturaleza es la fuente más fecunda de los descubrimientos matemáticos.",
    "autor": "Joseph Fourier",
+   "area": "energia",
    "fuente": "Théorie analytique de la chaleur (1822), discurso preliminar",
    "verificacion": "verificable",
    "materias": [
@@ -477,6 +522,7 @@
    "id": 46,
    "texto": "Inventar es llevar una idea correcta, extraída de una larga serie de errores, a través de numerosos fracasos y compromisos, hasta el éxito práctico.",
    "autor": "Rudolf Diesel",
+   "area": "energia",
    "fuente": "Die Entstehung des Dieselmotors (1913)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -489,6 +535,7 @@
    "id": 47,
    "texto": "Nada ocurre en el mundo en lo que no se vea brillar el sentido de algún máximo o mínimo.",
    "autor": "Leonhard Euler",
+   "area": "matematica",
    "fuente": "Methodus inveniendi lineas curvas (1744)",
    "verificacion": "verificable",
    "materias": [
@@ -501,6 +548,7 @@
    "id": 48,
    "texto": "Lean a Euler, lean a Euler: es el maestro de todos nosotros.",
    "autor": "Pierre-Simon Laplace",
+   "area": "matematica",
    "fuente": "Relatado por Guglielmo Libri",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -513,6 +561,7 @@
    "id": 49,
    "texto": "La teoría de las probabilidades no es, en el fondo, más que el sentido común reducido a cálculo.",
    "autor": "Pierre-Simon Laplace",
+   "area": "matematica",
    "fuente": "Ensayo filosófico sobre las probabilidades (1814)",
    "verificacion": "verificable",
    "materias": [
@@ -523,6 +572,7 @@
    "id": 50,
    "texto": "Lo que sabemos es poco; lo que ignoramos es inmenso.",
    "autor": "Pierre-Simon Laplace",
+   "area": "matematica",
    "fuente": "Últimas palabras, según el elogio de Joseph Fourier",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -532,6 +582,7 @@
    "id": 51,
    "texto": "La matemática es la reina de las ciencias, y la aritmética es la reina de la matemática.",
    "autor": "Carl Friedrich Gauss",
+   "area": "matematica",
    "fuente": "Relatado por Sartorius von Waltershausen, «Gauss zum Gedächtniss» (1856)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -543,6 +594,7 @@
    "id": 52,
    "texto": "Pocos, pero maduros.",
    "autor": "Carl Friedrich Gauss",
+   "area": "matematica",
    "fuente": "Su lema personal (Pauca sed matura), grabado en su sello",
    "verificacion": "verificable",
    "materias": []
@@ -551,6 +603,7 @@
    "id": 53,
    "texto": "Debemos saber. Sabremos.",
    "autor": "David Hilbert",
+   "area": "matematica",
    "fuente": "Discurso en Königsberg, 8 de septiembre de 1930",
    "verificacion": "verificable",
    "materias": [
@@ -562,6 +615,7 @@
    "id": 54,
    "texto": "La matemática no conoce razas ni fronteras geográficas.",
    "autor": "David Hilbert",
+   "area": "matematica",
    "fuente": "Congreso Internacional de Matemáticos, Bolonia (1928)",
    "verificacion": "verificable",
    "materias": [
@@ -572,6 +626,7 @@
    "id": 55,
    "texto": "Cuando surja una controversia, no hará falta más discusión entre dos filósofos que entre dos contadores: bastará con tomar la pluma, sentarse frente al ábaco y decirse: «Calculemos».",
    "autor": "Gottfried Leibniz",
+   "area": "matematica",
    "fuente": "The Art of Discovery (1685)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -584,6 +639,7 @@
    "id": 56,
    "texto": "He descubierto una demostración verdaderamente maravillosa, que este margen es demasiado estrecho para contener.",
    "autor": "Pierre de Fermat",
+   "area": "matematica",
    "fuente": "Nota en el margen de su Aritmética de Diofanto (c. 1637)",
    "verificacion": "verificable",
    "materias": [
@@ -594,6 +650,7 @@
    "id": 57,
    "texto": "No hay camino real hacia la geometría.",
    "autor": "Euclides",
+   "area": "matematica",
    "fuente": "Citado por Proclo, Comentario al primer libro de los Elementos",
    "verificacion": "atribucion_popular",
    "nota": "Transmitida por autores muy posteriores.",
@@ -606,6 +663,7 @@
    "id": 58,
    "texto": "Dios creó los números enteros; todo lo demás es obra del hombre.",
    "autor": "Leopold Kronecker",
+   "area": "matematica",
    "fuente": "Relatado por Heinrich Weber (1893)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -617,6 +675,7 @@
    "id": 59,
    "texto": "La esencia de la matemática reside en su libertad.",
    "autor": "Georg Cantor",
+   "area": "matematica",
    "fuente": "Grundlagen einer allgemeinen Mannigfaltigkeitslehre (1883)",
    "verificacion": "verificable",
    "materias": [
@@ -627,6 +686,7 @@
    "id": 60,
    "texto": "No hay lugar permanente en el mundo para la matemática fea.",
    "autor": "G. H. Hardy",
+   "area": "matematica",
    "fuente": "A Mathematician's Apology (1940)",
    "verificacion": "verificable",
    "materias": [
@@ -638,6 +698,7 @@
    "id": 61,
    "texto": "La matemática puede definirse como la materia en la que nunca sabemos de qué hablamos ni si lo que decimos es verdad.",
    "autor": "Bertrand Russell",
+   "area": "humanidades",
    "fuente": "Mysticism and Logic (1918)",
    "verificacion": "verificable",
    "materias": [
@@ -648,6 +709,7 @@
    "id": 62,
    "texto": "Es mediante la lógica que demostramos, pero mediante la intuición que descubrimos.",
    "autor": "Henri Poincaré",
+   "area": "matematica",
    "fuente": "Ciencia y método (1908)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -660,6 +722,7 @@
    "id": 63,
    "texto": "La ciencia se construye con hechos, como una casa con piedras; pero una acumulación de hechos no es una ciencia, como un montón de piedras no es una casa.",
    "autor": "Henri Poincaré",
+   "area": "matematica",
    "fuente": "La ciencia y la hipótesis (1902)",
    "verificacion": "verificable",
    "materias": [
@@ -671,6 +734,7 @@
    "id": 64,
    "texto": "Dudar de todo o creerlo todo son dos soluciones igualmente cómodas: ambas nos ahorran reflexionar.",
    "autor": "Henri Poincaré",
+   "area": "matematica",
    "fuente": "La ciencia y la hipótesis (1902)",
    "verificacion": "verificable",
    "materias": []
@@ -679,6 +743,7 @@
    "id": 65,
    "texto": "Si no podés resolver un problema, hay un problema más fácil que sí podés resolver: encontralo.",
    "autor": "George Pólya",
+   "area": "matematica",
    "fuente": "How to Solve It (1945)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -692,6 +757,7 @@
    "id": 66,
    "texto": "Un gran descubrimiento resuelve un gran problema, pero hay una pizca de descubrimiento en la solución de cualquier problema.",
    "autor": "George Pólya",
+   "area": "matematica",
    "fuente": "How to Solve It (1945), prefacio",
    "verificacion": "verificable",
    "materias": [
@@ -703,6 +769,7 @@
    "id": 67,
    "texto": "El propósito del cálculo es comprender, no obtener números.",
    "autor": "Richard Hamming",
+   "area": "computacion",
    "fuente": "Numerical Methods for Scientists and Engineers (1962)",
    "verificacion": "verificable",
    "materias": [
@@ -714,6 +781,7 @@
    "id": 68,
    "texto": "Es mucho mejor una respuesta aproximada a la pregunta correcta que una respuesta exacta a la pregunta equivocada.",
    "autor": "John Tukey",
+   "area": "matematica",
    "fuente": "«The Future of Data Analysis», Annals of Mathematical Statistics (1962)",
    "verificacion": "verificable",
    "nota": "Traducción libre y abreviada.",
@@ -726,6 +794,7 @@
    "id": 69,
    "texto": "Todos los modelos están equivocados, pero algunos son útiles.",
    "autor": "George E. P. Box",
+   "area": "matematica",
    "fuente": "«Robustness in the strategy of scientific model building» (1979)",
    "verificacion": "verificable",
    "materias": [
@@ -737,6 +806,7 @@
    "id": 70,
    "texto": "Con cuatro parámetros puedo ajustar un elefante, y con cinco puedo hacer que mueva la trompa.",
    "autor": "John von Neumann",
+   "area": "computacion",
    "fuente": "Relatado por Enrico Fermi a Freeman Dyson; Nature (2004)",
    "verificacion": "atribucion_popular",
    "nota": "Testimonio de terceros.",
@@ -748,6 +818,7 @@
    "id": 71,
    "texto": "Dividir cada una de las dificultades que examinare en tantas partes como fuera posible y como requiriese su mejor solución.",
    "autor": "René Descartes",
+   "area": "matematica",
    "fuente": "Discurso del método (1637), segunda parte",
    "verificacion": "verificable",
    "materias": [
@@ -760,6 +831,7 @@
    "id": 72,
    "texto": "No basta tener buen ingenio; lo principal es aplicarlo bien.",
    "autor": "René Descartes",
+   "area": "matematica",
    "fuente": "Discurso del método (1637), primera parte",
    "verificacion": "verificable",
    "materias": []
@@ -768,6 +840,7 @@
    "id": 73,
    "texto": "Pienso, luego existo.",
    "autor": "René Descartes",
+   "area": "matematica",
    "fuente": "Discurso del método (1637), cuarta parte",
    "verificacion": "verificable",
    "materias": []
@@ -776,6 +849,7 @@
    "id": 74,
    "texto": "La Máquina Analítica no tiene pretensión alguna de originar nada. Puede hacer cualquier cosa que sepamos ordenarle que haga.",
    "autor": "Ada Lovelace",
+   "area": "computacion",
    "fuente": "Notas a la traducción del artículo de Menabrea (1843), nota G",
    "verificacion": "verificable",
    "materias": [
@@ -786,6 +860,7 @@
    "id": 75,
    "texto": "La Máquina Analítica teje patrones algebraicos, así como el telar de Jacquard teje flores y hojas.",
    "autor": "Ada Lovelace",
+   "area": "computacion",
    "fuente": "Notas a la traducción del artículo de Menabrea (1843), nota A",
    "verificacion": "verificable",
    "materias": [
@@ -796,6 +871,7 @@
    "id": 76,
    "texto": "Dos veces me preguntaron: «Señor Babbage, si pone números equivocados en la máquina, ¿saldrán las respuestas correctas?». No logro comprender qué confusión de ideas puede provocar semejante pregunta.",
    "autor": "Charles Babbage",
+   "area": "computacion",
    "fuente": "Passages from the Life of a Philosopher (1864)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -807,6 +883,7 @@
    "id": 77,
    "texto": "Solo podemos ver un poco del futuro, pero lo suficiente para darnos cuenta de que hay mucho por hacer.",
    "autor": "Alan Turing",
+   "area": "computacion",
    "fuente": "«Computing Machinery and Intelligence», Mind (1950)",
    "verificacion": "verificable",
    "materias": [
@@ -818,6 +895,7 @@
    "id": 78,
    "texto": "El problema fundamental de la comunicación es reproducir en un punto, exacta o aproximadamente, un mensaje seleccionado en otro punto.",
    "autor": "Claude Shannon",
+   "area": "computacion",
    "fuente": "«A Mathematical Theory of Communication» (1948)",
    "verificacion": "verificable",
    "materias": [
@@ -829,6 +907,7 @@
    "id": 79,
    "texto": "La prueba de programas puede mostrar la presencia de errores, pero nunca su ausencia.",
    "autor": "Edsger W. Dijkstra",
+   "area": "computacion",
    "fuente": "Notes on Structured Programming (1970)",
    "verificacion": "verificable",
    "materias": [
@@ -839,6 +918,7 @@
    "id": 80,
    "texto": "La optimización prematura es la raíz de todos los males.",
    "autor": "Donald Knuth",
+   "area": "computacion",
    "fuente": "«Structured Programming with go to Statements» (1974)",
    "verificacion": "verificable",
    "materias": [
@@ -849,6 +929,7 @@
    "id": 81,
    "texto": "La frase más peligrosa del idioma es: «Siempre lo hicimos así».",
    "autor": "Grace Hopper",
+   "area": "computacion",
    "fuente": "Atribuida; citada en entrevistas de la década de 1970",
    "verificacion": "atribucion_popular",
    "nota": "Sin fuente escrita precisa.",
@@ -861,6 +942,7 @@
    "id": 82,
    "texto": "Hemos decidido llamar a todo el campo de la teoría del control y la comunicación, en la máquina o en el animal, con el nombre de cibernética.",
    "autor": "Norbert Wiener",
+   "area": "computacion",
    "fuente": "Cibernética (1948)",
    "verificacion": "verificable",
    "materias": [
@@ -871,6 +953,7 @@
    "id": 83,
    "texto": "Podemos ser humildes y vivir una buena vida con la ayuda de las máquinas, o podemos ser arrogantes y morir.",
    "autor": "Norbert Wiener",
+   "area": "computacion",
    "fuente": "The Human Use of Human Beings (1950)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -882,6 +965,7 @@
    "id": 84,
    "texto": "Nada se crea, ni en las operaciones del arte ni en las de la naturaleza; en toda operación hay igual cantidad de materia antes y después.",
    "autor": "Antoine Lavoisier",
+   "area": "ciencias",
    "fuente": "Tratado elemental de química (1789)",
    "verificacion": "verificable",
    "nota": "Origen del popular «nada se pierde, todo se transforma».",
@@ -893,6 +977,7 @@
    "id": 85,
    "texto": "Todas las cosas son veneno y nada existe sin veneno; solo la dosis hace que una cosa no sea veneno.",
    "autor": "Paracelso",
+   "area": "ciencias",
    "fuente": "Septem Defensiones (1538)",
    "verificacion": "verificable",
    "materias": [
@@ -904,6 +989,7 @@
    "id": 86,
    "texto": "En la naturaleza nada existe aislado.",
    "autor": "Rachel Carson",
+   "area": "ciencias",
    "fuente": "Primavera silenciosa (1962)",
    "verificacion": "verificable",
    "materias": [
@@ -914,6 +1000,7 @@
    "id": 87,
    "texto": "En el campo de la observación, el azar solo favorece a la mente preparada.",
    "autor": "Louis Pasteur",
+   "area": "ciencias",
    "fuente": "Discurso en la Universidad de Lille, 7 de diciembre de 1854",
    "verificacion": "verificable",
    "materias": [
@@ -925,6 +1012,7 @@
    "id": 88,
    "texto": "La ciencia y la vida cotidiana no pueden ni deben separarse.",
    "autor": "Rosalind Franklin",
+   "area": "ciencias",
    "fuente": "Carta a su padre (c. 1940)",
    "verificacion": "verificable",
    "materias": [
@@ -935,6 +1023,7 @@
    "id": 89,
    "texto": "Uno nunca se da cuenta de lo que ya hizo; solo puede ver lo que queda por hacer.",
    "autor": "Marie Curie",
+   "area": "ciencias",
    "fuente": "Carta a su hermano Józef, 18 de marzo de 1894",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -946,6 +1035,7 @@
    "id": 90,
    "texto": "Nada en la vida debe ser temido, solo comprendido.",
    "autor": "Marie Curie",
+   "area": "ciencias",
    "fuente": "Atribuida; difundida sin fuente original identificada",
    "verificacion": "atribucion_popular",
    "nota": "No se conoce el texto original.",
@@ -955,6 +1045,7 @@
    "id": 91,
    "texto": "Todo hombre puede ser, si se lo propone, escultor de su propio cerebro.",
    "autor": "Santiago Ramón y Cajal",
+   "area": "ciencias",
    "fuente": "Reglas y consejos sobre investigación científica (1897)",
    "verificacion": "verificable",
    "materias": []
@@ -963,6 +1054,7 @@
    "id": 92,
    "texto": "Todas estas obras deben hacerse con solidez, utilidad y belleza.",
    "autor": "Vitruvio",
+   "area": "ingenieria",
    "fuente": "De architectura, libro I, cap. 3",
    "verificacion": "verificable",
    "nota": "Firmitas, utilitas, venustas.",
@@ -975,6 +1067,7 @@
    "id": 93,
    "texto": "La geometría descriptiva tiene por objeto representar con exactitud, en un dibujo de dos dimensiones, los cuerpos de tres dimensiones.",
    "autor": "Gaspard Monge",
+   "area": "ingenieria",
    "fuente": "Géométrie descriptive (1799)",
    "verificacion": "verificable",
    "nota": "Paráfrasis del primer objeto que enuncia Monge.",
@@ -986,6 +1079,7 @@
    "id": 94,
    "texto": "La mecánica es el paraíso de las ciencias matemáticas, porque con ella se alcanza el fruto matemático.",
    "autor": "Leonardo da Vinci",
+   "area": "ingenieria",
    "fuente": "Cuadernos, Manuscrito E (fol. 8v)",
    "verificacion": "verificable",
    "materias": [
@@ -997,6 +1091,7 @@
    "id": 95,
    "texto": "La experiencia no se equivoca nunca; solo se equivocan nuestros juicios.",
    "autor": "Leonardo da Vinci",
+   "area": "ingenieria",
    "fuente": "Cuadernos, Codex Atlanticus",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -1008,6 +1103,7 @@
    "id": 96,
    "texto": "Así como el hierro se oxida por falta de uso, la inactividad destruye el intelecto.",
    "autor": "Leonardo da Vinci",
+   "area": "ingenieria",
    "fuente": "Cuadernos, Codex Atlanticus",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -1020,6 +1116,7 @@
    "id": 97,
    "texto": "La perfección se alcanza no cuando no queda nada por agregar, sino cuando no queda nada por quitar.",
    "autor": "Antoine de Saint-Exupéry",
+   "area": "humanidades",
    "fuente": "Tierra de hombres (1939), cap. III",
    "verificacion": "verificable",
    "materias": [
@@ -1031,6 +1128,7 @@
    "id": 98,
    "texto": "Ser hombre es, precisamente, ser responsable.",
    "autor": "Antoine de Saint-Exupéry",
+   "area": "humanidades",
    "fuente": "Tierra de hombres (1939)",
    "verificacion": "verificable",
    "materias": [
@@ -1042,6 +1140,7 @@
    "id": 99,
    "texto": "Lo esencial es invisible a los ojos.",
    "autor": "Antoine de Saint-Exupéry",
+   "area": "humanidades",
    "fuente": "El principito (1943)",
    "verificacion": "verificable",
    "materias": []
@@ -1050,6 +1149,7 @@
    "id": 100,
    "texto": "Una máquina es una combinación de cuerpos resistentes dispuestos de modo que, por su medio, las fuerzas de la naturaleza produzcan un trabajo con movimientos determinados.",
    "autor": "Franz Reuleaux",
+   "area": "ingenieria",
    "fuente": "Kinematics of Machinery (1875)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -1062,6 +1162,7 @@
    "id": 101,
    "texto": "Cuando tengo una idea, empiezo de inmediato a construirla en mi imaginación: cambio la construcción, hago mejoras y hasta pongo el aparato en funcionamiento en mi mente.",
    "autor": "Nikola Tesla",
+   "area": "electricidad",
    "fuente": "My Inventions (1919)",
    "verificacion": "verificable",
    "nota": "Traducción libre y abreviada.",
@@ -1074,6 +1175,7 @@
    "id": 102,
    "texto": "El desarrollo progresivo del hombre depende vitalmente de la invención.",
    "autor": "Nikola Tesla",
+   "area": "electricidad",
    "fuente": "My Inventions (1919), cap. 1",
    "verificacion": "verificable",
    "materias": [
@@ -1085,6 +1187,7 @@
    "id": 103,
    "texto": "El genio es uno por ciento de inspiración y noventa y nueve por ciento de transpiración.",
    "autor": "Thomas A. Edison",
+   "area": "electricidad",
    "fuente": "Citada en entrevistas de la época; Harper's Monthly (1932)",
    "verificacion": "verificable",
    "nota": "La frase se le atribuye desde comienzos del siglo XX en reportajes.",
@@ -1096,6 +1199,7 @@
    "id": 104,
    "texto": "No fracasé: encontré diez mil formas que no funcionan.",
    "autor": "Thomas A. Edison",
+   "area": "electricidad",
    "fuente": "Atribuida; paráfrasis de dichos relatados por colaboradores",
    "verificacion": "atribucion_popular",
    "nota": "No hay una fuente con estas palabras exactas.",
@@ -1105,6 +1209,7 @@
    "id": 105,
    "texto": "El fracaso es solo la oportunidad de empezar de nuevo, esta vez de forma más inteligente.",
    "autor": "Henry Ford",
+   "area": "industria",
    "fuente": "My Life and Work (1922)",
    "verificacion": "verificable",
    "materias": [
@@ -1115,6 +1220,7 @@
    "id": 106,
    "texto": "Cualquier cliente puede tener el auto pintado del color que quiera, siempre que sea negro.",
    "autor": "Henry Ford",
+   "area": "industria",
    "fuente": "My Life and Work (1922)",
    "verificacion": "verificable",
    "materias": [
@@ -1125,6 +1231,7 @@
    "id": 107,
    "texto": "En el pasado el hombre fue lo primero; en el futuro, el sistema debe ser lo primero.",
    "autor": "Frederick W. Taylor",
+   "area": "industria",
    "fuente": "Principios de la administración científica (1911), introducción",
    "verificacion": "verificable",
    "materias": [
@@ -1135,6 +1242,7 @@
    "id": 108,
    "texto": "La gran desventaja del ingeniero frente a otras profesiones es que sus obras están a la vista de todos. No puede enterrar sus errores en la tumba como los médicos.",
    "autor": "Herbert Hoover",
+   "area": "industria",
    "fuente": "Memoirs (1951)",
    "verificacion": "verificable",
    "nota": "Traducción libre y abreviada.",
@@ -1148,6 +1256,7 @@
    "id": 109,
    "texto": "Agregar personas a un proyecto atrasado lo atrasa todavía más.",
    "autor": "Fred Brooks",
+   "area": "computacion",
    "fuente": "The Mythical Man-Month (1975)",
    "verificacion": "verificable",
    "materias": [
@@ -1159,6 +1268,7 @@
    "id": 110,
    "texto": "La eficiencia es hacer bien las cosas; la eficacia es hacer las cosas correctas.",
    "autor": "Peter Drucker",
+   "area": "industria",
    "fuente": "The Effective Executive (1967)",
    "verificacion": "verificable",
    "materias": [
@@ -1170,6 +1280,7 @@
    "id": 111,
    "texto": "La meta de una empresa es ganar dinero.",
    "autor": "Eliyahu Goldratt",
+   "area": "industria",
    "fuente": "La meta (1984)",
    "verificacion": "verificable",
    "materias": [
@@ -1181,6 +1292,7 @@
    "id": 112,
    "texto": "Mejorar constantemente y para siempre el sistema de producción y de servicio.",
    "autor": "W. Edwards Deming",
+   "area": "industria",
    "fuente": "Out of the Crisis (1982), punto 5 de sus 14 puntos",
    "verificacion": "verificable",
    "materias": [
@@ -1192,6 +1304,7 @@
    "id": 113,
    "texto": "La calidad es adecuación al uso.",
    "autor": "Joseph M. Juran",
+   "area": "industria",
    "fuente": "Quality Control Handbook (1951)",
    "verificacion": "verificable",
    "materias": [
@@ -1202,6 +1315,7 @@
    "id": 114,
    "texto": "Sin estándares no puede haber mejora.",
    "autor": "Taiichi Ohno",
+   "area": "industria",
    "fuente": "Atribuida; difundida en la bibliografía sobre el sistema de producción Toyota",
    "verificacion": "atribucion_popular",
    "nota": "Sin fuente original precisa.",
@@ -1214,6 +1328,7 @@
    "id": 115,
    "texto": "Lo único que hacemos es mirar la línea de tiempo desde que el cliente nos hace un pedido hasta que cobramos, y reducirla eliminando lo que no agrega valor.",
    "autor": "Taiichi Ohno",
+   "area": "industria",
    "fuente": "El sistema de producción Toyota (1978)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -1226,6 +1341,7 @@
    "id": 116,
    "texto": "Una onza de prevención vale una libra de cura.",
    "autor": "Benjamin Franklin",
+   "area": "electricidad",
    "fuente": "Carta anónima sobre incendios, Pennsylvania Gazette (4 de febrero de 1735)",
    "verificacion": "verificable",
    "materias": [
@@ -1237,6 +1353,7 @@
    "id": 117,
    "texto": "Por falta de un clavo se perdió la herradura; por falta de la herradura se perdió el caballo.",
    "autor": "Benjamin Franklin",
+   "area": "electricidad",
    "fuente": "Poor Richard's Almanack (1758), recogiendo un proverbio",
    "verificacion": "verificable",
    "materias": [
@@ -1248,6 +1365,7 @@
    "id": 118,
    "texto": "El tiempo es dinero.",
    "autor": "Benjamin Franklin",
+   "area": "electricidad",
    "fuente": "Advice to a Young Tradesman (1748)",
    "verificacion": "verificable",
    "materias": [
@@ -1258,6 +1376,7 @@
    "id": 119,
    "texto": "La mayor mejora en la capacidad productiva del trabajo parece haber sido efecto de la división del trabajo.",
    "autor": "Adam Smith",
+   "area": "industria",
    "fuente": "La riqueza de las naciones (1776), libro I, cap. 1",
    "verificacion": "verificable",
    "materias": [
@@ -1269,6 +1388,7 @@
    "id": 120,
    "texto": "A largo plazo, todos estaremos muertos.",
    "autor": "John Maynard Keynes",
+   "area": "industria",
    "fuente": "A Tract on Monetary Reform (1923)",
    "verificacion": "verificable",
    "materias": [
@@ -1279,6 +1399,7 @@
    "id": 121,
    "texto": "Los planes no sirven para nada, pero planificar lo es todo.",
    "autor": "Dwight D. Eisenhower",
+   "area": "industria",
    "fuente": "Discurso en la National Defense Executive Reserve Conference (1957)",
    "verificacion": "verificable",
    "materias": [
@@ -1290,6 +1411,7 @@
    "id": 122,
    "texto": "Siempre lleva más tiempo de lo que esperás, aun teniendo en cuenta la Ley de Hofstadter.",
    "autor": "Douglas Hofstadter",
+   "area": "computacion",
    "fuente": "Gödel, Escher, Bach (1979)",
    "verificacion": "verificable",
    "materias": [
@@ -1300,6 +1422,7 @@
    "id": 123,
    "texto": "Si buscás seguridad absoluta, te conviene sentarte en una cerca y mirar a los pájaros; pero si de verdad querés aprender, tenés que subirte a una máquina y conocer sus mañas probando.",
    "autor": "Wilbur Wright",
+   "area": "ingenieria",
    "fuente": "Conferencia «Some Aeronautical Experiments», Western Society of Engineers (1901)",
    "verificacion": "verificable",
    "nota": "Traducción libre.",
@@ -1312,6 +1435,7 @@
    "id": 124,
    "texto": "Confieso que en 1901 le dije a mi hermano Orville que el hombre no volaría en cincuenta años.",
    "autor": "Wilbur Wright",
+   "area": "ingenieria",
    "fuente": "Discurso en el Aéro-Club de France (1908)",
    "verificacion": "verificable",
    "materias": []
@@ -1320,6 +1444,7 @@
    "id": 125,
    "texto": "Soy, y siempre seré, un ingeniero nerd de medias blancas y protector de bolsillo.",
    "autor": "Neil Armstrong",
+   "area": "ingenieria",
    "fuente": "Discurso en el National Press Club (2000)",
    "verificacion": "verificable",
    "materias": [
@@ -1331,6 +1456,7 @@
    "id": 126,
    "texto": "Los científicos estudian el mundo tal como es; los ingenieros crean el mundo que nunca existió.",
    "autor": "Theodore von Kármán",
+   "area": "ingenieria",
    "fuente": "Atribuida; difundida sin fuente escrita",
    "verificacion": "atribucion_popular",
    "nota": "Sin fuente original identificada.",
@@ -1344,6 +1470,7 @@
    "id": 127,
    "texto": "Un problema bien planteado está medio resuelto.",
    "autor": "John Dewey",
+   "area": "humanidades",
    "fuente": "Lógica: teoría de la investigación (1938)",
    "verificacion": "verificable",
    "materias": [
@@ -1355,6 +1482,7 @@
    "id": 128,
    "texto": "No hay nada tan práctico como una buena teoría.",
    "autor": "Kurt Lewin",
+   "area": "humanidades",
    "fuente": "Field Theory in Social Science (1951)",
    "verificacion": "verificable",
    "materias": [
@@ -1366,6 +1494,7 @@
    "id": 129,
    "texto": "La ciencia es valiosa como herramienta para domar la naturaleza y remodelar la sociedad.",
    "autor": "Mario Bunge",
+   "area": "humanidades",
    "fuente": "La ciencia, su método y su filosofía (1960)",
    "verificacion": "verificable",
    "materias": [
@@ -1376,6 +1505,7 @@
    "id": 130,
    "texto": "Sin la técnica el hombre no existiría ni habría existido nunca.",
    "autor": "José Ortega y Gasset",
+   "area": "humanidades",
    "fuente": "Meditación de la técnica (1939)",
    "verificacion": "verificable",
    "materias": [
@@ -1387,6 +1517,7 @@
    "id": 131,
    "texto": "Yo soy yo y mi circunstancia.",
    "autor": "José Ortega y Gasset",
+   "area": "humanidades",
    "fuente": "Meditaciones del Quijote (1914)",
    "verificacion": "verificable",
    "materias": [
@@ -1397,6 +1528,7 @@
    "id": 132,
    "texto": "La ciencia no descansa sobre roca firme. Es como un edificio levantado sobre pilotes hundidos en un pantano.",
    "autor": "Karl Popper",
+   "area": "humanidades",
    "fuente": "La lógica de la investigación científica (1934)",
    "verificacion": "verificable",
    "nota": "Traducción libre y abreviada.",
@@ -1409,6 +1541,7 @@
    "id": 133,
    "texto": "Nunca debe postularse la pluralidad sin necesidad.",
    "autor": "Guillermo de Ockham",
+   "area": "humanidades",
    "fuente": "Quaestiones in libros Sententiarum",
    "verificacion": "verificable",
    "nota": "Base de la «navaja de Ockham».",
@@ -1420,6 +1553,7 @@
    "id": 134,
    "texto": "El conocimiento es poder.",
    "autor": "Francis Bacon",
+   "area": "humanidades",
    "fuente": "Meditationes Sacrae (1597)",
    "verificacion": "verificable",
    "nota": "Ipsa scientia potestas est.",
@@ -1429,6 +1563,7 @@
    "id": 135,
    "texto": "A la naturaleza no se la vence sino obedeciéndola.",
    "autor": "Francis Bacon",
+   "area": "humanidades",
    "fuente": "Novum Organum (1620), aforismo III",
    "verificacion": "verificable",
    "materias": [
@@ -1440,6 +1575,7 @@
    "id": 136,
    "texto": "Los límites de mi lenguaje significan los límites de mi mundo.",
    "autor": "Ludwig Wittgenstein",
+   "area": "humanidades",
    "fuente": "Tractatus logico-philosophicus (1921), 5.6",
    "verificacion": "verificable",
    "materias": [
@@ -1451,6 +1587,7 @@
    "id": 137,
    "texto": "De lo que no se puede hablar, hay que callar.",
    "autor": "Ludwig Wittgenstein",
+   "area": "humanidades",
    "fuente": "Tractatus logico-philosophicus (1921), 7",
    "verificacion": "verificable",
    "materias": []
@@ -1459,6 +1596,7 @@
    "id": 138,
    "texto": "Quien no conoce lenguas extranjeras no sabe nada de la propia.",
    "autor": "Johann Wolfgang von Goethe",
+   "area": "humanidades",
    "fuente": "Máximas y reflexiones",
    "verificacion": "verificable",
    "materias": [
@@ -1470,6 +1608,7 @@
    "id": 139,
    "texto": "No basta saber, también hay que aplicar; no basta querer, también hay que hacer.",
    "autor": "Johann Wolfgang von Goethe",
+   "area": "humanidades",
    "fuente": "Los años de andanzas de Wilhelm Meister (1829)",
    "verificacion": "verificable",
    "materias": [
@@ -1480,6 +1619,7 @@
    "id": 140,
    "texto": "Somos esclavos de las leyes para poder ser libres.",
    "autor": "Cicerón",
+   "area": "humanidades",
    "fuente": "Pro Cluentio, 146",
    "verificacion": "verificable",
    "materias": [
@@ -1490,6 +1630,7 @@
    "id": 141,
    "texto": "Las leyes inútiles debilitan a las necesarias.",
    "autor": "Montesquieu",
+   "area": "humanidades",
    "fuente": "Del espíritu de las leyes (1748)",
    "verificacion": "verificable",
    "materias": [
@@ -1500,6 +1641,7 @@
    "id": 142,
    "texto": "Todos los hombres desean por naturaleza saber.",
    "autor": "Aristóteles",
+   "area": "humanidades",
    "fuente": "Metafísica, libro I",
    "verificacion": "verificable",
    "materias": []
@@ -1508,6 +1650,7 @@
    "id": 143,
    "texto": "Lo que hay que hacer después de haberlo aprendido, lo aprendemos haciéndolo.",
    "autor": "Aristóteles",
+   "area": "humanidades",
    "fuente": "Ética a Nicómaco, libro II",
    "verificacion": "verificable",
    "materias": [
@@ -1519,6 +1662,7 @@
    "id": 144,
    "texto": "Nadie se baña dos veces en el mismo río.",
    "autor": "Heráclito",
+   "area": "humanidades",
    "fuente": "Fragmento B91, citado por Plutarco",
    "verificacion": "verificable",
    "nota": "Conocido por citas de autores posteriores.",
@@ -1530,6 +1674,7 @@
    "id": 145,
    "texto": "El hombre es la medida de todas las cosas.",
    "autor": "Protágoras",
+   "area": "humanidades",
    "fuente": "Citado por Platón en el Teeteto",
    "verificacion": "verificable",
    "nota": "Conocido por citas de autores posteriores.",
@@ -1542,6 +1687,7 @@
    "id": 146,
    "texto": "Solo sé que no sé nada.",
    "autor": "Sócrates",
+   "area": "humanidades",
    "fuente": "Paráfrasis de la Apología de Platón (21d)",
    "verificacion": "atribucion_popular",
    "nota": "La fórmula exacta no está en el texto.",
@@ -1551,6 +1697,7 @@
    "id": 147,
    "texto": "La vida es breve, el arte es largo, la ocasión fugaz, la experiencia engañosa, el juicio difícil.",
    "autor": "Hipócrates",
+   "area": "ciencias",
    "fuente": "Aforismos, I.1",
    "verificacion": "verificable",
    "materias": []
@@ -1559,6 +1706,7 @@
    "id": 148,
    "texto": "No es que tengamos poco tiempo, sino que perdemos mucho.",
    "autor": "Séneca",
+   "area": "humanidades",
    "fuente": "Sobre la brevedad de la vida, I",
    "verificacion": "verificable",
    "materias": [
@@ -1569,6 +1717,7 @@
    "id": 149,
    "texto": "Mientras enseñamos, aprendemos.",
    "autor": "Séneca",
+   "area": "humanidades",
    "fuente": "Epístolas a Lucilio, VII",
    "verificacion": "verificable",
    "materias": [
@@ -1579,6 +1728,7 @@
    "id": 150,
    "texto": "Ningún viento es favorable para quien no sabe a qué puerto se dirige.",
    "autor": "Séneca",
+   "area": "humanidades",
    "fuente": "Epístolas a Lucilio, LXXI",
    "verificacion": "verificable",
    "nota": "Paráfrasis.",
@@ -1591,6 +1741,7 @@
    "id": 151,
    "texto": "El impedimento a la acción hace avanzar la acción. Lo que se interpone en el camino se convierte en el camino.",
    "autor": "Marco Aurelio",
+   "area": "humanidades",
    "fuente": "Meditaciones, V.20",
    "verificacion": "verificable",
    "materias": []
@@ -1599,6 +1750,7 @@
    "id": 152,
    "texto": "No son las cosas las que nos perturban, sino las opiniones que tenemos sobre ellas.",
    "autor": "Epicteto",
+   "area": "humanidades",
    "fuente": "Enquiridión, 5",
    "verificacion": "verificable",
    "materias": []
@@ -1607,6 +1759,7 @@
    "id": 153,
    "texto": "Un viaje de mil li comienza con un solo paso.",
    "autor": "Lao Tse",
+   "area": "humanidades",
    "fuente": "Tao Te Ching, 64",
    "verificacion": "verificable",
    "materias": [
@@ -1624,6 +1777,7 @@
    "id": 154,
    "texto": "La gota horada la piedra.",
    "autor": "Ovidio",
+   "area": "humanidades",
    "fuente": "Epistulae ex Ponto, IV.10",
    "verificacion": "verificable",
    "nota": "Gutta cavat lapidem.",
@@ -1635,6 +1789,7 @@
    "id": 155,
    "texto": "El trabajo tenaz todo lo vence.",
    "autor": "Virgilio",
+   "area": "humanidades",
    "fuente": "Geórgicas, I.145",
    "verificacion": "verificable",
    "nota": "Labor omnia vicit improbus.",
@@ -1646,6 +1801,7 @@
    "id": 156,
    "texto": "Atrevete a saber.",
    "autor": "Horacio",
+   "area": "humanidades",
    "fuente": "Epístolas, I.2",
    "verificacion": "verificable",
    "nota": "Sapere aude.",
@@ -1655,6 +1811,7 @@
    "id": 157,
    "texto": "La mente no es un vaso que hay que llenar, sino un fuego que hay que encender.",
    "autor": "Plutarco",
+   "area": "humanidades",
    "fuente": "Sobre cómo se debe escuchar, 48c",
    "verificacion": "verificable",
    "nota": "Paráfrasis difundida.",
@@ -1664,6 +1821,7 @@
    "id": 158,
    "texto": "¡Tené el valor de servirte de tu propio entendimiento!",
    "autor": "Immanuel Kant",
+   "area": "humanidades",
    "fuente": "¿Qué es la Ilustración? (1784)",
    "verificacion": "verificable",
    "materias": []
@@ -1672,6 +1830,7 @@
    "id": 159,
    "texto": "Todo lo excelso es tan difícil como raro.",
    "autor": "Baruch Spinoza",
+   "area": "humanidades",
    "fuente": "Ética (1677), final de la quinta parte",
    "verificacion": "verificable",
    "materias": [
@@ -1682,6 +1841,7 @@
    "id": 160,
    "texto": "Quien tiene un porqué para vivir puede soportar casi cualquier cómo.",
    "autor": "Friedrich Nietzsche",
+   "area": "humanidades",
    "fuente": "Crepúsculo de los ídolos (1889), Sentencias y flechas, 12",
    "verificacion": "verificable",
    "materias": []
@@ -1690,6 +1850,7 @@
    "id": 161,
    "texto": "El hombre no es más que una caña, la más débil de la naturaleza, pero es una caña pensante.",
    "autor": "Blaise Pascal",
+   "area": "matematica",
    "fuente": "Pensamientos (1670)",
    "verificacion": "verificable",
    "materias": []
@@ -1698,6 +1859,7 @@
    "id": 162,
    "texto": "Hice esta carta más larga de lo habitual porque no tuve tiempo de hacerla más corta.",
    "autor": "Blaise Pascal",
+   "area": "matematica",
    "fuente": "Cartas provinciales, XVI (1657)",
    "verificacion": "verificable",
    "materias": [
@@ -1708,6 +1870,7 @@
    "id": 163,
    "texto": "La ignorancia engendra confianza más a menudo que el conocimiento.",
    "autor": "Charles Darwin",
+   "area": "ciencias",
    "fuente": "El origen del hombre (1871), introducción",
    "verificacion": "verificable",
    "materias": []
@@ -1716,6 +1879,7 @@
    "id": 164,
    "texto": "Un hombre que se atreve a desperdiciar una hora de tiempo no ha descubierto el valor de la vida.",
    "autor": "Charles Darwin",
+   "area": "ciencias",
    "fuente": "Carta a su hermana Susan Darwin (1836)",
    "verificacion": "verificable",
    "materias": []
@@ -1724,6 +1888,7 @@
    "id": 165,
    "texto": "El problema del mundo es que los tontos están seguros de todo y los inteligentes están llenos de dudas.",
    "autor": "Bertrand Russell",
+   "area": "humanidades",
    "fuente": "Paráfrasis de «The Triumph of Stupidity» (1933)",
    "verificacion": "atribucion_popular",
    "nota": "El texto original dice algo similar con otras palabras.",
@@ -1733,6 +1898,7 @@
    "id": 166,
    "texto": "Ningún plan sobrevive al primer contacto con el enemigo.",
    "autor": "Helmuth von Moltke",
+   "area": "industria",
    "fuente": "Paráfrasis de «Sobre la estrategia» (1871)",
    "verificacion": "atribucion_popular",
    "nota": "El original es más extenso.",

@@ -118,7 +118,7 @@ fun PantallaTest(test: TestVocacional, onTerminar: (List<Int>) -> Unit, onSalir:
                     "PREGUNTA ${indice + 1} DE $total",
                     Modifier.weight(1f),
                     color = C.violeta,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp,
                     letterSpacing = 1.5.sp,
@@ -155,9 +155,9 @@ fun PantallaTest(test: TestVocacional, onTerminar: (List<Int>) -> Unit, onSalir:
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
+                            .clip(C.formas.media)
                             .background(if (elegida) color.copy(alpha = 0.16f) else C.tarjeta)
-                            .border(if (elegida) 2.dp else 1.dp, if (elegida) color else C.borde, RoundedCornerShape(16.dp))
+                            .border(if (elegida) 2.dp else 1.dp, if (elegida) color else C.borde, C.formas.media)
                             .clickable(enabled = !avanzando, role = Role.RadioButton) {
                                 respuestas[i] = j
                                 avanzando = true
@@ -166,13 +166,13 @@ fun PantallaTest(test: TestVocacional, onTerminar: (List<Int>) -> Unit, onSalir:
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(
-                            Modifier.size(34.dp).clip(RoundedCornerShape(10.dp)).background(if (elegida) color else color.copy(alpha = 0.15f)),
+                            Modifier.size(34.dp).clip(C.formas.chica).background(if (elegida) color else color.copy(alpha = 0.15f)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
                                 "${'A' + j}",
-                                color = if (elegida) (if (C.oscuro) C.fondo else Color.White) else color,
-                                fontFamily = Chakra,
+                                color = if (elegida) C.sobreAcento else color,
+                                fontFamily = C.fuente,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                             )
@@ -181,7 +181,7 @@ fun PantallaTest(test: TestVocacional, onTerminar: (List<Int>) -> Unit, onSalir:
                             op.texto,
                             Modifier.padding(start = 14.dp).weight(1f),
                             color = C.texto,
-                            fontFamily = Chakra,
+                            fontFamily = C.fuente,
                             fontWeight = FontWeight.Medium,
                             fontSize = 16.sp,
                             lineHeight = 20.sp,
@@ -222,16 +222,16 @@ fun PantallaPerfil(
                     Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(C.formas.media)
                         .background(C.oro.copy(alpha = 0.14f))
-                        .border(1.dp, C.oro.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                        .border(1.dp, C.oro.copy(alpha = 0.5f), C.formas.media)
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Insignia(IconoLogro.BRUJULA, true, tam = 44.dp)
                     Column(Modifier.padding(start = 12.dp)) {
-                        Text("¡LOGRO DESBLOQUEADO!", color = C.oro, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
-                        Text("Conocete", color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                        Text("¡LOGRO DESBLOQUEADO!", color = C.oro, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
+                        Text("Conocete", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 17.sp)
                     }
                 }
             }
@@ -241,7 +241,7 @@ fun PantallaPerfil(
                 Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(C.formas.grande)
                     .background(Brush.linearGradient(listOf(color.copy(alpha = 0.95f), Color(0xFF1B1F5E))))
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -250,23 +250,23 @@ fun PantallaPerfil(
                     Modifier.size(92.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.16f)).border(2.dp, Color.White.copy(alpha = 0.6f), CircleShape),
                     contentAlignment = Alignment.Center,
                 ) { Ic(iconoPerfil(principal), Color.White, tam = 48.dp) }
-                Text("SOS", Modifier.padding(top = 12.dp), color = C.heroeTexto2, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 3.sp)
+                Text("SOS", Modifier.padding(top = 12.dp), color = C.heroeTexto2, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 3.sp)
                 Text(
                     principal.nombre,
                     Modifier.semantics { heading() },
                     color = C.heroeTexto,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     lineHeight = 32.sp,
                     textAlign = TextAlign.Center,
                 )
-                Text("$pctPrincipal% de afinidad", color = C.heroeTexto2, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                Text("$pctPrincipal% de afinidad", color = C.heroeTexto2, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 Text(
                     principal.descripcion,
                     Modifier.padding(top = 12.dp),
                     color = C.heroeTexto,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontSize = 15.sp,
                     lineHeight = 20.sp,
                     textAlign = TextAlign.Center,
@@ -280,31 +280,31 @@ fun PantallaPerfil(
                         Box(Modifier.padding(top = 1.dp).size(20.dp).clip(CircleShape).background(color.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
                             Ic(R.drawable.ic_check, color, tam = 13.dp)
                         }
-                        Text(t, Modifier.padding(start = 10.dp), color = C.texto, fontFamily = Chakra, fontSize = 15.sp, lineHeight = 19.sp)
+                        Text(t, Modifier.padding(start = 10.dp), color = C.texto, fontFamily = C.fuente, fontSize = 15.sp, lineHeight = 19.sp)
                     }
                 }
             }
         }
         item {
             Bloque("Referente", R.drawable.ic_medalla, C.oro) {
-                Text(principal.referente.nombre, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                Text(principal.referente.descripcion, Modifier.padding(top = 4.dp), color = C.texto2, fontFamily = Chakra, fontSize = 14.5.sp, lineHeight = 19.sp)
+                Text(principal.referente.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                Text(principal.referente.descripcion, Modifier.padding(top = 4.dp), color = C.texto2, fontFamily = C.fuente, fontSize = 14.5.sp, lineHeight = 19.sp)
             }
         }
         item {
             Bloque("Electivas para vos", R.drawable.ic_ramas, C.rosa) {
                 principal.electivas.mapNotNull { avance.plan[it] }.forEach { m ->
                     Row(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).clickable { onAbrir(m.id) }.padding(vertical = 6.dp),
+                        Modifier.fillMaxWidth().clip(C.formas.chica).clickable { onAbrir(m.id) }.padding(vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(Modifier.padding(top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 38.dp, animado = false) }
                         Column(Modifier.padding(start = 10.dp).weight(1f)) {
-                            Text(m.nombre, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
+                            Text(m.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
                             Text(
                                 listOfNotNull(m.nivel?.let { "Nivel $it" }, m.horasAnuales?.let { "${formatearHoras(it)} hs" }, textoEstado(avance.estadoNodo(m))).joinToString(" · "),
                                 color = C.texto2,
-                                fontFamily = Chakra,
+                                fontFamily = C.fuente,
                                 fontSize = 13.sp,
                             )
                         }
@@ -331,13 +331,13 @@ fun PantallaPerfil(
 fun FilaPorcentaje(p: Perfil, pct: Int) {
     val color = colorPerfil(p)
     Row(Modifier.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(color.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(30.dp).clip(C.formas.mini).background(color.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
             Ic(iconoPerfil(p), color, tam = 17.dp)
         }
         Column(Modifier.padding(start = 10.dp).weight(1f)) {
             Row {
-                Text(p.nombre, Modifier.weight(1f), color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                Text("$pct%", color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(p.nombre, Modifier.weight(1f), color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text("$pct%", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 14.sp)
             }
             Barra(pct / 100f, color, Modifier.fillMaxWidth().padding(top = 4.dp), alto = 6.dp)
         }
@@ -361,13 +361,13 @@ private fun Bloque(titulo: String, icono: Int, color: Color, content: @Composabl
 fun BotonPrimario(texto: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
         modifier
-            .clip(RoundedCornerShape(14.dp))
+            .clip(C.formas.media)
             .background(Brush.horizontalGradient(listOf(C.disponible, C.violeta)))
             .clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(texto, color = if (C.oscuro) C.fondo else Color.White, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(texto, color = C.sobreAcento, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
 }
 
@@ -375,9 +375,9 @@ fun BotonPrimario(texto: String, modifier: Modifier = Modifier, onClick: () -> U
 fun BotonSecundario(texto: String, icono: Int?, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         modifier
-            .clip(RoundedCornerShape(14.dp))
+            .clip(C.formas.media)
             .background(C.tarjeta)
-            .border(1.dp, C.borde, RoundedCornerShape(14.dp))
+            .border(1.dp, C.borde, C.formas.media)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 13.dp),
         horizontalArrangement = Arrangement.Center,
@@ -387,6 +387,6 @@ fun BotonSecundario(texto: String, icono: Int?, modifier: Modifier = Modifier, o
             Ic(icono, C.texto, tam = 18.dp)
             Spacer(Modifier.width(8.dp))
         }
-        Text(texto, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(texto, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
 }

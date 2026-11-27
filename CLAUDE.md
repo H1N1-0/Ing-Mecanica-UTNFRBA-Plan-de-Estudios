@@ -41,8 +41,12 @@ app/
       PantallaInicio.kt, PantallaMapa.kt, PantallaLista.kt, PantallaLogros.kt, ...
       HojaDetalle.kt     ContenidoDetalle (hoja en celular, panel lateral en tablet)
       CaminoCriticoUi.kt Tarjetas "Camino crítico" y "Prioridad", bloque del detalle
-      Tema.kt            Paletas clara y oscura (objeto C), tipografía Chakra Petch
+      Tema.kt            Tokens de los 3 estilos × claro/oscuro (objeto C): paletas, fuentes, formas, movimiento
+      Estilizados.kt     Componentes que cambian por estilo: Fondo, Medidor/Manómetro, Medallón, marcas de plano
+      Dibujos.kt         Dibujos técnicos del Plano técnico (engranajes, pistón, bomba, turbina, rodamiento, resorte)
     widget/              Widget de Glance
+  src/main/res/font/     Chakra Petch (Gamificado), Barlow Semi Condensed y Share Tech Mono (Plano técnico)
+  licencias/             Licencias OFL de las tipografías
   src/test/              Tests JVM (JUnit) que leen el correlativas.json real
 baselineprofile/         Módulo de test: genera el Baseline Profile y mide el arranque (necesita dispositivo)
 ```
@@ -84,6 +88,26 @@ Solo lee las correlativas; no modifica ninguna regla de `Avance`.
   - `prioridades()`: las que se pueden cursar o rendir ya, por `traba` y luego camino crítico.
 - El ViewModel lo recalcula en cada cambio de avance; la UI lo lee por `LocalCritico`.
 
+## Estilos visuales (`ui/Tema.kt`)
+
+Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinables con el tema
+(`ModoTema`: sistema, claro, oscuro). Se guardan por nombre en el DataStore `ajustes` (clave
+`estilo`), junto con `nombre` y `nombre_preguntado` para el rótulo; el progreso no se toca. El cambio es instantáneo:
+`TemaJuego` actualiza `C.tema` y todo lo que lee `C` se redibuja. El widget usa las mismas paletas.
+
+- **Tokens** (`TemaVisual`): `paleta` (colores), `fuente` y `fuenteDatos`, `formas`, `movimiento`
+  (duraciones, rebote y tipo de festejo), `indicador` (anillo, anillo tonal o manómetro) y `brillo`.
+- **Componentes base**, los únicos que miran el estilo: `Tarjeta`, `Nodo`, `Barra`, `Pildora`
+  (Componentes.kt), `Fondo`, `Medidor`, `Medallon`, `EngranajesGirando` (Estilizados.kt). Las
+  pantallas solo usan estos componentes y `C.*`: una pantalla nueva se adapta sola a los tres.
+- **Plano técnico**: cuadrícula y un dibujo por pantalla (`Pestania.dibujo`; Ajustes = rodamiento,
+  test = resorte), cotas y marcas de esquina en las tarjetas (`Tarjeta(cota = ...)`), rótulo de
+  lámina y manómetro en el inicio, engranajes al desbloquear.
+- **Material You**: `dynamicLight/DarkColorScheme` en Android 12+, esquema fijo antes. Los colores de
+  estado se armonizan con el primario.
+- **Frases**: cada una tiene `area` en frases.json (`data.Area`); el medallón usa iniciales, color
+  (`colorArea`) e ícono (`iconoArea`) del área.
+
 ## Disposición adaptativa (`ui/App.kt`)
 
 - Ancho compacto (celular vertical): barra inferior, detalle en hoja modal.
@@ -124,9 +148,16 @@ mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido
 - Las correlativas no se recalculan en la UI: `Avance` y `CaminoCritico` se crean una vez por cambio
   de progreso (en `Dispatchers.Default`) y los derivados caros van en `remember(avance)`.
 - Las listas perezosas llevan `key` estable (id de materia/logro) y `contentType`.
+- Fondos y decoraciones de los estilos: se arman en `drawWithCache` (una vez por tamaño) y el fondo
+  va en su propia capa (`graphicsLayer`), así scrollear o mover el mapa no lo redibuja.
 
 ## Reglas
 
+- **Nada de datos personales en el repo**: ni nombres ni mails reales en código, tests, capturas
+  versionadas o commits. El nombre del rótulo lo carga cada usuario: se pregunta una vez en el
+  primer uso (`PreguntaNombre`, opcional), se cambia en Ajustes y se guarda solo en el DataStore
+  `ajustes`. Sin nombre, el rótulo dice "Estudiante" (`nombreParaRotulo`). En tests y capturas
+  usar datos de ejemplo genéricos.
 - **No cambiar cómo se guarda el progreso**: DataStore `progreso`, clave `estados`, formato de
   `CodecEstados` (`id:ESTADO` separados por coma). Cambiarlo borraría el avance de quien actualice.
 - No cambiar la lógica de correlativas de `Calculo.kt` sin que lo pidan; funciones nuevas van
@@ -135,5 +166,9 @@ mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido
   tiene que instalarse encima de la que ya tiene el usuario.
 - R8: si algo se lee por nombre o reflexión (recursos con `getIdentifier`, enums guardados por
   nombre), agregá la regla en `proguard-rules.pro` o `res/raw/keep.xml` y probá la release.
-- Respetar los dos temas: colores siempre desde `C` (Tema.kt), nunca fijos en las pantallas.
+- Respetar los tres estilos y los dos modos: colores, fuentes y formas siempre desde `C` (Tema.kt),
+  nunca fijos en las pantallas. Si algo tiene que verse distinto según el estilo, va en un
+  componente base o en un token nuevo, no en un `if (estilo)` dentro de una pantalla.
+- Capturas: con Robolectric (Roborazzi) agregado solo en local, sin commitear. Para Material You
+  usar `@Config(sdk = [33])`: en 34+ Robolectric no emula bien los colores dinámicos.
 - Agregar tests en `app/src/test` para cualquier cálculo nuevo.

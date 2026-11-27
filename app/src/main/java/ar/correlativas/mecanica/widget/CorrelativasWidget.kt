@@ -43,6 +43,12 @@ import ar.correlativas.mecanica.MainActivity
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.Estilo
+import ar.correlativas.mecanica.ui.Paleta
+import ar.correlativas.mecanica.ui.esquemaMaterial
+import ar.correlativas.mecanica.ui.paletaFija
+import ar.correlativas.mecanica.ui.paletaMaterial
+import androidx.compose.ui.graphics.lerp
 import ar.correlativas.mecanica.data.Frase
 import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.Materia
@@ -62,9 +68,17 @@ class CorrelativasWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = CorrelativasWidget()
 }
 
-/** Colores del widget para un tema. En "según el sistema" cada color tiene versión de día y de noche. */
+/**
+ * Colores, fuentes y fondo del widget para un estilo y un tema. Salen de las mismas paletas que la
+ * app (Tema.kt), así el widget sigue al estilo elegido. En "según el sistema" cada color tiene
+ * versión de día y de noche.
+ */
 class ColoresWidget(
+    /** Drawable del fondo y, si hay, el color con que se tiñe (los de Gamificado ya traen degradé). */
     val fondo: Int,
+    val tinteFondo: ColorProvider?,
+    /** Margen de lámina (solo Plano técnico). */
+    val marco: ColorProvider?,
     val texto: ColorProvider,
     val texto2: ColorProvider,
     val apagado: ColorProvider,
@@ -76,43 +90,67 @@ class ColoresWidget(
     val pista: ColorProvider,
     val linea: ColorProvider,
     val insignia: ColorProvider,
+    val fuente: FontFamily,
+    /** Números y rótulos (monoespaciada en Plano técnico). */
+    val fuenteDatos: FontFamily,
+    val radio: Int,
 ) {
     companion object {
-        private class Par(val claro: Color, val oscuro: Color)
-
-        private val texto = Par(Color(0xFF141A38), Color(0xFFEEF1FF))
-        private val texto2 = Par(Color(0xFF515B84), Color(0xFFA3ACD9))
-        private val apagado = Par(Color(0xFF8790B5), Color(0xFF69729E))
-        private val disponible = Par(Color(0xFF0791B0), Color(0xFF22E1F0))
-        private val rendir = Par(Color(0xFF138A43), Color(0xFF7CFF9B))
-        private val oro = Par(Color(0xFFC98600), Color(0xFFFFCB3D))
-        private val rosa = Par(Color(0xFFD1206F), Color(0xFFFF4D9D))
-        private val violeta = Par(Color(0xFF6A3BE4), Color(0xFFB79BFF))
-        private val pista = Par(Color(0x1A141A38), Color(0x26FFFFFF))
-        private val linea = Par(Color(0x1F141A38), Color(0x22FFFFFF))
-        private val insignia = Par(Color(0x26C98600), Color(0x33FFCB3D))
-
-        fun para(modo: ModoTema): ColoresWidget {
-            fun c(p: Par): ColorProvider = when (modo) {
-                ModoTema.CLARO -> ColorProvider(p.claro)
-                ModoTema.OSCURO -> ColorProvider(p.oscuro)
-                ModoTema.SISTEMA -> ColorDiaNoche(day = p.claro, night = p.oscuro)
+        fun para(modo: ModoTema, estilo: Estilo, context: Context): ColoresWidget {
+            fun paleta(oscuro: Boolean) =
+                if (estilo == Estilo.MATERIAL) paletaMaterial(esquemaMaterial(context, oscuro), oscuro) else paletaFija(estilo, oscuro)
+            val claro = paleta(false)
+            val oscuro = paleta(true)
+            fun c(elegir: (Paleta) -> Color): ColorProvider = when (modo) {
+                ModoTema.CLARO -> ColorProvider(elegir(claro))
+                ModoTema.OSCURO -> ColorProvider(elegir(oscuro))
+                ModoTema.SISTEMA -> ColorDiaNoche(day = elegir(claro), night = elegir(oscuro))
             }
             return ColoresWidget(
-                fondo = when (modo) {
-                    ModoTema.CLARO -> R.drawable.widget_fondo_claro
-                    ModoTema.OSCURO -> R.drawable.widget_fondo
-                    ModoTema.SISTEMA -> R.drawable.widget_fondo_sistema
+                fondo = when (estilo) {
+                    Estilo.GAMIFICADO -> when (modo) {
+                        ModoTema.CLARO -> R.drawable.widget_fondo_claro
+                        ModoTema.OSCURO -> R.drawable.widget_fondo
+                        ModoTema.SISTEMA -> R.drawable.widget_fondo_sistema
+                    }
+                    Estilo.PLANO -> R.drawable.widget_forma_plano
+                    Estilo.MATERIAL -> R.drawable.widget_forma
                 },
-                texto = c(texto), texto2 = c(texto2), apagado = c(apagado), disponible = c(disponible),
-                rendir = c(rendir), oro = c(oro), rosa = c(rosa), violeta = c(violeta), pista = c(pista),
-                linea = c(linea), insignia = c(insignia),
+                tinteFondo = when (estilo) {
+                    Estilo.GAMIFICADO -> null
+                    Estilo.PLANO -> c { it.fondo }
+                    Estilo.MATERIAL -> c { it.fondoAlto }
+                },
+                marco = if (estilo == Estilo.PLANO) c { it.tinta.copy(alpha = 0.55f) } else null,
+                texto = c { it.texto },
+                texto2 = c { it.texto2 },
+                apagado = c { it.apagado },
+                disponible = c { it.disponible },
+                rendir = c { it.rendir },
+                oro = c { it.oro },
+                rosa = c { it.rosa },
+                // El violeta gamificado oscuro es muy profundo para texto chico sobre el degradé: se aclara.
+                violeta = c { if (estilo == Estilo.GAMIFICADO && it.oscuro) lerp(it.violeta, Color.White, 0.35f) else it.violeta },
+                pista = c { it.pista },
+                linea = c { it.texto.copy(alpha = 0.13f) },
+                insignia = c { it.oro.copy(alpha = 0.2f) },
+                fuente = when (estilo) {
+                    Estilo.MATERIAL -> FontFamily.SansSerif
+                    else -> FontFamily("sans-serif-condensed")
+                },
+                fuenteDatos = when (estilo) {
+                    Estilo.PLANO -> FontFamily.Monospace
+                    Estilo.MATERIAL -> FontFamily.SansSerif
+                    Estilo.GAMIFICADO -> FontFamily("sans-serif-condensed")
+                },
+                radio = when (estilo) {
+                    Estilo.PLANO -> 6
+                    else -> 24
+                },
             )
         }
     }
 }
-
-private val Fuente = FontFamily("sans-serif-condensed")
 
 class CorrelativasWidget : GlanceAppWidget() {
 
@@ -129,7 +167,7 @@ class CorrelativasWidget : GlanceAppWidget() {
             val estados by progreso.estados.collectAsState(initial = inicial)
             val prefs by ajustes.preferencias.collectAsState(initial = prefsIniciales)
             val frase = frases.paraWidget(System.currentTimeMillis() / 3_600_000L)
-            ContenidoWidget(Avance(plan, estados), ColoresWidget.para(prefs.tema), frase)
+            ContenidoWidget(Avance(plan, estados), ColoresWidget.para(prefs.tema, prefs.estilo, context), frase)
         }
     }
 }
@@ -144,11 +182,42 @@ fun ContenidoWidget(avance: Avance, colores: ColoresWidget, frase: Frase?) {
     val lineas = ((alto - 140f - 40f - altoFrase) / 20f).toInt().coerceAtLeast(0)
     val (nCursar, nRendir) = repartir(lineas, avance.cursables.size, avance.rendibles.size)
 
+    val fondo = GlanceModifier
+        .fillMaxSize()
+        .background(ImageProvider(colores.fondo), colorFilter = colores.tinteFondo?.let { ColorFilter.tint(it) })
+        .cornerRadius(colores.radio.dp)
+    Box(fondo) {
+        val marco = colores.marco
+        val tinte = colores.tinteFondo
+        if (marco != null && tinte != null) {
+            // Margen de la lámina (Plano técnico): un recuadro de 1 dp hecho con cajas de color liso,
+            // que se ve igual en cualquier launcher.
+            Box(GlanceModifier.fillMaxSize().padding(5.dp)) {
+                Box(GlanceModifier.fillMaxSize().background(marco).padding(1.dp)) {
+                    Box(GlanceModifier.fillMaxSize().background(tinte)) {
+                        Cuerpo(avance, colores, frase, conFrase, nCursar, nRendir, abrir)
+                    }
+                }
+            }
+        } else {
+            Cuerpo(avance, colores, frase, conFrase, nCursar, nRendir, abrir)
+        }
+    }
+}
+
+@Composable
+private fun Cuerpo(
+    avance: Avance,
+    colores: ColoresWidget,
+    frase: Frase?,
+    conFrase: Boolean,
+    nCursar: Int,
+    nRendir: Int,
+    abrir: androidx.glance.action.Action,
+) {
     Column(
         GlanceModifier
             .fillMaxSize()
-            .background(ImageProvider(colores.fondo))
-            .cornerRadius(24.dp)
             .padding(horizontal = 16.dp, vertical = 14.dp)
             .clickable(abrir),
     ) {
@@ -168,12 +237,12 @@ fun ContenidoWidget(avance: Avance, colores: ColoresWidget, frase: Frase?) {
                         Text(
                             frase.texto,
                             maxLines = 3,
-                            style = TextStyle(color = colores.texto, fontSize = 13.sp, fontStyle = FontStyle.Italic, fontFamily = Fuente),
+                            style = TextStyle(color = colores.texto, fontSize = 13.sp, fontStyle = FontStyle.Italic, fontFamily = colores.fuente),
                         )
                         Text(
                             "— ${frase.autor}",
                             maxLines = 1,
-                            style = TextStyle(color = colores.violeta, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                            style = TextStyle(color = colores.violeta, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuente),
                         )
                     }
                 }
@@ -196,17 +265,17 @@ private fun Encabezado(avance: Avance, colores: ColoresWidget) {
         Column(GlanceModifier.defaultWeight().padding(start = 10.dp)) {
             Text(
                 "RANGO ${rango.numero}/${RANGOS.size}",
-                style = TextStyle(color = colores.disponible, fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                style = TextStyle(color = colores.disponible, fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuenteDatos),
             )
             Text(
                 rango.nombre,
                 maxLines = 1,
-                style = TextStyle(color = colores.texto, fontSize = 18.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                style = TextStyle(color = colores.texto, fontSize = 18.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuente),
             )
         }
         Text(
             "${(pct * 100).roundToInt()}%",
-            style = TextStyle(color = colores.texto, fontSize = 30.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+            style = TextStyle(color = colores.texto, fontSize = 30.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuenteDatos),
         )
     }
     Spacer(GlanceModifier.height(8.dp))
@@ -254,7 +323,7 @@ private fun Dato(colores: ColoresWidget, icono: Int, color: ColorProvider, texto
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Icono(icono, color, 15)
         Spacer(GlanceModifier.width(5.dp))
-        Text(texto, maxLines = 1, style = TextStyle(color = colores.texto, fontSize = 13.sp, fontWeight = FontWeight.Medium, fontFamily = Fuente))
+        Text(texto, maxLines = 1, style = TextStyle(color = colores.texto, fontSize = 13.sp, fontWeight = FontWeight.Medium, fontFamily = colores.fuente))
     }
 }
 
@@ -275,11 +344,11 @@ private fun Seccion(
             Spacer(GlanceModifier.width(6.dp))
             Text(
                 "$titulo · ${materias.size}",
-                style = TextStyle(color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                style = TextStyle(color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuente),
             )
         }
         if (materias.isEmpty()) {
-            Text(vacio, style = TextStyle(color = colores.apagado, fontSize = 13.sp, fontFamily = Fuente))
+            Text(vacio, style = TextStyle(color = colores.apagado, fontSize = 13.sp, fontFamily = colores.fuente))
             return@Column
         }
         val visibles = materias.take(mostrar.coerceAtMost(8))
@@ -289,24 +358,24 @@ private fun Seccion(
                 Text(
                     prefijo(m),
                     modifier = GlanceModifier.width(30.dp),
-                    style = TextStyle(color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                    style = TextStyle(color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuenteDatos),
                 )
                 Text(
                     m.nombre,
                     maxLines = 1,
                     modifier = GlanceModifier.defaultWeight(),
-                    style = TextStyle(color = colores.texto, fontSize = 14.sp, fontFamily = Fuente),
+                    style = TextStyle(color = colores.texto, fontSize = 14.sp, fontFamily = colores.fuente),
                 )
                 if (ultima) {
                     Text(
                         " +${materias.size - visibles.size}",
-                        style = TextStyle(color = colores.texto2, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = Fuente),
+                        style = TextStyle(color = colores.texto2, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuente),
                     )
                 }
             }
         }
         if (visibles.isEmpty()) {
-            Text("${materias.size} materias · abrí la app", style = TextStyle(color = colores.texto2, fontSize = 13.sp, fontFamily = Fuente))
+            Text("${materias.size} materias · abrí la app", style = TextStyle(color = colores.texto2, fontSize = 13.sp, fontFamily = colores.fuente))
         }
     }
 }

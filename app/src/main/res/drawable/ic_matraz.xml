@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Matraz: química y ciencias. -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M9,3 H15 M10,3 V9 L4.5,19 A1.5,1.5 0 0,0 5.8,21 H18.2 A1.5,1.5 0 0,0 19.5,19 L14,9 V3" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M7.2,15.5 H16.8 L18.6,19 A0.8,0.8 0 0,1 17.9,20 H6.1 A0.8,0.8 0 0,1 5.4,19 Z" />
+</vector>

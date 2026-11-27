@@ -121,7 +121,8 @@ fun PantallaMapa(
     val densidad = LocalDensity.current
     val anchoPx = with(densidad) { mapa.ancho.dp.toPx() }
     val altoPx = with(densidad) { mapa.alto.dp.toPx() }
-    BoxWithConstraints(Modifier.fillMaxSize().background(C.fondo).clipToBounds()) {
+    // Sin fondo propio: va sobre el Fondo de la pestaña (cuadrícula y dibujo en Plano técnico).
+    BoxWithConstraints(Modifier.fillMaxSize().clipToBounds()) {
         val vistaW = constraints.maxWidth.toFloat()
         val vistaH = constraints.maxHeight.toFloat()
 
@@ -231,7 +232,7 @@ fun PantallaMapa(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Ic(R.drawable.ic_mapa, C.disponible, tam = 20.dp)
-                Text("Mapa de la carrera", Modifier.padding(start = 8.dp).weight(1f), color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("Mapa de la carrera", Modifier.padding(start = 8.dp).weight(1f), color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 BotonCritico(vista.verCritico) { if (vista.verCritico) vista.verCritico = false else vista.mostrarCritico() }
             }
             FlowRow(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -248,16 +249,16 @@ fun PantallaMapa(
                             },
                             Modifier.padding(start = 4.dp),
                             color = C.texto2,
-                            fontFamily = Chakra,
+                            fontFamily = C.fuente,
                             fontSize = 12.sp,
                         )
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     InsigniaCuello(14.dp)
-                    Text("Cuello de botella", Modifier.padding(start = 4.dp), color = C.texto2, fontFamily = Chakra, fontSize = 12.sp)
+                    Text("Cuello de botella", Modifier.padding(start = 4.dp), color = C.texto2, fontFamily = C.fuente, fontSize = 12.sp)
                 }
-                Text("Pellizcá para zoom", color = C.apagado, fontFamily = Chakra, fontSize = 12.sp)
+                Text("Pellizcá para zoom", color = C.apagado, fontFamily = C.fuente, fontSize = 12.sp)
             }
         }
 
@@ -284,9 +285,9 @@ fun PantallaMapa(
 private fun BotonCritico(activo: Boolean, onClick: () -> Unit) {
     Row(
         Modifier
-            .clip(RoundedCornerShape(50))
+            .clip(C.formas.pildora)
             .background(if (activo) C.critico else C.critico.copy(alpha = 0.12f))
-            .border(1.dp, C.critico.copy(alpha = if (activo) 1f else 0.5f), RoundedCornerShape(50))
+            .border(1.dp, C.critico.copy(alpha = if (activo) 1f else 0.5f), C.formas.pildora)
             .semantics { contentDescription = if (activo) "Ocultar camino crítico" else "Ver camino crítico" }
             .clickable(role = Role.Switch, onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 7.dp),
@@ -297,7 +298,7 @@ private fun BotonCritico(activo: Boolean, onClick: () -> Unit) {
             if (activo) "Camino crítico" else "Ver camino crítico",
             Modifier.padding(start = 6.dp),
             color = if (activo) C.fondo else C.critico,
-            fontFamily = Chakra,
+            fontFamily = C.fuente,
             fontWeight = FontWeight.Bold,
             fontSize = 13.sp,
             maxLines = 1,
@@ -310,9 +311,9 @@ private fun BannerCritico(critico: CaminoCritico, modifier: Modifier) {
     Column(
         modifier
             .widthIn(max = 520.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(C.formas.media)
             .background(C.fondoAlto.copy(alpha = 0.96f))
-            .border(1.5.dp, C.critico, RoundedCornerShape(16.dp))
+            .border(1.5.dp, C.critico, C.formas.media)
             .padding(horizontal = 14.dp, vertical = 10.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -321,7 +322,7 @@ private fun BannerCritico(critico: CaminoCritico, modifier: Modifier) {
                 if (critico.anios == 0) "NO TE QUEDAN CURSADAS" else "CAMINO CRÍTICO · ${textoAnios(critico.anios).uppercase()} COMO MÍNIMO",
                 Modifier.padding(start = 6.dp),
                 color = C.critico,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
                 letterSpacing = 1.sp,
@@ -332,7 +333,7 @@ private fun BannerCritico(critico: CaminoCritico, modifier: Modifier) {
             else critico.camino.joinToString("  ›  ") { it.nombre },
             Modifier.padding(top = 4.dp),
             color = C.texto,
-            fontFamily = Chakra,
+            fontFamily = C.fuente,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,
             lineHeight = 17.sp,
@@ -443,7 +444,7 @@ private fun ContenidoMapa(
             "NIVEL $n",
             Modifier.offset(x = 14.dp, y = (Mapa.MARGEN_Y + (n - 1) * Mapa.PASO_Y - 16f).dp),
             color = C.apagado,
-            fontFamily = Chakra,
+            fontFamily = C.fuente,
             fontWeight = FontWeight.Bold,
             fontSize = 13.sp,
             letterSpacing = 2.sp,
@@ -473,7 +474,7 @@ private fun ContenidoMapa(
                 .offset(x = (n.x - anchoEtiqueta / 2).dp, y = (n.y - TAM_NODO / 2).dp)
                 .width(anchoEtiqueta.dp)
                 .alpha(if (resaltar && paso == null && !elegida) atenuado else 1f)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(C.formas.chica)
                 .semantics(mergeDescendants = true) { contentDescription = "${n.materia.nombre}, ${textoEstado(e)}" }
                 .clickable(role = Role.Button) { onAbrir(n.materia.id) },
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -483,7 +484,7 @@ private fun ContenidoMapa(
                 n.materia.nombre,
                 Modifier.padding(top = 6.dp, start = 2.dp, end = 2.dp),
                 color = if (e == EstadoNodo.BLOQUEADA) C.bloqueadaTexto else C.texto,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontWeight = if (e == EstadoNodo.BLOQUEADA) FontWeight.Medium else FontWeight.SemiBold,
                 fontSize = 12.sp,
                 lineHeight = 14.sp,
@@ -496,11 +497,11 @@ private fun ContenidoMapa(
                     "CURSADA $paso",
                     Modifier
                         .padding(top = 3.dp)
-                        .clip(RoundedCornerShape(50))
+                        .clip(C.formas.pildora)
                         .background(C.critico)
                         .padding(horizontal = 7.dp, vertical = 1.dp),
                     color = C.fondo,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 10.sp,
                     letterSpacing = 1.sp,
