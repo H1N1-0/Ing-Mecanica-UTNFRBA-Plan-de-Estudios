@@ -53,7 +53,8 @@ app/
     widget/              Widget de Glance
   src/main/res/font/     Chakra Petch (Gamificado), Barlow Semi Condensed y Share Tech Mono (Plano técnico)
   licencias/             Licencias OFL de las tipografías
-  src/test/              Tests JVM (JUnit) que leen el correlativas.json real
+  src/test/              Tests JVM (JUnit) que leen el correlativas.json real, y tests de interfaz
+                         con Robolectric + Compose UI Test (ui/AjustesNavegacionTest: Ajustes en 5 pantallas)
 baselineprofile/         Módulo de test: genera el Baseline Profile y mide el arranque (necesita dispositivo)
 ```
 
@@ -142,6 +143,9 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
 - Ancho compacto (celular vertical): barra inferior, detalle en hoja modal.
 - Ancho medio o expandido (tablet, horizontal): `NavigationRail`, lista y detalle lado a lado,
   mapa con panel de detalle al costado, inicio en 2–3 columnas (`LazyVerticalStaggeredGrid`).
+- **Un solo botón de Ajustes** (`BotonAjustes`): en el celular vertical, arriba a la derecha del
+  inicio; con barra lateral, arriba de la barra (el inicio no muestra el suyo: `botonAjustes`).
+  Ajustes es la misma pantalla en todas las disposiciones; `AjustesNavegacionTest` lo verifica.
 - El estado de navegación (pestaña, materia abierta, filtro, scrolls, zoom del mapa) se guarda con
   `rememberSaveable` arriba de todo, antes de elegir la disposición, para sobrevivir a la rotación.
 
@@ -199,6 +203,10 @@ mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido
 - Respetar los tres estilos y los dos modos: colores, fuentes y formas siempre desde `C` (Tema.kt),
   nunca fijos en las pantallas. Si algo tiene que verse distinto según el estilo, va en un
   componente base o en un token nuevo, no en un `if (estilo)` dentro de una pantalla.
-- Capturas: con Robolectric (Roborazzi) agregado solo en local, sin commitear. Para Material You
-  usar `@Config(sdk = [33])`: en 34+ Robolectric no emula bien los colores dinámicos.
+- Tests de interfaz: Robolectric + Compose UI Test (están en el repo y corren en CI). No usar
+  `mainClock.autoAdvance = false` con la app entera: las animaciones infinitas no la dejan quedar
+  "idle" y cada acción espera 60 s. Si una pantalla nueva tiene opciones, agregalas a la lista
+  de `AjustesNavegacionTest` (si es Ajustes) o a un test equivalente.
+- Capturas: con Roborazzi agregado solo en local, sin commitear. Para Material You usar
+  `@Config(sdk = [33])`: en 34+ Robolectric no emula bien los colores dinámicos.
 - Agregar tests en `app/src/test` para cualquier cálculo nuevo.

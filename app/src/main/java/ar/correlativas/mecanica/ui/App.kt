@@ -178,6 +178,7 @@ fun AppCorrelativas(
                         onLista = { filtroLista = it; irA(Pestania.LISTA) },
                         onLogros = { irA(Pestania.LOGROS) },
                         onAjustes = { superpuesta = Superpuesta.AJUSTES },
+                        botonAjustes = !disposicion.amplia,
                         estadisticas = estadisticas,
                         onEstadisticas = { superpuesta = Superpuesta.ESTADISTICAS },
                         onTest = { superpuesta = Superpuesta.TEST },
@@ -271,11 +272,9 @@ fun AppCorrelativas(
                 NavigationRail(
                     containerColor = C.fondoAlto,
                     windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Start + WindowInsetsSides.Vertical),
+                    // El único botón de Ajustes en tablet y horizontal (el inicio no muestra el suyo).
                     header = {
-                        Box(
-                            Modifier.padding(top = 8.dp, bottom = 12.dp).size(44.dp).clip(C.formas.media).background(C.tarjetaAlta),
-                            contentAlignment = Alignment.Center,
-                        ) { Ic(R.drawable.ic_engranaje, C.disponible, tam = 24.dp) }
+                        BotonAjustes({ superpuesta = Superpuesta.AJUSTES }, Modifier.padding(top = 8.dp, bottom = 12.dp))
                     },
                 ) {
                     Spacer(Modifier.weight(1f))
