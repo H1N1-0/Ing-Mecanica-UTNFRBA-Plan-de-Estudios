@@ -71,7 +71,7 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
             haptico.performHapticFeedback(HapticFeedbackType.LongPress)
             entrada.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow))
         }
-        Box(Modifier.fillMaxSize().background(C.fondo.copy(alpha = 0.6f)).clickable(onClick = onCerrar, indication = null, interactionSource = null), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f)).clickable(onClick = onCerrar, indication = null, interactionSource = null), contentAlignment = Alignment.Center) {
             if (festejo) Confeti(Modifier.fillMaxSize())
             Column(
                 Modifier
@@ -113,6 +113,29 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
                         }
                     }
                 }
+                d.frase?.let { f ->
+                    Column(
+                        Modifier
+                            .padding(top = 18.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(C.violeta.copy(alpha = 0.10f))
+                            .border(1.dp, C.violeta.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                            .padding(14.dp),
+                    ) {
+                        Ic(R.drawable.ic_comillas, C.violeta, tam = 18.dp)
+                        Text(
+                            f.texto,
+                            Modifier.padding(top = 6.dp),
+                            color = C.texto,
+                            fontFamily = Chakra,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 15.sp,
+                            lineHeight = 20.sp,
+                        )
+                        Text("— ${f.autor}", Modifier.padding(top = 6.dp), color = C.violeta, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    }
+                }
                 Box(
                     Modifier
                         .padding(top = 18.dp)
@@ -123,7 +146,7 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
                         .padding(vertical = 14.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("¡Vamos!", color = C.fondo, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text("¡Vamos!", color = if (C.oscuro) C.fondo else Color.White, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
                 }
             }
         }
@@ -137,7 +160,8 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
         nivel != null -> R.drawable.ic_trofeo to C.oro
         d.materias.isNotEmpty() -> R.drawable.ic_rayo to C.disponible
         d.finales.isNotEmpty() -> R.drawable.ic_llama to C.rendir
-        else -> R.drawable.ic_medalla to C.oro
+        d.logros.isNotEmpty() -> R.drawable.ic_medalla to C.oro
+        else -> R.drawable.ic_estrella to C.oro
     }
     Box(contentAlignment = Alignment.Center, modifier = Modifier.size(86.dp)) {
         Box(Modifier.size(86.dp).clip(CircleShape).background(color.copy(alpha = 0.14f)))
@@ -152,7 +176,9 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
             n == 1 -> "¡Desbloqueaste 1 materia nueva!"
             n > 1 -> "¡Desbloqueaste $n materias nuevas!"
             d.finales.isNotEmpty() -> "¡Nuevo final disponible!"
-            else -> "¡Logro conseguido!"
+            d.logros.isNotEmpty() -> "¡Logro conseguido!"
+            d.materia.id == avance.plan.pps.id -> "¡PPS acreditada!"
+            else -> "¡Materia aprobada!"
         },
         Modifier.padding(top = 12.dp).semantics { heading() },
         color = C.texto,

@@ -54,6 +54,7 @@ fun iconoLogro(i: IconoLogro): Int = when (i) {
     IconoLogro.PPS -> R.drawable.ic_casco
     IconoLogro.PROYECTO -> R.drawable.ic_bandera
     IconoLogro.CORONA -> R.drawable.ic_corona
+    IconoLogro.BRUJULA -> R.drawable.ic_brujula
 }
 
 /** Insignia hexagonal: dorada si está conseguida, gris si no. */
@@ -71,21 +72,21 @@ fun Insignia(icono: IconoLogro, conseguido: Boolean, tam: Dp = 64.dp, modifier: 
                 close()
             }
             if (conseguido) {
-                drawCircle(C.oro.copy(alpha = 0.22f), radius = r * 1.08f)
-                drawPath(hex, Brush.linearGradient(listOf(Color(0xFFFFE27A), C.oro, C.oroOscuro), Offset(0f, 0f), Offset(size.width, size.height)))
+                drawCircle(Color(0xFFFFCB3D).copy(alpha = 0.25f), radius = r * 1.08f)
+                drawPath(hex, Brush.linearGradient(listOf(Color(0xFFFFE27A), Color(0xFFFFCB3D), Color(0xFFE39A00)), Offset(0f, 0f), Offset(size.width, size.height)))
                 drawPath(hex, Color.White.copy(alpha = 0.5f), style = Stroke(r * 0.05f))
             } else {
                 drawPath(hex, C.tarjetaAlta)
                 drawPath(hex, C.borde, style = Stroke(r * 0.05f))
             }
         }
-        Ic(iconoLogro(icono), if (conseguido) Color(0xFF3A2500) else C.apagado, tam = tam * 0.44f)
+        Ic(iconoLogro(icono), if (conseguido) C.sobreOro else C.apagado, tam = tam * 0.44f)
     }
 }
 
 @Composable
-fun PantallaLogros(avance: Avance, logros: List<Logro>) {
-    val conseguidos = logros.count { it.cumplido(avance) }
+fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
+    val conseguidos = logros.count { it.cumplido(avance, testHecho) }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
@@ -106,8 +107,8 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>) {
             }
         }
         items(logros, key = { it.id }) { l ->
-            val ok = l.cumplido(avance)
-            val (h, t) = l.progreso(avance)
+            val ok = l.cumplido(avance, testHecho)
+            val (h, t) = l.progreso(avance, testHecho)
             Tarjeta(Modifier.fillMaxWidth(), fondo = if (ok) C.tarjetaAlta else C.tarjeta) {
                 Column(
                     Modifier.fillMaxWidth().heightIn(min = 196.dp).padding(14.dp),

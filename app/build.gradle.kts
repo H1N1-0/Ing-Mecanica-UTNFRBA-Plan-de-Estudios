@@ -56,10 +56,11 @@ android {
     }
 }
 
-// correlativas.json vive en la raíz del repo: se copia a los assets de la app en cada build.
-abstract class CopiarCorrelativas : DefaultTask() {
-    @get:InputFile
-    abstract val json: RegularFileProperty
+// correlativas.json, perfiles.json y frases.json viven en la raíz del repo (para editarlos fácil):
+// se copian a los assets de la app en cada build.
+abstract class CopiarDatos : DefaultTask() {
+    @get:InputFiles
+    abstract val jsons: ConfigurableFileCollection
 
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
@@ -68,17 +69,17 @@ abstract class CopiarCorrelativas : DefaultTask() {
     fun copiar() {
         val destino = outputDir.get().asFile
         destino.mkdirs()
-        json.get().asFile.copyTo(destino.resolve("correlativas.json"), overwrite = true)
+        jsons.files.forEach { it.copyTo(destino.resolve(it.name), overwrite = true) }
     }
 }
 
-val copiarCorrelativas = tasks.register<CopiarCorrelativas>("copiarCorrelativas") {
-    json.set(rootProject.layout.projectDirectory.file("correlativas.json"))
-    outputDir.set(layout.buildDirectory.dir("generated/correlativas"))
+val copiarDatos = tasks.register<CopiarDatos>("copiarDatos") {
+    jsons.from(listOf("correlativas.json", "perfiles.json", "frases.json").map { rootProject.file(it) })
+    outputDir.set(layout.buildDirectory.dir("generated/datos"))
 }
 
 extensions.getByType<ApplicationAndroidComponentsExtension>().onVariants { variant ->
-    variant.sources.assets?.addGeneratedSourceDirectory(copiarCorrelativas, CopiarCorrelativas::outputDir)
+    variant.sources.assets?.addGeneratedSourceDirectory(copiarDatos, CopiarDatos::outputDir)
 }
 
 dependencies {

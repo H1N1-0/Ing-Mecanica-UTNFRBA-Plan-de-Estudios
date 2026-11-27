@@ -211,7 +211,7 @@ private fun ContenidoMapa(avance: Avance, mapa: Mapa, onAbrir: (Int) -> Unit) {
         (0 until 5).forEach { f ->
             val top = (Mapa.MARGEN_Y + f * Mapa.PASO_Y - 22f) * d
             if (f % 2 == 0) {
-                drawRect(Color.White.copy(alpha = 0.025f), Offset(0f, top), androidx.compose.ui.geometry.Size(size.width, Mapa.PASO_Y * d))
+                drawRect(C.banda, Offset(0f, top), androidx.compose.ui.geometry.Size(size.width, Mapa.PASO_Y * d))
             }
         }
         val radio = TAM_NODO / 2 * d

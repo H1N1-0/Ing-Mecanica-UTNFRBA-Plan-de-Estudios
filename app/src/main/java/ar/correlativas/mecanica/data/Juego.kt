@@ -41,7 +41,7 @@ fun siguienteRango(r: Rango): Rango? = RANGOS.getOrNull(r.numero)
 
 // ---------------------------------------------------------------- logros
 
-enum class IconoLogro { PASO, FINAL, NIVEL, DECENA, MITAD, IDIOMA, ENGRANAJE, ELECTIVA, RELOJ, TITULO, PPS, PROYECTO, CORONA }
+enum class IconoLogro { PASO, FINAL, NIVEL, DECENA, MITAD, IDIOMA, ENGRANAJE, ELECTIVA, RELOJ, TITULO, PPS, PROYECTO, CORONA, BRUJULA }
 
 data class Logro(
     val id: String,
@@ -50,10 +50,16 @@ data class Logro(
     val icono: IconoLogro,
     /** Nivel de la carrera que completa, para la celebración especial. */
     val nivel: Int? = null,
-    /** (hecho, total) para mostrar el avance hacia el logro. */
-    val progreso: (Avance) -> Pair<Double, Double>,
+    /** Se consigue haciendo el test vocacional, no con materias. */
+    val porTest: Boolean = false,
+    /** (hecho, total) según las materias, para mostrar el avance hacia el logro. */
+    private val porMaterias: (Avance) -> Pair<Double, Double>,
 ) {
-    fun cumplido(a: Avance): Boolean = progreso(a).let { (h, t) -> h >= t }
+    /** (hecho, total) para mostrar el avance hacia el logro. */
+    fun progreso(a: Avance, testHecho: Boolean = false): Pair<Double, Double> =
+        if (porTest) (if (testHecho) 1.0 else 0.0) to 1.0 else porMaterias(a)
+
+    fun cumplido(a: Avance, testHecho: Boolean = false): Boolean = progreso(a, testHecho).let { (h, t) -> h >= t }
 }
 
 private fun Avance.aprobada(id: Int) = estado(id) == Estado.APROBADA
@@ -124,6 +130,10 @@ fun logros(plan: Plan): List<Logro> {
         Logro("ingeniero", "Ingeniero Mecánico", "Completá toda la carrera.", IconoLogro.CORONA) { a ->
             a.porcentajeCarrera to 1.0
         },
+        Logro(
+            "test", "Conocete", "Hacé el test «¿Qué ingeniero mecánico sos?».", IconoLogro.BRUJULA,
+            porTest = true,
+        ) { _ -> 0.0 to 1.0 },
     )
 }
 

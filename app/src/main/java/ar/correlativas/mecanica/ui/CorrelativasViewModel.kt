@@ -3,13 +3,19 @@ package ar.correlativas.mecanica.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Estado
+import ar.correlativas.mecanica.data.Frase
+import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.Logro
 import ar.correlativas.mecanica.data.Mapa
 import ar.correlativas.mecanica.data.Materia
+import ar.correlativas.mecanica.data.ModoTema
 import ar.correlativas.mecanica.data.Plan
+import ar.correlativas.mecanica.data.Preferencias
 import ar.correlativas.mecanica.data.Progreso
+import ar.correlativas.mecanica.data.TestVocacional
 import ar.correlativas.mecanica.data.logros
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,20 +32,28 @@ data class Desbloqueo(
     val materias: List<Materia>,
     val finales: List<Materia>,
     val logros: List<Logro>,
+    /** Frase para acompañar una materia aprobada. */
+    val frase: Frase? = null,
 ) {
     val nivelesCompletos: List<Int> get() = logros.mapNotNull { it.nivel }
-    val vacio get() = materias.isEmpty() && finales.isEmpty() && logros.isEmpty()
+    val vacio get() = materias.isEmpty() && finales.isEmpty() && logros.isEmpty() && frase == null
 }
 
 /** Qué cambió entre dos avances: materias y finales nuevos, y logros conseguidos. */
-fun calcularDesbloqueo(materia: Materia, antes: Avance, despues: Avance, todosLosLogros: List<Logro>): Desbloqueo {
+fun calcularDesbloqueo(
+    materia: Materia,
+    antes: Avance,
+    despues: Avance,
+    todosLosLogros: List<Logro>,
+    testHecho: Boolean = false,
+): Desbloqueo {
     val cursablesAntes = antes.cursables.map { it.id }.toSet()
     val rendiblesAntes = antes.rendibles.map { it.id }.toSet()
     return Desbloqueo(
         materia = materia,
         materias = despues.cursables.filter { it.id !in cursablesAntes && it.id != materia.id },
         finales = despues.rendibles.filter { it.id !in rendiblesAntes && it.id != materia.id },
-        logros = todosLosLogros.filter { it.cumplido(despues) && !it.cumplido(antes) },
+        logros = todosLosLogros.filter { it.cumplido(despues, testHecho) && !it.cumplido(antes, testHecho) },
     )
 }
 
@@ -47,11 +61,17 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     val plan: Plan = Plan.cargar(app)
     val mapa: Mapa = Mapa(plan)
     val logros: List<Logro> = logros(plan)
+    val frases: Frases = Frases.cargar(app)
+    val test: TestVocacional = TestVocacional.cargar(app)
     private val progreso = Progreso(app)
+    private val ajustes = Ajustes(app)
 
     /** null mientras DataStore no terminó de leer. */
     val avance: StateFlow<Avance?> = progreso.estados
         .map { Avance(plan, it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val preferencias: StateFlow<Preferencias?> = ajustes.preferencias
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _desbloqueo = MutableStateFlow<Desbloqueo?>(null)
@@ -64,13 +84,28 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
             if (antes.estado(id) == estado) return@launch
             progreso.cambiar(id, estado)
             val despues = Avance(plan, progreso.estados.first())
-            val d = calcularDesbloqueo(materia, antes, despues, logros)
+            val testHecho = preferencias.value?.perfil != null
+            val frase = if (estado == Estado.APROBADA) {
+                frases.paraMateria(id, semilla = id * 31L + System.currentTimeMillis() / 60_000)
+            } else null
+            val d = calcularDesbloqueo(materia, antes, despues, logros, testHecho).copy(frase = frase)
             if (!d.vacio) _desbloqueo.value = d
         }
     }
 
     fun cerrarDesbloqueo() {
         _desbloqueo.value = null
+    }
+
+    fun cambiarTema(tema: ModoTema) {
+        viewModelScope.launch { ajustes.cambiarTema(tema) }
+    }
+
+    /** Guarda el resultado del test. Devuelve los porcentajes calculados. */
+    fun terminarTest(respuestas: List<Int>): Map<String, Int> {
+        val porcentajes = test.calcular(respuestas)
+        viewModelScope.launch { ajustes.guardarPerfil(porcentajes, System.currentTimeMillis()) }
+        return porcentajes
     }
 
     fun borrarTodo() {

@@ -1,0 +1,242 @@
+{
+ "titulo": "¿Qué ingeniero mecánico sos?",
+ "ayuda": "Cada opción suma puntos a uno o más perfiles (campo \"puntos\"). El resultado es el porcentaje de puntos de cada perfil sobre el total. \"electivas\" usa los id de correlativas.json. \"icono\" es el nombre de un ícono de la app: llama, escuadra, fabrica, auto, robot, gota o grafico.",
+ "perfiles": [
+  {
+   "id": "termico",
+   "nombre": "Térmico / Energía",
+   "icono": "llama",
+   "color": "#FF7A2F",
+   "descripcion": "Te mueve la energía: cómo se genera, cómo se transforma y cómo aprovecharla sin desperdiciarla. Ves un motor, una caldera o un panel solar y pensás en ciclos y rendimientos.",
+   "trabajo": [
+    "Centrales térmicas y de energías renovables",
+    "Calderas, intercambiadores de calor y hornos industriales",
+    "Climatización y refrigeración de edificios y plantas",
+    "Eficiencia energética y auditorías de consumo"
+   ],
+   "referente": {
+    "nombre": "Sadi Carnot (1796-1832)",
+    "descripcion": "Ingeniero francés. En 1824 publicó «Reflexiones sobre la potencia motriz del fuego», donde mostró que el rendimiento de una máquina térmica depende de las temperaturas entre las que trabaja. Es el punto de partida de la termodinámica."
+   },
+   "electivas": [102, 111]
+  },
+  {
+   "id": "diseno",
+   "nombre": "Diseñador / Estructuras",
+   "icono": "escuadra",
+   "color": "#8B5CF6",
+   "descripcion": "Pensás en piezas, mecanismos y estructuras: que aguanten, que funcionen y que se puedan fabricar. Disfrutás de un buen cálculo y de un plano bien hecho.",
+   "trabajo": [
+    "Diseño de máquinas, mecanismos y equipos con CAD",
+    "Cálculo estructural y por elementos finitos",
+    "Desarrollo de productos y prototipos",
+    "Análisis de fallas y fatiga de componentes"
+   ],
+   "referente": {
+    "nombre": "Leonardo da Vinci (1452-1519)",
+    "descripcion": "Sus cuadernos están llenos de diseños de engranajes, mecanismos, puentes y máquinas, y de estudios sobre la resistencia de vigas y alambres, siglos antes de que existiera la resistencia de materiales."
+   },
+   "electivas": [107, 101]
+  },
+  {
+   "id": "fabricacion",
+   "nombre": "Fabricación / Producción",
+   "icono": "fabrica",
+   "color": "#06B6D4",
+   "descripcion": "Te interesa cómo se hacen las cosas: materiales, procesos, máquinas herramienta y la forma de producir más y mejor.",
+   "trabajo": [
+    "Mecanizado, conformado, soldadura y fundición",
+    "Ingeniería de procesos y de planta",
+    "Control de calidad y metrología",
+    "Mejora continua y producción eficiente"
+   ],
+   "referente": {
+    "nombre": "Henry Ford (1863-1947)",
+    "descripcion": "Empresario e ingeniero estadounidense. En 1913 puso en marcha la línea de montaje móvil en su planta de Highland Park, que bajó el tiempo de armado de un Ford T de más de 12 horas a cerca de hora y media."
+   },
+   "electivas": [104, 109]
+  },
+  {
+   "id": "automotriz",
+   "nombre": "Automotriz / Transporte",
+   "icono": "auto",
+   "color": "#EF4444",
+   "descripcion": "Autos, motos, trenes, camiones: todo lo que se mueve te atrae. Querés entender y mejorar motores, transmisiones, suspensiones y vehículos completos.",
+   "trabajo": [
+    "Terminales automotrices y autopartistas",
+    "Diseño y ensayo de motores y transmisiones",
+    "Material rodante ferroviario",
+    "Mantenimiento de flotas y maquinaria agrícola"
+   ],
+   "referente": {
+    "nombre": "Karl Benz (1844-1929)",
+    "descripcion": "Ingeniero alemán. En 1886 patentó su «Motorwagen», un vehículo de tres ruedas con motor de combustión interna, considerado el primer automóvil práctico."
+   },
+   "electivas": [114, 106, 108]
+  },
+  {
+   "id": "automatizacion",
+   "nombre": "Automatización / Control",
+   "icono": "robot",
+   "color": "#10B981",
+   "descripcion": "Te gusta que las máquinas hagan su trabajo solas y bien: sensores, controladores, robots y los programas que los coordinan.",
+   "trabajo": [
+    "Automatización de líneas de producción",
+    "Programación de PLC y robots industriales",
+    "Instrumentación y sistemas de control",
+    "Industria 4.0: datos y monitoreo de máquinas"
+   ],
+   "referente": {
+    "nombre": "Norbert Wiener (1894-1964)",
+    "descripcion": "Matemático estadounidense. En «Cibernética» (1948) estudió el control y la comunicación en máquinas y seres vivos, y la realimentación que hoy está en cualquier sistema automático."
+   },
+   "electivas": [105, 112, 103]
+  },
+  {
+   "id": "fluidos",
+   "nombre": "Fluidos / Instalaciones",
+   "icono": "gota",
+   "color": "#3B82F6",
+   "descripcion": "Agua, aire, vapor, aceite: te interesa cómo se mueven los fluidos y cómo diseñar las instalaciones que los llevan a donde hacen falta.",
+   "trabajo": [
+    "Instalaciones industriales de vapor, aire comprimido y gas",
+    "Bombas, compresores, turbinas y ventiladores",
+    "Oleoductos, gasoductos y acueductos",
+    "Ventilación, climatización y sistemas contra incendio"
+   ],
+   "referente": {
+    "nombre": "Daniel Bernoulli (1700-1782)",
+    "descripcion": "Matemático y físico suizo. En «Hydrodynamica» (1738) relacionó la presión y la velocidad de un fluido en movimiento: el principio que lleva su nombre."
+   },
+   "electivas": [113, 111]
+  },
+  {
+   "id": "gestion",
+   "nombre": "Gestión / Mantenimiento",
+   "icono": "grafico",
+   "color": "#EAB308",
+   "descripcion": "Ves el panorama completo: personas, costos, plazos y máquinas. Te gusta organizar, planificar y que todo funcione sin sorpresas.",
+   "trabajo": [
+    "Mantenimiento preventivo y predictivo",
+    "Jefatura de planta y de producción",
+    "Gestión de proyectos de ingeniería",
+    "Seguridad, higiene y gestión ambiental"
+   ],
+   "referente": {
+    "nombre": "Frederick W. Taylor (1856-1915)",
+    "descripcion": "Ingeniero mecánico estadounidense. En «Principios de la administración científica» (1911) propuso estudiar y medir el trabajo para organizar la producción, la base de la ingeniería industrial."
+   },
+   "electivas": [110, 116]
+  }
+ ],
+ "preguntas": [
+  {
+   "texto": "Se rompe una máquina en la planta. ¿Qué hacés primero?",
+   "opciones": [
+    {"texto": "Reviso el historial de fallas y armo un plan para que no vuelva a pasar", "puntos": {"gestion": 2}},
+    {"texto": "Miro el tablero del PLC y busco qué sensor dio la alarma", "puntos": {"automatizacion": 2}},
+    {"texto": "Desarmo la pieza rota y miro por dónde se fisuró", "puntos": {"diseno": 2, "fabricacion": 1}},
+    {"texto": "Chequeo presiones, temperaturas y si hay alguna pérdida", "puntos": {"fluidos": 2, "termico": 1}}
+   ]
+  },
+  {
+   "texto": "¿Qué proyecto te copa más?",
+   "opciones": [
+    {"texto": "Diseñar el chasis de un auto de carrera", "puntos": {"automotriz": 2, "diseno": 1}},
+    {"texto": "Una central solar térmica para un pueblo aislado", "puntos": {"termico": 2}},
+    {"texto": "Una línea que arme 500 piezas por hora", "puntos": {"fabricacion": 2, "automatizacion": 1}},
+    {"texto": "La red de agua, vapor y aire de una fábrica entera", "puntos": {"fluidos": 2}}
+   ]
+  },
+  {
+   "texto": "¿Qué materia esperás (o esperaste) con más ganas?",
+   "opciones": [
+    {"texto": "Termodinámica", "puntos": {"termico": 2}},
+    {"texto": "Estabilidad", "puntos": {"diseno": 2}},
+    {"texto": "Mecánica de los Fluidos", "puntos": {"fluidos": 2}},
+    {"texto": "Organización Industrial", "puntos": {"gestion": 2}}
+   ]
+  },
+  {
+   "texto": "Te regalan un fin de semana libre. ¿Qué hacés?",
+   "opciones": [
+    {"texto": "Le meto mano al motor del auto o de la moto", "puntos": {"automotriz": 2}},
+    {"texto": "Programo un Arduino para que riegue las plantas solo", "puntos": {"automatizacion": 2}},
+    {"texto": "Voy a una feria de impresión 3D y mecanizado", "puntos": {"fabricacion": 2}},
+    {"texto": "Organizo un viaje con amigos y armo el presupuesto en una planilla", "puntos": {"gestion": 2}}
+   ]
+  },
+  {
+   "texto": "¿Qué herramienta te representa?",
+   "opciones": [
+    {"texto": "Un CAD con el modelo 3D perfecto", "puntos": {"diseno": 2}},
+    {"texto": "Una cámara termográfica", "puntos": {"termico": 2}},
+    {"texto": "Un calibre y un micrómetro", "puntos": {"fabricacion": 2}},
+    {"texto": "Un buen diagrama de Gantt", "puntos": {"gestion": 2}}
+   ]
+  },
+  {
+   "texto": "Un video que mirarías completo:",
+   "opciones": [
+    {"texto": "Cómo funciona una caja de cambios automática", "puntos": {"automotriz": 2}},
+    {"texto": "Robots soldando carrocerías en una terminal", "puntos": {"automatizacion": 2, "automotriz": 1}},
+    {"texto": "Cómo se construye un oleoducto de mil kilómetros", "puntos": {"fluidos": 2}},
+    {"texto": "Por qué se cayó el puente de Tacoma Narrows", "puntos": {"diseno": 2}}
+   ]
+  },
+  {
+   "texto": "Hace 40 °C y el aire acondicionado no anda. ¿Qué pensás?",
+   "opciones": [
+    {"texto": "¿Tendrá bien la carga de refrigerante? Ya me imagino el ciclo", "puntos": {"termico": 2}},
+    {"texto": "Seguro es el compresor o una pérdida en la cañería", "puntos": {"fluidos": 2, "termico": 1}},
+    {"texto": "Le pondría un termostato inteligente para que no vuelva a pasar", "puntos": {"automatizacion": 2}},
+    {"texto": "Reviso cuándo fue el último service y llamo al técnico", "puntos": {"gestion": 2}}
+   ]
+  },
+  {
+   "texto": "¿Qué te gustaría haber inventado?",
+   "opciones": [
+    {"texto": "El motor diésel", "puntos": {"automotriz": 2, "termico": 1}},
+    {"texto": "La turbina hidráulica", "puntos": {"fluidos": 2}},
+    {"texto": "La línea de montaje", "puntos": {"fabricacion": 2, "gestion": 1}},
+    {"texto": "El robot industrial", "puntos": {"automatizacion": 2}}
+   ]
+  },
+  {
+   "texto": "En un trabajo grupal, vos sos quien…",
+   "opciones": [
+    {"texto": "…arma el cronograma y reparte las tareas", "puntos": {"gestion": 2}},
+    {"texto": "…hace los cálculos y los planos", "puntos": {"diseno": 2}},
+    {"texto": "…construye el prototipo con sus manos", "puntos": {"fabricacion": 2}},
+    {"texto": "…programa la parte que se mueve sola", "puntos": {"automatizacion": 2}}
+   ]
+  },
+  {
+   "texto": "Elegí dónde hacer la PPS:",
+   "opciones": [
+    {"texto": "Una terminal automotriz", "puntos": {"automotriz": 2}},
+    {"texto": "Una central térmica o una refinería", "puntos": {"termico": 2, "fluidos": 1}},
+    {"texto": "Un taller de mecanizado CNC", "puntos": {"fabricacion": 2}},
+    {"texto": "Una consultora de cálculo estructural", "puntos": {"diseno": 2}}
+   ]
+  },
+  {
+   "texto": "¿Qué número te da más satisfacción ver?",
+   "opciones": [
+    {"texto": "El rendimiento de un ciclo subiendo un 5 %", "puntos": {"termico": 2}},
+    {"texto": "Un coeficiente de seguridad bien elegido", "puntos": {"diseno": 2}},
+    {"texto": "El caudal justo para que la bomba no cavite", "puntos": {"fluidos": 2}},
+    {"texto": "Cero paradas no programadas en el mes", "puntos": {"gestion": 2, "fabricacion": 1}}
+   ]
+  },
+  {
+   "texto": "Si tuvieras que viajar por el país por trabajo, preferirías…",
+   "opciones": [
+    {"texto": "Revisar locomotoras y vagones de un ferrocarril", "puntos": {"automotriz": 2}},
+    {"texto": "Automatizar plantas de alimentos", "puntos": {"automatizacion": 2}},
+    {"texto": "Poner en marcha las bombas de un acueducto", "puntos": {"fluidos": 2}},
+    {"texto": "Supervisar la producción de una metalúrgica", "puntos": {"fabricacion": 2, "gestion": 1}}
+   ]
+  }
+ ]
+}
