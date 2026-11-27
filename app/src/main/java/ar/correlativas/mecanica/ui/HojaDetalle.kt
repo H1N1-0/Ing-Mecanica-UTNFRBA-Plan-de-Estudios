@@ -63,7 +63,7 @@ fun HojaDetalle(
         containerColor = C.fondoAlto,
         contentColor = C.texto,
         dragHandle = {
-            Box(Modifier.padding(top = 10.dp, bottom = 4.dp).size(width = 42.dp, height = 5.dp).clip(RoundedCornerShape(50)).background(C.borde))
+            Box(Modifier.padding(top = 10.dp, bottom = 4.dp).size(width = 42.dp, height = 5.dp).clip(C.formas.pildora).background(C.borde))
         },
     ) {
         ContenidoDetalle(materia, avance, onCambio, onAbrir, Modifier.verticalScroll(scroll))
@@ -92,7 +92,7 @@ fun ContenidoDetalle(
                         Tipo.ELECTIVA -> "ELECTIVA" + (materia.nivel?.let { " · NIVEL $it" } ?: "")
                     },
                     color = C.texto2,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.5.sp,
@@ -147,14 +147,14 @@ fun ContenidoDetalle(
             }
         } else {
             avance.plan.reglas["pps"]?.let {
-                Text(it, color = C.texto2, fontFamily = Chakra, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
+                Text(it, color = C.texto2, fontFamily = C.fuente, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
             }
         }
 
         val habilita = remember(avance, materia.id) { avance.habilita(materia.id) }
         Titulo("Desbloquea", R.drawable.ic_candado, C.oro, extra = habilita.size.takeIf { it > 0 }?.toString())
         if (habilita.isEmpty()) {
-            Text("No es correlativa de ninguna materia.", color = C.texto2, fontFamily = Chakra, fontSize = 14.sp)
+            Text("No es correlativa de ninguna materia.", color = C.texto2, fontFamily = C.fuente, fontSize = 14.sp)
         } else {
             habilita.forEach { h ->
                 val partes = buildList {
@@ -195,9 +195,9 @@ private fun Banner(materia: Materia, avance: Avance, e: EstadoNodo) {
         Modifier
             .padding(top = 14.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(C.formas.media)
             .background(color.copy(alpha = 0.10f))
-            .border(1.dp, color.copy(alpha = 0.35f), RoundedCornerShape(14.dp))
+            .border(1.dp, color.copy(alpha = 0.35f), C.formas.media)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -205,8 +205,8 @@ private fun Banner(materia: Materia, avance: Avance, e: EstadoNodo) {
             Ic(iconoEstado(e), color, tam = 20.dp)
         }
         Column(Modifier.padding(start = 12.dp)) {
-            Text(titulo, color = color, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(texto, color = C.texto, fontFamily = Chakra, fontSize = 14.sp, lineHeight = 18.sp)
+            Text(titulo, color = color, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(texto, color = C.texto, fontFamily = C.fuente, fontSize = 14.sp, lineHeight = 18.sp)
         }
     }
 }
@@ -224,7 +224,7 @@ private fun Titulo(texto: String, icono: Int, color: Color, extra: String? = nul
 private fun Condicion(texto: String, cumple: Boolean) {
     Row(Modifier.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
         Marca(cumple)
-        Text(texto, Modifier.padding(start = 10.dp), color = C.texto, fontFamily = Chakra, fontSize = 15.sp)
+        Text(texto, Modifier.padding(start = 10.dp), color = C.texto, fontFamily = C.fuente, fontSize = 15.sp)
     }
 }
 
@@ -242,7 +242,7 @@ private fun Requisitos(r: Requisitos, avance: Avance, onAbrir: (Int) -> Unit) {
     if (r.vacio) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Marca(true)
-            Text("Sin correlativas", Modifier.padding(start = 10.dp), color = C.texto2, fontFamily = Chakra, fontSize = 15.sp)
+            Text("Sin correlativas", Modifier.padding(start = 10.dp), color = C.texto2, fontFamily = C.fuente, fontSize = 15.sp)
         }
         return
     }
@@ -258,7 +258,7 @@ private fun Lista(titulo: String, nivel: Nivel, ids: List<Int>, avance: Avance, 
         titulo.uppercase(),
         Modifier.padding(top = 8.dp, bottom = 2.dp),
         color = color,
-        fontFamily = Chakra,
+        fontFamily = C.fuente,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
         letterSpacing = 1.5.sp,
@@ -283,15 +283,15 @@ private fun FilaMateria(m: Materia, avance: Avance, detalle: String, cumple: Boo
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(C.formas.chica)
             .clickable { onAbrir(m.id) }
             .padding(vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.padding(top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 38.dp, animado = false) }
         Column(Modifier.padding(start = 10.dp).weight(1f)) {
-            Text(m.nombre, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
-            Text(detalle, color = C.texto2, fontFamily = Chakra, fontSize = 13.sp)
+            Text(m.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
+            Text(detalle, color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)
         }
         if (cumple != null) Marca(cumple)
     }

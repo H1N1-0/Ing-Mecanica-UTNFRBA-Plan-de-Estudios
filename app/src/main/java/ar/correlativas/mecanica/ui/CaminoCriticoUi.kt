@@ -63,18 +63,18 @@ fun InsigniaCuello(tam: Dp, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier: Modifier = Modifier) {
-    Tarjeta(modifier.fillMaxWidth()) {
+    Tarjeta(modifier.fillMaxWidth(), cota = "CADENA CRÍTICA") {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(C.critico.copy(alpha = 0.16f)),
+                    Modifier.size(30.dp).clip(C.formas.mini).background(C.critico.copy(alpha = 0.16f)),
                     contentAlignment = Alignment.Center,
                 ) { Ic(R.drawable.ic_ruta, C.critico, tam = 18.dp) }
                 Text(
                     "CAMINO CRÍTICO",
                     Modifier.padding(start = 8.dp).weight(1f),
                     color = C.critico,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.5.sp,
@@ -87,19 +87,19 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
                     if (finales == 0) "¡No te queda nada por cursar ni rendir!" else "Ya cursaste todo: te quedan ${textoMaterias(finales)} por aprobar.",
                     Modifier.padding(top = 10.dp),
                     color = C.texto,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 17.sp,
                 )
                 return@Column
             }
             Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.Bottom) {
-                Text("$anios", color = C.critico, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 44.sp, lineHeight = 44.sp)
+                Text("$anios", color = C.critico, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 44.sp, lineHeight = 44.sp)
                 Text(
                     if (anios == 1) " año de cursada" else " años de cursada",
                     Modifier.padding(bottom = 6.dp),
                     color = C.texto,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                 )
@@ -107,7 +107,7 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
             Text(
                 "Con tu avance actual, te quedan como mínimo ${textoAnios(anios)} de cursada (cada paso de la cadena es una cursada).",
                 color = C.texto2,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontSize = 13.5.sp,
                 lineHeight = 18.sp,
             )
@@ -122,12 +122,12 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
                         Text(
                             m.nombre,
                             Modifier
-                                .clip(RoundedCornerShape(8.dp))
+                                .clip(C.formas.mini)
                                 .background(C.critico.copy(alpha = 0.12f))
-                                .border(1.dp, C.critico.copy(alpha = 0.45f), RoundedCornerShape(8.dp))
+                                .border(1.dp, C.critico.copy(alpha = 0.45f), C.formas.mini)
                                 .padding(horizontal = 8.dp, vertical = 4.dp),
                             color = C.texto,
-                            fontFamily = Chakra,
+                            fontFamily = C.fuente,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 12.5.sp,
                             maxLines = 1,
@@ -142,14 +142,14 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
             Row(
                 Modifier
                     .padding(top = 14.dp)
-                    .clip(RoundedCornerShape(50))
+                    .clip(C.formas.pildora)
                     .background(C.critico)
                     .clickable(role = Role.Button, onClick = onVerMapa)
                     .padding(horizontal = 14.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Ic(R.drawable.ic_mapa, C.fondo, tam = 16.dp)
-                Text("Ver en el mapa", Modifier.padding(start = 6.dp), color = C.fondo, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text("Ver en el mapa", Modifier.padding(start = 6.dp), color = C.fondo, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 14.sp)
             }
         }
     }
@@ -160,22 +160,20 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
 fun TarjetaPrioridad(critico: CaminoCritico, avance: Avance, onAbrir: (Int) -> Unit, modifier: Modifier = Modifier) {
     // prioridades() simula aprobar cada candidata: se calcula una vez por cambio de avance.
     val prioridades = remember(critico) { critico.prioridades(3) }
-    Box(
-        modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(C.tarjeta)
-            .border(1.5.dp, Brush.linearGradient(listOf(C.critico, C.oro)), RoundedCornerShape(20.dp)),
+    Tarjeta(
+        modifier.fillMaxWidth(),
+        borde = Brush.linearGradient(listOf(C.critico, C.oro)),
+        cota = "ORDEN DE TRABAJO",
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(C.oro.copy(alpha = 0.18f)),
+                    Modifier.size(30.dp).clip(C.formas.mini).background(C.oro.copy(alpha = 0.18f)),
                     contentAlignment = Alignment.Center,
                 ) { Ic(R.drawable.ic_bandera, C.oro, tam = 18.dp) }
                 Column(Modifier.padding(start = 8.dp).weight(1f)) {
-                    Text("PRIORIDAD", color = C.oro, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
-                    Text("Lo que más conviene aprobar ahora", color = C.texto2, fontFamily = Chakra, fontSize = 12.5.sp)
+                    Text("PRIORIDAD", color = C.oro, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
+                    Text("Lo que más conviene aprobar ahora", color = C.texto2, fontFamily = C.fuente, fontSize = 12.5.sp)
                 }
             }
             if (prioridades.isEmpty()) {
@@ -183,7 +181,7 @@ fun TarjetaPrioridad(critico: CaminoCritico, avance: Avance, onAbrir: (Int) -> U
                     "No hay materias pendientes que traben a otras.",
                     Modifier.padding(top = 10.dp),
                     color = C.texto2,
-                    fontFamily = Chakra,
+                    fontFamily = C.fuente,
                     fontSize = 14.sp,
                 )
             }
@@ -209,7 +207,7 @@ private fun FilaPrioridad(
         Modifier
             .padding(top = 10.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(C.formas.media)
             .background(C.tarjetaAlta.copy(alpha = if (C.oscuro) 0.55f else 0.7f))
             .clickable(onClickLabel = "Ver detalle") { onAbrir(m.id) }
             .padding(10.dp),
@@ -222,14 +220,14 @@ private fun FilaPrioridad(
                 .background(if (puesto == 1) C.degradeOro else Brush.linearGradient(listOf(C.borde, C.borde))),
             contentAlignment = Alignment.Center,
         ) {
-            Text("$puesto", color = if (puesto == 1) C.sobreOro else C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("$puesto", color = if (puesto == 1) C.sobreOro else C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         }
         Box(Modifier.padding(start = 10.dp, top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 38.dp, animado = false) }
         Column(Modifier.padding(start = 8.dp).weight(1f)) {
             Text(
                 m.nombre,
                 color = C.texto,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,
                 lineHeight = 18.sp,
@@ -243,7 +241,7 @@ private fun FilaPrioridad(
                     if (abreYa > 0) append(" · te abre ${textoMaterias(abreYa)} ya")
                 },
                 color = C.texto2,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontSize = 12.5.sp,
             )
             if (enCamino || cuello) {
@@ -254,8 +252,8 @@ private fun FilaPrioridad(
             }
         }
         Column(Modifier.padding(start = 8.dp), horizontalAlignment = Alignment.End) {
-            Text("$traba", color = C.critico, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 26.sp, lineHeight = 26.sp)
-            Text("destraba", color = C.texto2, fontFamily = Chakra, fontSize = 11.sp)
+            Text("$traba", color = C.critico, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 26.sp, lineHeight = 26.sp)
+            Text("destraba", color = C.texto2, fontFamily = C.fuente, fontSize = 11.sp)
         }
     }
 }
@@ -285,9 +283,9 @@ fun BloqueCritico(materia: Materia, avance: Avance, modifier: Modifier = Modifie
         modifier
             .padding(top = 10.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(C.formas.media)
             .background(color.copy(alpha = 0.08f))
-            .border(1.dp, color.copy(alpha = 0.35f), RoundedCornerShape(14.dp))
+            .border(1.dp, color.copy(alpha = 0.35f), C.formas.media)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -295,8 +293,8 @@ fun BloqueCritico(materia: Materia, avance: Avance, modifier: Modifier = Modifie
             Ic(if (cuello) R.drawable.ic_cuello else R.drawable.ic_ruta, color, tam = 20.dp)
         }
         Column(Modifier.padding(start = 12.dp).weight(1f)) {
-            Text(titulo, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 19.sp)
-            Text(detalle, color = C.texto2, fontFamily = Chakra, fontSize = 13.5.sp, lineHeight = 17.sp)
+            Text(titulo, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 19.sp)
+            Text(detalle, color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp, lineHeight = 17.sp)
             if (cuello || enCamino) {
                 Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (cuello) Pildora("Cuello de botella", C.critico, icono = R.drawable.ic_cuello)

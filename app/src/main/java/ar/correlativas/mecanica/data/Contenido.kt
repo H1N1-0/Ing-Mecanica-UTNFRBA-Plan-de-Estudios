@@ -8,10 +8,42 @@ import kotlin.random.Random
 
 // ---------------------------------------------------------------- frases
 
+/** Área del autor de una frase: define el color y el ícono de su medallón. */
+enum class Area(val clave: String, val nombre: String) {
+    FISICA("fisica", "Física"),
+    MATEMATICA("matematica", "Matemática"),
+    ENERGIA("energia", "Energía y calor"),
+    INGENIERIA("ingenieria", "Ingeniería y diseño"),
+    ELECTRICIDAD("electricidad", "Electricidad"),
+    COMPUTACION("computacion", "Computación y control"),
+    INDUSTRIA("industria", "Industria y gestión"),
+    CIENCIAS("ciencias", "Química, vida y naturaleza"),
+    HUMANIDADES("humanidades", "Filosofía y letras");
+
+    companion object {
+        /** Sin área o con una desconocida, el medallón usa Humanidades (el grupo más general). */
+        fun de(clave: String?): Area = entries.firstOrNull { it.clave == clave } ?: HUMANIDADES
+    }
+}
+
+/**
+ * Iniciales para el medallón: primera letra del primer y del último nombre, sin lo que va
+ * entre paréntesis ("William Thomson (Lord Kelvin)" → "WT"). Un solo nombre → dos letras ("Séneca" → "SÉ").
+ */
+fun iniciales(autor: String): String {
+    val palabras = autor.replace(Regex("\\(.*?\\)"), " ").split(' ').filter { it.isNotBlank() }
+    if (palabras.isEmpty()) return "?"
+    if (palabras.size == 1) return palabras[0].take(2).uppercase()
+    // El apellido es la última palabra que no es una inicial ("Thomas A. Edison" → Edison).
+    val apellido = palabras.drop(1).lastOrNull { !it.endsWith('.') } ?: palabras.last()
+    return ("" + palabras[0].first() + apellido.first()).uppercase()
+}
+
 data class Frase(
     val id: Int,
     val texto: String,
     val autor: String,
+    val area: Area,
     val fuente: String,
     /** true si la fuente es verificable; false si es una atribución popular. */
     val verificable: Boolean,
@@ -54,6 +86,7 @@ class Frases(val todas: List<Frase>) {
                     id = o.getInt("id"),
                     texto = o.getString("texto"),
                     autor = o.getString("autor"),
+                    area = Area.de(o.optString("area")),
                     fuente = o.optString("fuente"),
                     verificable = o.optString("verificacion") == "verificable",
                     nota = o.optString("nota").takeIf { it.isNotEmpty() },

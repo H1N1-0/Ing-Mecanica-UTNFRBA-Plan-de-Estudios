@@ -12,6 +12,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.ModoTema
 import ar.correlativas.mecanica.ui.AppCorrelativas
 import ar.correlativas.mecanica.ui.CorrelativasViewModel
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val preferencias by vm.preferencias.collectAsStateWithLifecycle()
             val modo = preferencias?.tema ?: ModoTema.SISTEMA
+            val estilo = preferencias?.estilo ?: Estilo.PREDETERMINADO
             val oscuro = esOscuro(modo)
             // Íconos de las barras del sistema claros u oscuros según el tema elegido.
             DisposableEffect(oscuro) {
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
             }
             // Tamaño de pantalla: celular, tablet, horizontal. Se recalcula al girar.
             val ventana = calculateWindowSizeClass(this)
-            TemaJuego(modo) { AppCorrelativas(vm, ventana) }
+            TemaJuego(modo, estilo) { AppCorrelativas(vm, ventana) }
         }
     }
 }

@@ -72,8 +72,8 @@ fun Insignia(icono: IconoLogro, conseguido: Boolean, tam: Dp = 64.dp, modifier: 
                 close()
             }
             if (conseguido) {
-                drawCircle(Color(0xFFFFCB3D).copy(alpha = 0.25f), radius = r * 1.08f)
-                drawPath(hex, Brush.linearGradient(listOf(Color(0xFFFFE27A), Color(0xFFFFCB3D), Color(0xFFE39A00)), Offset(0f, 0f), Offset(size.width, size.height)))
+                drawCircle(C.oro.copy(alpha = 0.25f), radius = r * 1.08f)
+                drawPath(hex, C.degradeOro)
                 drawPath(hex, Color.White.copy(alpha = 0.5f), style = Stroke(r * 0.05f))
             } else {
                 drawPath(hex, C.tarjetaAlta)
@@ -102,7 +102,7 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
                 }
                 Column(Modifier.padding(start = 14.dp)) {
                     Text("Logros", style = MaterialTheme.typography.headlineMedium, color = C.texto, modifier = Modifier.semantics { heading() })
-                    Text("$conseguidos de ${logros.size} conseguidos", color = C.texto2, fontFamily = Chakra, fontSize = 15.sp)
+                    Text("$conseguidos de ${logros.size} conseguidos", color = C.texto2, fontFamily = C.fuente, fontSize = 15.sp)
                 }
             }
         }
@@ -119,7 +119,7 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
                         l.titulo,
                         Modifier.padding(top = 10.dp),
                         color = if (ok) C.oro else C.texto,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
@@ -128,7 +128,7 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
                         l.descripcion,
                         Modifier.padding(top = 2.dp),
                         color = C.texto2,
-                        fontFamily = Chakra,
+                        fontFamily = C.fuente,
                         fontSize = 12.5.sp,
                         lineHeight = 15.sp,
                         textAlign = TextAlign.Center,
@@ -144,7 +144,7 @@ fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
                                 else -> "${formatearHoras(h)} de ${formatearHoras(t)}"
                             },
                             color = C.apagado,
-                            fontFamily = Chakra,
+                            fontFamily = C.fuente,
                             fontSize = 12.sp,
                             modifier = Modifier.padding(top = 4.dp),
                         )

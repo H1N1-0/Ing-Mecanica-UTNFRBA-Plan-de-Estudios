@@ -93,7 +93,7 @@ fun PantallaLista(
                 value = busqueda,
                 onValueChange = { busqueda = it },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                placeholder = { Text("Buscar materia o número", fontFamily = Chakra) },
+                placeholder = { Text("Buscar materia o número", fontFamily = C.fuente) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = C.texto2) },
                 trailingIcon = {
                     if (busqueda.isNotEmpty()) {
@@ -101,7 +101,7 @@ fun PantallaLista(
                     }
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
+                shape = C.formas.media,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = C.tarjeta,
                     unfocusedContainerColor = C.tarjeta,
@@ -127,15 +127,15 @@ fun PantallaLista(
                     val color = e?.let { colorEstado(it) } ?: C.texto
                     Row(
                         Modifier
-                            .clip(RoundedCornerShape(50))
+                            .clip(C.formas.pildora)
                             .background(if (elegido) color.copy(alpha = 0.2f) else C.tarjeta)
-                            .border(1.dp, if (elegido) color else C.borde, RoundedCornerShape(50))
+                            .border(1.dp, if (elegido) color else C.borde, C.formas.pildora)
                             .clickable { onFiltro(e) }
                             .padding(horizontal = 12.dp, vertical = 7.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         if (e != null) Ic(iconoEstado(e), color, tam = 14.dp, modifier = Modifier.padding(end = 6.dp))
-                        Text(texto, color = if (elegido) color else C.texto2, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Text(texto, color = if (elegido) color else C.texto2, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                     }
                 }
             }
@@ -143,7 +143,7 @@ fun PantallaLista(
         }
         LazyColumn(Modifier.fillMaxSize(), state = scroll, contentPadding = PaddingValues(bottom = 24.dp)) {
             if (grupos.isEmpty()) {
-                item { Text("No hay materias con ese filtro.", Modifier.padding(24.dp), color = C.texto2, fontFamily = Chakra) }
+                item { Text("No hay materias con ese filtro.", Modifier.padding(24.dp), color = C.texto2, fontFamily = C.fuente) }
             }
             grupos.forEach { g ->
                 stickyHeader(key = "h-${g.titulo}", contentType = "nivel") {
@@ -151,8 +151,8 @@ fun PantallaLista(
                         Modifier.fillMaxWidth().background(C.fondo).padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(g.titulo.uppercase(), color = C.texto2, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 2.sp, modifier = Modifier.weight(1f).semantics { heading() })
-                        Text("${g.materias.size}", color = C.apagado, fontFamily = Chakra, fontSize = 13.sp)
+                        Text(g.titulo.uppercase(), color = C.texto2, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 2.sp, modifier = Modifier.weight(1f).semantics { heading() })
+                        Text("${g.materias.size}", color = C.apagado, fontFamily = C.fuente, fontSize = 13.sp)
                     }
                 }
                 items(g.materias, key = { it.id }, contentType = { "materia" }) { m -> FilaLista(m, avance, m.id == seleccionada, onCambio, onAbrir) }
@@ -177,7 +177,7 @@ private fun FilaLista(m: Materia, avance: Avance, elegida: Boolean, onCambio: (I
             Text(
                 m.nombre,
                 color = if (e == EstadoNodo.BLOQUEADA) C.texto2 else C.texto,
-                fontFamily = Chakra,
+                fontFamily = C.fuente,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.5.sp,
                 lineHeight = 19.sp,
@@ -185,13 +185,13 @@ private fun FilaLista(m: Materia, avance: Avance, elegida: Boolean, onCambio: (I
                 overflow = TextOverflow.Ellipsis,
             )
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
-                Text(textoEstado(e, m.tipo == Tipo.PPS), color = colorEstado(e), fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 12.5.sp)
+                Text(textoEstado(e, m.tipo == Tipo.PPS), color = colorEstado(e), fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 12.5.sp)
                 val extra = when {
                     e == EstadoNodo.BLOQUEADA -> avance.faltantesCursar(m).size.let { " · faltan $it" }
                     m.tipo == Tipo.ELECTIVA -> " · " + (m.horasAnuales?.let { "${formatearHoras(it)} hs" } ?: "hs sin dato")
                     else -> ""
                 }
-                Text(extra, color = C.apagado, fontFamily = Chakra, fontSize = 12.5.sp, maxLines = 1)
+                Text(extra, color = C.apagado, fontFamily = C.fuente, fontSize = 12.5.sp, maxLines = 1)
             }
         }
         Spacer(Modifier.height(1.dp))

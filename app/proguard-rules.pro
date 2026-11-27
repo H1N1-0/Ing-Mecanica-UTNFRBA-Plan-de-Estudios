@@ -13,3 +13,6 @@
 # Stack traces legibles en los reportes (el mapping queda en app/build/outputs/mapping/release).
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# El estilo visual también se guarda por nombre (Ajustes).
+-keep enum ar.correlativas.mecanica.data.Estilo { *; }

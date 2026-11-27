@@ -1,6 +1,8 @@
 package ar.correlativas.mecanica.ui
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.layout.height
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -61,7 +63,10 @@ import kotlin.random.Random
 @Composable
 fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (Int) -> Unit) {
     val haptico = LocalHapticFeedback.current
-    val festejo = d.logros.isNotEmpty()
+    // Cómo se festeja depende del estilo: confeti (Gamificado, con logros), engranajes que giran
+    // (Plano técnico, siempre) o una entrada suave (Material).
+    val mov = C.movimiento
+    val confeti = mov.festejo == Festejo.CONFETI && d.logros.isNotEmpty()
     Dialog(
         onDismissRequest = onCerrar,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -69,10 +74,14 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
         val entrada = remember(d) { Animatable(0f) }
         LaunchedEffect(d) {
             haptico.performHapticFeedback(HapticFeedbackType.LongPress)
-            entrada.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow))
+            entrada.animateTo(
+                1f,
+                if (mov.rebote) spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow)
+                else tween(mov.normal, easing = FastOutSlowInEasing),
+            )
         }
         Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f)).clickable(onClick = onCerrar, indication = null, interactionSource = null), contentAlignment = Alignment.Center) {
-            if (festejo) Confeti(Modifier.fillMaxSize())
+            if (confeti) Confeti(Modifier.fillMaxSize())
             Column(
                 Modifier
                     .padding(24.dp)
@@ -84,14 +93,15 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
                         scaleX = 0.85f + 0.15f * v
                         scaleY = 0.85f + 0.15f * v
                     }
-                    .clip(RoundedCornerShape(26.dp))
+                    .clip(C.formas.grande)
                     .background(C.fondoAlto)
-                    .border(1.5.dp, Brush.linearGradient(listOf(C.disponible, C.violeta, C.oro)), RoundedCornerShape(26.dp))
+                    .border(1.5.dp, Brush.linearGradient(listOf(C.disponible, C.violeta, C.oro)), C.formas.grande)
                     .clickable(enabled = false) {}
                     .verticalScroll(rememberScrollState())
                     .padding(22.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if (mov.festejo == Festejo.ENGRANAJES) EngranajesGirando(Modifier.fillMaxWidth().height(110.dp))
                 Encabezado(d, avance)
                 if (d.materias.isNotEmpty()) {
                     Subtitulo("Materias nuevas para cursar", C.disponible, R.drawable.ic_rayo)
@@ -107,8 +117,8 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
                         Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                             Insignia(l.icono, true, tam = 46.dp)
                             Column(Modifier.padding(start = 12.dp)) {
-                                Text(l.titulo, color = C.oro, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                Text(l.descripcion, color = C.texto2, fontFamily = Chakra, fontSize = 13.sp, lineHeight = 16.sp)
+                                Text(l.titulo, color = C.oro, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(l.descripcion, color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp, lineHeight = 16.sp)
                             }
                         }
                     }
@@ -118,35 +128,37 @@ fun Celebracion(d: Desbloqueo, avance: Avance, onCerrar: () -> Unit, onAbrir: (I
                         Modifier
                             .padding(top = 18.dp)
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(14.dp))
+                            .clip(C.formas.media)
                             .background(C.violeta.copy(alpha = 0.10f))
-                            .border(1.dp, C.violeta.copy(alpha = 0.3f), RoundedCornerShape(14.dp))
+                            .border(1.dp, C.violeta.copy(alpha = 0.3f), C.formas.media)
                             .padding(14.dp),
                     ) {
-                        Ic(R.drawable.ic_comillas, C.violeta, tam = 18.dp)
                         Text(
                             f.texto,
                             Modifier.padding(top = 6.dp),
                             color = C.texto,
-                            fontFamily = Chakra,
+                            fontFamily = C.fuente,
                             fontWeight = FontWeight.Medium,
                             fontSize = 15.sp,
                             lineHeight = 20.sp,
                         )
-                        Text("— ${f.autor}", Modifier.padding(top = 6.dp), color = C.violeta, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Medallon(f.autor, f.area, tam = 40.dp)
+                            Text(f.autor, Modifier.padding(start = 12.dp), color = colorArea(f.area), fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        }
                     }
                 }
                 Box(
                     Modifier
                         .padding(top = 18.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(Brush.horizontalGradient(listOf(C.disponible, C.violeta)))
+                        .clip(C.formas.media)
+                        .background(if (mov.festejo == Festejo.CONFETI) Brush.horizontalGradient(listOf(C.disponible, C.violeta)) else Brush.linearGradient(listOf(C.disponible, C.disponible)))
                         .clickable(role = Role.Button, onClick = onCerrar)
                         .padding(vertical = 14.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("¡Vamos!", color = if (C.oscuro) C.fondo else Color.White, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text("¡Vamos!", color = C.sobreAcento, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 17.sp)
                 }
             }
         }
@@ -182,7 +194,7 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
         },
         Modifier.padding(top = 12.dp).semantics { heading() },
         color = C.texto,
-        fontFamily = Chakra,
+        fontFamily = C.fuente,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 28.sp,
@@ -197,7 +209,7 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
         "$accion ${d.materia.nombre}",
         Modifier.padding(top = 4.dp),
         color = C.texto2,
-        fontFamily = Chakra,
+        fontFamily = C.fuente,
         fontSize = 15.sp,
         textAlign = TextAlign.Center,
     )
@@ -207,7 +219,7 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
 private fun Subtitulo(texto: String, color: Color, icono: Int) {
     Row(Modifier.fillMaxWidth().padding(top = 18.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Ic(icono, color, tam = 16.dp)
-        Text(texto.uppercase(), Modifier.padding(start = 6.dp), color = color, fontFamily = Chakra, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
+        Text(texto.uppercase(), Modifier.padding(start = 6.dp), color = color, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.5.sp)
     }
 }
 
@@ -225,7 +237,7 @@ private fun Entrada(m: Materia, avance: Avance, indice: Int, onAbrir: (Int) -> U
                 alpha = anim.value
                 translationX = (1 - anim.value) * 40.dp.toPx()
             }
-            .clip(RoundedCornerShape(12.dp))
+            .clip(C.formas.chica)
             .background(C.tarjeta)
             .clickable { onAbrir(m.id) }
             .padding(10.dp),
@@ -233,8 +245,8 @@ private fun Entrada(m: Materia, avance: Avance, indice: Int, onAbrir: (Int) -> U
     ) {
         Box(Modifier.padding(top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 40.dp) }
         Column(Modifier.padding(start = 10.dp)) {
-            Text(m.nombre, color = C.texto, fontFamily = Chakra, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
-            Text(m.nivel?.let { "Nivel $it" } ?: "Electiva", color = C.texto2, fontFamily = Chakra, fontSize = 12.sp)
+            Text(m.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
+            Text(m.nivel?.let { "Nivel $it" } ?: "Electiva", color = C.texto2, fontFamily = C.fuente, fontSize = 12.sp)
         }
     }
     androidx.compose.foundation.layout.Spacer(Modifier.size(6.dp))
