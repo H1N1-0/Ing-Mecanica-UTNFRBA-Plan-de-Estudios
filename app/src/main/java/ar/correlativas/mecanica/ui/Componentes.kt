@@ -102,7 +102,7 @@ fun Nodo(
             drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.bloqueada else C.fondoAlto, radius = r)
             if (estado == EstadoNodo.APROBADA) {
                 drawCircle(
-                    Brush.radialGradient(listOf(Color(0xFFFFE89A), C.oro, C.oroOscuro), center = Offset(r * 0.7f, r * 0.6f), radius = r * 1.6f),
+                    Brush.radialGradient(listOf(Color(0xFFFFE89A), Color(0xFFFFCB3D), Color(0xFFE39A00)), center = Offset(r * 0.7f, r * 0.6f), radius = r * 1.6f),
                     radius = r,
                 )
             } else if (carga > 0f) {
@@ -118,7 +118,7 @@ fun Nodo(
             numero,
             Modifier.align(Alignment.Center),
             color = when (estado) {
-                EstadoNodo.APROBADA -> Color(0xFF3A2500)
+                EstadoNodo.APROBADA -> C.sobreOro
                 EstadoNodo.BLOQUEADA -> C.bloqueadaTexto
                 EstadoNodo.DISPONIBLE -> C.disponible
                 else -> C.texto
@@ -145,13 +145,19 @@ fun Nodo(
 
 /** Anillo de progreso con degradé. */
 @Composable
-fun Anillo(progreso: Float, modifier: Modifier = Modifier, grosor: Dp = 14.dp, colores: List<Color> = listOf(C.disponible, C.violeta, C.rosa, C.oro, C.disponible)) {
+fun Anillo(
+    progreso: Float,
+    modifier: Modifier = Modifier,
+    grosor: Dp = 14.dp,
+    colores: List<Color> = listOf(C.disponible, C.violeta, C.rosa, C.oro, C.disponible),
+    pista: Color = C.pista,
+) {
     val p by animateFloatAsState(progreso.coerceIn(0f, 1f), tween(900, easing = FastOutSlowInEasing), label = "anillo")
     Canvas(modifier) {
         val g = grosor.toPx()
         val lado = size.minDimension - g
         val tl = Offset((size.width - lado) / 2, (size.height - lado) / 2)
-        drawArc(Color.White.copy(alpha = 0.10f), -90f, 360f, false, tl, Size(lado, lado), style = Stroke(g))
+        drawArc(pista, -90f, 360f, false, tl, Size(lado, lado), style = Stroke(g))
         if (p > 0f) {
             drawArc(
                 Brush.sweepGradient(colores, center = center), -90f, 360f * p, false, tl, Size(lado, lado),
@@ -163,7 +169,7 @@ fun Anillo(progreso: Float, modifier: Modifier = Modifier, grosor: Dp = 14.dp, c
 
 /** Barra de progreso redondeada. */
 @Composable
-fun Barra(progreso: Float, color: Color, modifier: Modifier = Modifier, alto: Dp = 8.dp, pista: Color = Color.White.copy(alpha = 0.10f)) {
+fun Barra(progreso: Float, color: Color, modifier: Modifier = Modifier, alto: Dp = 8.dp, pista: Color = C.pista) {
     val p by animateFloatAsState(progreso.coerceIn(0f, 1f), tween(700), label = "barra")
     Canvas(modifier.height(alto)) {
         val h = size.height

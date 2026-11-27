@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="fondo">#0A0E1F</color>
+    <color name="fondo">#F1F3FC</color>
     <color name="fondo_alto">#10162E</color>
     <color name="tarjeta">#161D3A</color>
     <color name="borde">#2B3566</color>
