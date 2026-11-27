@@ -45,6 +45,20 @@ class JuegoTest {
         assertFalse("nivel-2" in conseguidos)
     }
 
+    @Test fun tituloIntermedio() {
+        val logro = logros.first { it.id == "titulo-intermedio" }
+        val materias = plan.obligatorias.filter { (it.nivel ?: 9) <= 3 && it.id !in setOf(18, 22, 24) }
+        val base = materias.associate { it.id to Estado.APROBADA }
+        // Tecnología Mecánica (4 hs) + Diseño en 3D (2 hs) = 6 hs, sin 18, 22 ni 24.
+        assertTrue(logro.cumplido(avance(base + (104 to Estado.APROBADA) + (101 to Estado.APROBADA))))
+        // 6 hs pero sin Tecnología Mecánica: no alcanza.
+        assertFalse(logro.cumplido(avance(base + (102 to Estado.APROBADA) + (101 to Estado.APROBADA))))
+        // Tecnología Mecánica sola son 4 hs: no alcanza.
+        assertFalse(logro.cumplido(avance(base + (104 to Estado.APROBADA))))
+        // Falta una materia que sí pide (Estabilidad II).
+        assertFalse(logro.cumplido(avance(base - 19 + (104 to Estado.APROBADA) + (101 to Estado.APROBADA))))
+    }
+
     @Test fun desbloqueoAlAprobar() {
         val antes = avance(mapOf(1 to Estado.REGULARIZADA, 3 to Estado.REGULARIZADA))
         val despues = avance(mapOf(1 to Estado.REGULARIZADA, 3 to Estado.REGULARIZADA, 4 to Estado.REGULARIZADA))

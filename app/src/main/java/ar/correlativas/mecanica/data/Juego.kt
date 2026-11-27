@@ -64,6 +64,10 @@ private val NOMBRES_NIVEL = mapOf(
 )
 
 const val TECNOLOGIA_MECANICA = 104
+const val HORAS_TITULO_INTERMEDIO = 6.0
+
+/** Probabilidad y Estadística, Mecánica Racional y Cálculo Avanzado. */
+val NO_PIDE_TITULO_INTERMEDIO = setOf(24, 18, 22)
 
 fun logros(plan: Plan): List<Logro> {
     val idsNivel = (1..5).associateWith { n -> plan.obligatorias.filter { it.nivel == n }.map { it.id } }
@@ -75,7 +79,9 @@ fun logros(plan: Plan): List<Logro> {
     }
     val integradoras = listOf(6, 15, 23)
     val ingles = listOf(16, 25)
-    val primerosTres = (1..3).flatMap { idsNivel.getValue(it) }
+    // Técnico Universitario en Mecánica: niveles 1 a 3 sin Probabilidad y Estadística,
+    // Mecánica Racional ni Cálculo Avanzado.
+    val tituloIntermedio = (1..3).flatMap { idsNivel.getValue(it) } - NO_PIDE_TITULO_INTERMEDIO
     return listOf(
         Logro("primer-paso", "Primer paso", "Regularizá tu primera materia.", IconoLogro.PASO) { a ->
             (if (a.estados.values.any { it != Estado.SIN_CURSAR }) 1.0 else 0.0) to 1.0
@@ -99,11 +105,11 @@ fun logros(plan: Plan): List<Logro> {
         },
         Logro(
             "titulo-intermedio", "Título intermedio",
-            "Niveles 1 a 3 aprobados y 6 hs de electivas, incluida Tecnología Mecánica.", IconoLogro.TITULO,
+            "Niveles 1 a 3 (sin Probabilidad, Mecánica Racional ni Cálculo Avanzado) y 6 hs de electivas con Tecnología Mecánica.", IconoLogro.TITULO,
         ) { a ->
-            val hecho = a.contar(primerosTres) + min(a.horasElectivas, 6.0) / 6.0 * 2 +
+            val hecho = a.contar(tituloIntermedio) + min(a.horasElectivas, HORAS_TITULO_INTERMEDIO) / HORAS_TITULO_INTERMEDIO * 2 +
                 (if (a.aprobada(TECNOLOGIA_MECANICA)) 1.0 else 0.0)
-            hecho to primerosTres.size + 3.0
+            hecho to tituloIntermedio.size + 3.0
         },
         Logro(
             "electivas", "Electivas completas",
