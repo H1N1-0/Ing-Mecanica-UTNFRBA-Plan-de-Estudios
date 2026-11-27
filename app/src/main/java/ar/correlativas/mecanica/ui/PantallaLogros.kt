@@ -88,13 +88,13 @@ fun Insignia(icono: IconoLogro, conseguido: Boolean, tam: Dp = 64.dp, modifier: 
 fun PantallaLogros(avance: Avance, logros: List<Logro>, testHecho: Boolean) {
     val conseguidos = logros.count { it.cumplido(avance, testHecho) }
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(170.dp),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        item(span = { GridItemSpan(2) }) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp, bottom = 6.dp)) {
                 Box(Modifier.size(64.dp), contentAlignment = Alignment.Center) {
                     Anillo(conseguidos / logros.size.toFloat(), Modifier.fillMaxSize(), grosor = 7.dp, colores = listOf(C.oro, C.oroOscuro, C.oro))

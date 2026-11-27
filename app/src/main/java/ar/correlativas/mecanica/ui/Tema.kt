@@ -42,6 +42,8 @@ data class Paleta(
     val violeta: Color,
     val rosa: Color,
     val peligro: Color,
+    /** Camino crítico y cuellos de botella. */
+    val critico: Color,
     /** Pista de barras y anillos fuera de la tarjeta de jugador. */
     val pista: Color,
     /** Bandas alternadas del mapa. */
@@ -69,6 +71,7 @@ val PaletaOscura = Paleta(
     violeta = Color(0xFF8B5CF6),
     rosa = Color(0xFFFF4D9D),
     peligro = Color(0xFFFF6B6B),
+    critico = Color(0xFFFF3D6E),
     pista = Color.White.copy(alpha = 0.10f),
     banda = Color.White.copy(alpha = 0.025f),
     degradeJugador = listOf(Color(0xFF3B1E8A), Color(0xFF14246B), Color(0xFF0B4B63)),
@@ -99,6 +102,7 @@ val PaletaClara = Paleta(
     violeta = Color(0xFF6A3BE4),
     rosa = Color(0xFFD1206F),
     peligro = Color(0xFFD32F2F),
+    critico = Color(0xFFD9144A),
     pista = Color(0xFF141A38).copy(alpha = 0.08f),
     banda = Color(0xFF6A3BE4).copy(alpha = 0.035f),
     degradeJugador = listOf(Color(0xFF6A3BE4), Color(0xFF3060F0), Color(0xFF0AA9C4)),
@@ -130,6 +134,7 @@ object C {
     val violeta get() = paleta.violeta
     val rosa get() = paleta.rosa
     val peligro get() = paleta.peligro
+    val critico get() = paleta.critico
     val pista get() = paleta.pista
     val banda get() = paleta.banda
 

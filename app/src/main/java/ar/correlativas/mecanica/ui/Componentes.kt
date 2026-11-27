@@ -140,6 +140,12 @@ fun Nodo(
         ) {
             Ic(iconoEstado(estado), color, tam = insignia * 0.62f)
         }
+        if (LocalCritico.current?.esCuello(materia.id) == true) {
+            InsigniaCuello(
+                insignia,
+                Modifier.align(Alignment.BottomStart).offset(x = -insignia * 0.28f, y = insignia * 0.12f),
+            )
+        }
     }
 }
 
