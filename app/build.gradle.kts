@@ -119,6 +119,14 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // QR de la copia de seguridad: ZXing genera y lee el código (todo local, sin internet).
+    implementation("com.google.zxing:core:3.5.3")
+    // Leer el QR con la cámara (pide permiso de cámara solo al usarla).
+    val camerax = "1.4.1"
+    implementation("androidx.camera:camera-camera2:$camerax")
+    implementation("androidx.camera:camera-lifecycle:$camerax")
+    implementation("androidx.camera:camera-view:$camerax")
     implementation("androidx.glance:glance-appwidget:1.1.1")
 
     testImplementation("junit:junit:4.13.2")

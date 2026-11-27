@@ -124,6 +124,11 @@ fun ContenidoDetalle(
 
         SelectorEstado(materia.tipo, avance.estado(materia.id), onCambio, Modifier.fillMaxWidth().padding(top = 14.dp))
 
+        if (materia.tipo != Tipo.PPS) {
+            Titulo("Final", R.drawable.ic_estrella, C.oro)
+            BloqueFinal(materia, avance)
+        }
+
         Titulo(if (materia.tipo == Tipo.PPS) "Para empezarla" else "Para cursar", R.drawable.ic_rayo, C.disponible)
         Requisitos(materia.cursar, avance, onAbrir)
 

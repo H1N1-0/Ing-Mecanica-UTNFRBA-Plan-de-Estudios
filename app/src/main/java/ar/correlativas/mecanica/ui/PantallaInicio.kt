@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.Estadisticas
+import ar.correlativas.mecanica.data.formatearPromedio
 import ar.correlativas.mecanica.data.nombreParaRotulo
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -80,6 +82,9 @@ fun PantallaInicio(
     onTest: () -> Unit,
     onPerfil: () -> Unit,
     onVerCamino: () -> Unit,
+    /** Promedio y finales para la tarjeta de notas; null mientras carga. */
+    estadisticas: Estadisticas? = null,
+    onEstadisticas: () -> Unit = {},
     frases: Frases,
     test: TestVocacional,
     perfil: ResultadoPerfil?,
@@ -104,7 +109,12 @@ fun PantallaInicio(
             // El indicador de avance es un token: anillo (Gamificado, Material) o rótulo con manómetro (Plano).
             if (C.tema.indicador == Indicador.MANOMETRO) RotuloLamina(avance, nombre) else TarjetaJugador(avance)
         }
-        item(key = "contadores") { Contadores(avance, onLista) }
+        item(key = "contadores") {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Contadores(avance, onLista)
+                estadisticas?.let { TarjetaPromedio(it, onEstadisticas) }
+            }
+        }
         item(key = "prioridad") { TarjetaPrioridad(critico, avance, onAbrir) }
         item(key = "critico") { TarjetaCaminoCritico(critico, onVerCamino) }
         item(key = "frase") { FraseDelDia(frases) }
@@ -256,6 +266,35 @@ private fun Contadores(avance: Avance, onLista: (EstadoNodo?) -> Unit) {
                 R.drawable.ic_rayo, C.disponible, null,
                 Modifier.weight(1f).clickable { onLista(EstadoNodo.DISPONIBLE) },
             )
+        }
+    }
+}
+
+/** Promedio en el inicio: sin y con aplazos, y finales rendidos. Lleva a Estadísticas. */
+@Composable
+private fun TarjetaPromedio(e: Estadisticas, onEstadisticas: () -> Unit) {
+    Tarjeta(Modifier.fillMaxWidth().clickable(onClickLabel = "Ver estadísticas", onClick = onEstadisticas)) {
+        Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier.size(30.dp).clip(C.formas.mini).background(C.disponible.copy(alpha = 0.16f)),
+                contentAlignment = Alignment.Center,
+            ) { Ic(R.drawable.ic_grafico, C.disponible, tam = 18.dp) }
+            Column(Modifier.padding(start = 10.dp).weight(1f)) {
+                Text("Promedio", color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(formatearPromedio(e.promedioSinAplazos), color = C.texto, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 30.sp)
+                    Text(
+                        if (e.promedioConAplazos != null) "  ${formatearPromedio(e.promedioConAplazos)} con aplazos" else "  cargá tus notas",
+                        Modifier.padding(bottom = 4.dp),
+                        color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp,
+                    )
+                }
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text("${e.finalesRendidos}", color = C.texto, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text("finales", color = C.texto2, fontFamily = C.fuente, fontSize = 12.sp)
+            }
+            Text("›", Modifier.padding(start = 10.dp), color = C.apagado, fontSize = 22.sp)
         }
     }
 }

@@ -13,6 +13,8 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023).
 - Detalle de cada materia: qué te pide y qué habilita.
 - Camino crítico: cuántas materias traba cada una, la cadena más larga hasta recibirte (años mínimos de cursada), cuellos de botella y una tarjeta de prioridad con las 3 materias que más conviene aprobar.
 - Tres estilos visuales a elección en Ajustes, combinables con claro/oscuro: **Plano técnico** (blueprint u hoja de dibujo, dibujos técnicos, rótulo de lámina y manómetro), **Gamificado** y **Material You** (colores del fondo de pantalla en Android 12+). El widget sigue el estilo.
+- Notas y promedio: al aprobar podés cargar nota y fecha del final (opcional), y también aplazos. Pantalla de estadísticas con promedio con y sin aplazos, finales rendidos, evolución por año y mejor y peor nota.
+- Copia de seguridad en Ajustes: exportá progreso, notas, test y ajustes como archivo JSON o código QR, e importalos en otro celular (con confirmación). Todo local: la app no usa internet.
 - Frases con medallón del autor (iniciales, color e ícono según su área).
 - Versión para tablet y horizontal: barra lateral, lista y detalle lado a lado, mapa con panel de detalle e inicio en columnas.
 - El progreso se guarda en el celular (DataStore). El widget muestra qué podés cursar, qué podés rendir y tu avance, y se actualiza al cambiar algo en la app.

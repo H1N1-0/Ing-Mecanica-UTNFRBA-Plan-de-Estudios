@@ -31,7 +31,10 @@ app/
       Plan.kt            Modelo (Materia, Requisitos, Tipo) y parseo de correlativas.json
       Calculo.kt         Avance: reglas para cursar y rendir, habilita(), CodecEstados
       Progreso.kt        Guarda los estados en DataStore ("progreso") y actualiza el widget
-      Ajustes.kt         Tema y resultado del test (DataStore aparte, "ajustes")
+      Ajustes.kt         Tema, estilo, nombre y resultado del test (DataStore aparte, "ajustes")
+      Notas.kt           Notas de finales y aplazos (DataStore "notas", versionado) y Estadisticas
+      Backup.kt          Copia de seguridad: JSON del archivo y texto comprimido del QR, con validación
+      Qr.kt              Generar y leer QR con ZXing (sin red)
       Juego.kt           EstadoNodo, porcentaje, rangos, logros y layout del mapa (Mapa)
       CaminoCritico.kt   Grafo de dependencias, materias que traba cada una, camino crítico
       Contenido.kt       Frases y test vocacional
@@ -41,6 +44,9 @@ app/
       PantallaInicio.kt, PantallaMapa.kt, PantallaLista.kt, PantallaLogros.kt, ...
       HojaDetalle.kt     ContenidoDetalle (hoja en celular, panel lateral en tablet)
       CaminoCriticoUi.kt Tarjetas "Camino crítico" y "Prioridad", bloque del detalle
+      NotasUi.kt         Diálogos de nota y aplazo, bloque "Final" del detalle (LocalNotas)
+      PantallaEstadisticas.kt  Promedios, finales, gráfico de evolución por año, mejor y peor nota
+      CopiaUi.kt, EscanerQr.kt  Exportar/importar en Ajustes (archivo, QR, cámara con CameraX, imagen)
       Tema.kt            Tokens de los 3 estilos × claro/oscuro (objeto C): paletas, fuentes, formas, movimiento
       Estilizados.kt     Componentes que cambian por estilo: Fondo, Medidor/Manómetro, Medallón, marcas de plano
       Dibujos.kt         Dibujos técnicos del Plano técnico (engranajes, pistón, bomba, turbina, rodamiento, resorte)
@@ -108,6 +114,29 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
 - **Frases**: cada una tiene `area` en frases.json (`data.Area`); el medallón usa iniciales, color
   (`colorArea`) e ícono (`iconoArea`) del área.
 
+## Notas y estadísticas (`data/Notas.kt`)
+
+- Al aprobar una materia (no la PPS) se ofrece cargar nota (1–10) y fecha, después de la
+  celebración; también desde el detalle ("Final"), junto con los aplazos (nota 1–5, fecha). Todo
+  es opcional: sin nota, la materia cuenta igual como aprobada. Las notas NO tocan las correlativas.
+- Se guardan en el DataStore `notas` (clave `libreta`, JSON de `CodecLibreta` con `version`),
+  aparte del progreso. Si cambia el formato, subí `CodecLibreta.VERSION` y migrá en `deJson`.
+- `Estadisticas(avance, libreta)`: solo cuentan las notas de materias hoy aprobadas; promedio sin y
+  con aplazos, finales rendidos (aprobadas + aplazos), mejor/peor, evolución acumulada por año (las
+  notas sin fecha cuentan en el promedio pero no en el gráfico).
+- "Reiniciar mi progreso" borra también las notas.
+
+## Copia de seguridad (`data/Backup.kt`)
+
+- JSON con `formato`, `version`, `exportado`, `progreso` (el MISMO texto de `CodecEstados`), `notas`,
+  `test` y `ajustes`. Exportar/importar archivo con el selector del sistema (sin permisos de
+  almacenamiento). QR: `CMEC1:` + JSON comprimido (deflate) en Base64 URL.
+- Importar valida (formato, versión, materias que existen, rangos de notas), muestra un resumen y
+  pide confirmación antes de reemplazar. Si cambia el formato, subí `Backup.VERSION` (y el prefijo
+  del QR) y seguí leyendo las versiones viejas.
+- La app NO tiene permiso de internet: el manifiesto lo quita con `tools:node="remove"` (hay un test).
+  La cámara se pide solo al escanear.
+
 ## Disposición adaptativa (`ui/App.kt`)
 
 - Ancho compacto (celular vertical): barra inferior, detalle en hoja modal.
@@ -158,6 +187,7 @@ mucho las pantallas; si el texto de una pestaña cambia, actualizá el recorrido
   primer uso (`PreguntaNombre`, opcional), se cambia en Ajustes y se guarda solo en el DataStore
   `ajustes`. Sin nombre, el rótulo dice "Estudiante" (`nombreParaRotulo`). En tests y capturas
   usar datos de ejemplo genéricos.
+- **Sin internet**: no agregar el permiso ni librerías que manden datos afuera; todo es local.
 - **No cambiar cómo se guarda el progreso**: DataStore `progreso`, clave `estados`, formato de
   `CodecEstados` (`id:ESTADO` separados por coma). Cambiarlo borraría el avance de quien actualice.
 - No cambiar la lógica de correlativas de `Calculo.kt` sin que lo pidan; funciones nuevas van

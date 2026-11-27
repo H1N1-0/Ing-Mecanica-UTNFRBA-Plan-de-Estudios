@@ -92,6 +92,25 @@ class Ajustes(context: Context) {
         context.ajustesStore.edit { it[NOMBRE_PREGUNTADO] = true }
     }
 
+    /** Restaura ajustes y resultado del test desde una copia de seguridad. */
+    suspend fun importar(d: DatosBackup) {
+        context.ajustesStore.edit {
+            it[TEMA] = d.tema.name
+            it[ESTILO] = d.estilo.name
+            it[NOMBRE] = d.nombre
+            it[NOMBRE_PREGUNTADO] = d.nombrePreguntado
+            val p = d.perfil
+            if (p == null) {
+                it.remove(PERFIL); it.remove(PERFIL_FECHA); it.remove(PERFIL_VECES)
+            } else {
+                it[PERFIL] = p.codificar()
+                it[PERFIL_FECHA] = p.fecha
+                it[PERFIL_VECES] = p.veces
+            }
+        }
+        CorrelativasWidget().updateAll(context)
+    }
+
     suspend fun guardarPerfil(porcentajes: Map<String, Int>, fecha: Long) {
         context.ajustesStore.edit {
             it[PERFIL] = ResultadoPerfil(porcentajes, fecha, 0).codificar()
