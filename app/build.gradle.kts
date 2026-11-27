@@ -60,6 +60,8 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // Tests de interfaz con Robolectric (navegación y pantallas, sin emulador).
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -131,4 +133,8 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
+    // Tests de interfaz en la JVM: Robolectric + Compose UI Test (sin emulador).
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

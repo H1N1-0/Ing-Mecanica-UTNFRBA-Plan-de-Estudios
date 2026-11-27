@@ -191,6 +191,17 @@ fun PantallaAjustes(
                 fontSize = 13.5.sp,
                 lineHeight = 18.sp,
             )
+            // Para comparar qué versión tiene instalada cada dispositivo.
+            val context = LocalContext.current
+            val version = remember {
+                runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
+            }
+            Text(
+                "Versión ${version ?: "—"}",
+                color = C.texto2,
+                fontFamily = C.fuenteDatos,
+                fontSize = 13.sp,
+            )
         }
     }
 

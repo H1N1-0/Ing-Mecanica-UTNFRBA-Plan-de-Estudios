@@ -408,3 +408,21 @@ fun Tarjeta(
             ),
     ) { content() }
 }
+
+/**
+ * Botón que abre Ajustes. Hay uno solo por pantalla: en el inicio del celular o arriba de la
+ * barra lateral en tablet y horizontal. Mismo ícono y descripción en los dos lugares.
+ */
+@Composable
+fun BotonAjustes(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .size(44.dp)
+            .clip(CircleShape)
+            .background(C.tarjeta)
+            .border(1.dp, C.borde, CircleShape)
+            .semantics { contentDescription = "Ajustes" }
+            .clickable(role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { Ic(R.drawable.ic_ajustes, C.texto2, tam = 22.dp) }
+}

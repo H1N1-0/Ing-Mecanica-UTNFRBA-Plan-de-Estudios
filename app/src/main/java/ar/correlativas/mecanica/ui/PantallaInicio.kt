@@ -79,6 +79,11 @@ fun PantallaInicio(
     onLista: (EstadoNodo?) -> Unit,
     onLogros: () -> Unit,
     onAjustes: () -> Unit,
+    /**
+     * Si el inicio muestra su propio botón de Ajustes. En tablet y horizontal no: ahí el botón
+     * está en la barra lateral (un solo botón de Ajustes por pantalla).
+     */
+    botonAjustes: Boolean = true,
     onTest: () -> Unit,
     onPerfil: () -> Unit,
     onVerCamino: () -> Unit,
@@ -104,7 +109,7 @@ fun PantallaInicio(
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalItemSpacing = 14.dp,
     ) {
-        item(key = "cabecera", span = StaggeredGridItemSpan.FullLine) { Cabecera(onAjustes) }
+        item(key = "cabecera", span = StaggeredGridItemSpan.FullLine) { Cabecera(onAjustes.takeIf { botonAjustes }) }
         item(key = "jugador") {
             // El indicador de avance es un token: anillo (Gamificado, Material) o rótulo con manómetro (Plano).
             if (C.tema.indicador == Indicador.MANOMETRO) RotuloLamina(avance, nombre) else TarjetaJugador(avance)
@@ -145,7 +150,7 @@ fun PantallaInicio(
 }
 
 @Composable
-private fun Cabecera(onAjustes: () -> Unit) {
+private fun Cabecera(onAjustes: (() -> Unit)?) {
     Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Ic(R.drawable.ic_engranaje, C.disponible, tam = 22.dp)
         Text(
@@ -157,16 +162,7 @@ private fun Cabecera(onAjustes: () -> Unit) {
             fontSize = 14.sp,
             letterSpacing = 2.sp,
         )
-        Box(
-            Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(C.tarjeta)
-                .border(1.dp, C.borde, CircleShape)
-                .semantics { contentDescription = "Ajustes" }
-                .clickable(role = Role.Button, onClick = onAjustes),
-            contentAlignment = Alignment.Center,
-        ) { Ic(R.drawable.ic_ajustes, C.texto2, tam = 22.dp) }
+        if (onAjustes != null) BotonAjustes(onAjustes)
     }
 }
 
