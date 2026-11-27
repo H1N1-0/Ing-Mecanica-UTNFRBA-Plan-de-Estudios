@@ -5,6 +5,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.Backup
+import ar.correlativas.mecanica.data.DatosBackup
+import ar.correlativas.mecanica.data.Estadisticas
+import ar.correlativas.mecanica.data.LecturaBackup
+import ar.correlativas.mecanica.data.Libreta
+import ar.correlativas.mecanica.data.NotaFinal
+import ar.correlativas.mecanica.data.Notas
+import ar.correlativas.mecanica.data.Tipo
+import java.time.LocalDate
+import kotlinx.coroutines.flow.combine
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.Estilo
@@ -72,6 +82,11 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     val test: TestVocacional = TestVocacional.cargar(app)
     private val progreso = Progreso(app)
     private val ajustes = Ajustes(app)
+    private val notas = Notas(app)
+
+    /** Notas de finales y aplazos (DataStore "notas", aparte del progreso). */
+    val libreta: StateFlow<Libreta> = notas.libreta
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Libreta())
 
     /** null mientras DataStore no terminó de leer. */
     val avance: StateFlow<Avance?> = progreso.estados
@@ -85,6 +100,15 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
         .map { a -> a?.let { CaminoCritico(it, grafo) } }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Promedios y demás: se recalculan cuando cambia el avance o una nota, fuera del hilo principal. */
+    val estadisticas: StateFlow<Estadisticas?> = combine(avance, libreta) { a, l -> a?.let { Estadisticas(it, l) } }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Materia recién aprobada a la que se le ofrece cargar la nota (después de la celebración). */
+    private val _pedirNota = MutableStateFlow<Int?>(null)
+    val pedirNota: StateFlow<Int?> = _pedirNota.asStateFlow()
 
     val preferencias: StateFlow<Preferencias?> = ajustes.preferencias
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -105,6 +129,10 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
             } else null
             val d = calcularDesbloqueo(materia, antes, despues, logros, testHecho).copy(frase = frase)
             if (!d.vacio) _desbloqueo.value = d
+            // Al aprobar, se ofrece cargar la nota (es opcional). La PPS no se rinde.
+            if (estado == Estado.APROBADA && materia.tipo != Tipo.PPS && libreta.value.finales[id]?.nota == null) {
+                _pedirNota.value = id
+            }
         }
     }
 
@@ -136,6 +164,59 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun borrarTodo() {
-        viewModelScope.launch { progreso.borrarTodo() }
+        viewModelScope.launch {
+            progreso.borrarTodo()
+            notas.borrarTodo()
+        }
+    }
+
+    // ------------------------------------------------------------ notas
+
+    /** Abre el diálogo de nota de una materia (desde el detalle) o lo cierra (null). */
+    fun editarNota(id: Int?) {
+        _pedirNota.value = id
+    }
+
+    fun guardarFinal(id: Int, nf: NotaFinal?) {
+        _pedirNota.value = null
+        viewModelScope.launch { notas.guardarFinal(id, nf) }
+    }
+
+    fun agregarAplazo(id: Int, nota: Int, fecha: LocalDate?) {
+        viewModelScope.launch { notas.agregarAplazo(id, nota, fecha) }
+    }
+
+    fun borrarAplazo(id: Long) {
+        viewModelScope.launch { notas.borrarAplazo(id) }
+    }
+
+    // ------------------------------------------------------------ copia de seguridad
+
+    /** Junta todo lo guardado (progreso, notas, test y ajustes) para exportarlo. */
+    suspend fun datosBackup(): DatosBackup {
+        val prefs = ajustes.preferencias.first()
+        return DatosBackup(
+            estados = progreso.estados.first(),
+            libreta = notas.libreta.first(),
+            perfil = prefs.perfil,
+            tema = prefs.tema,
+            estilo = prefs.estilo,
+            nombre = prefs.nombre,
+            nombrePreguntado = prefs.nombrePreguntado,
+            exportado = LocalDate.now(),
+        )
+    }
+
+    fun leerBackupJson(texto: String): LecturaBackup = Backup.deJson(texto, plan)
+
+    fun leerBackupQr(texto: String): LecturaBackup = Backup.deQr(texto, plan)
+
+    /** Reemplaza todo lo guardado por la copia (ya confirmada por el usuario). */
+    fun importar(d: DatosBackup) {
+        viewModelScope.launch {
+            progreso.reemplazar(d.estados)
+            notas.reemplazar(d.libreta)
+            ajustes.importar(d)
+        }
     }
 }

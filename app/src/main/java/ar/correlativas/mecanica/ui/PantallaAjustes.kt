@@ -66,6 +66,8 @@ fun PantallaAjustes(
     onVerPerfil: () -> Unit,
     onBorrar: () -> Unit,
     onVolver: () -> Unit,
+    onEstadisticas: () -> Unit = {},
+    copia: AccionesCopia? = null,
 ) {
     BackHandler(onBack = onVolver)
     var confirmar by remember { mutableStateOf(false) }
@@ -140,6 +142,28 @@ fun PantallaAjustes(
             }
             if (perfil != null) BotonSecundario("Repetir el test", R.drawable.ic_repetir, Modifier.fillMaxWidth(), onTest)
 
+            Subtitulo("TUS NOTAS")
+            Tarjeta(Modifier.fillMaxWidth()) {
+                Row(
+                    Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onEstadisticas).padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(Modifier.size(42.dp).clip(C.formas.chica).background(C.disponible.copy(alpha = 0.14f)), contentAlignment = Alignment.Center) {
+                        Ic(R.drawable.ic_grafico, C.disponible, tam = 22.dp)
+                    }
+                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                        Text("Estadísticas", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Promedio, finales y evolución por año", color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp)
+                    }
+                    Text("›", color = C.apagado, fontSize = 22.sp)
+                }
+            }
+
+            if (copia != null) {
+                Subtitulo("COPIA DE SEGURIDAD")
+                SeccionCopia(copia)
+            }
+
             Subtitulo("DATOS")
             Tarjeta(Modifier.fillMaxWidth()) {
                 Row(
@@ -151,7 +175,7 @@ fun PantallaAjustes(
                     }
                     Column(Modifier.padding(start = 12.dp).weight(1f)) {
                         Text("Reiniciar mi progreso", color = C.peligro, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text("Todas las materias vuelven a «sin cursar».", color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp)
+                        Text("Todas las materias vuelven a «sin cursar» y se borran las notas.", color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp)
                     }
                 }
             }
@@ -175,7 +199,7 @@ fun PantallaAjustes(
             onDismissRequest = { confirmar = false },
             containerColor = C.tarjeta,
             title = { Text("¿Reiniciar la partida?") },
-            text = { Text("Todas las materias vuelven a \"sin cursar\". No se puede deshacer.") },
+            text = { Text("Todas las materias vuelven a \"sin cursar\" y se borran las notas y los aplazos. No se puede deshacer: si querés, exportá antes una copia.") },
             confirmButton = { TextButton(onClick = { onBorrar(); confirmar = false }) { Text("Reiniciar", color = C.peligro) } },
             dismissButton = { TextButton(onClick = { confirmar = false }) { Text("Cancelar") } },
         )

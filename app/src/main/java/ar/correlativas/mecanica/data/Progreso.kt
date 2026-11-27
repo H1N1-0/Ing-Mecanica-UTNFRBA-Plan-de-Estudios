@@ -28,6 +28,15 @@ class Progreso(context: Context) {
         CorrelativasWidget().updateAll(context)
     }
 
+    /**
+     * Reemplaza todo el progreso (importar una copia). Se guarda con el MISMO formato de siempre
+     * (`CodecEstados`), en la misma clave.
+     */
+    suspend fun reemplazar(estados: Map<Int, Estado>) {
+        context.dataStore.edit { it[ESTADOS] = CodecEstados.codificar(estados) }
+        CorrelativasWidget().updateAll(context)
+    }
+
     suspend fun borrarTodo() {
         context.dataStore.edit { it.remove(ESTADOS) }
         CorrelativasWidget().updateAll(context)

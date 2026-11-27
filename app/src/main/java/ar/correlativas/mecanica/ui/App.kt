@@ -86,7 +86,12 @@ enum class Pestania(val titulo: String, val icono: Int, val dibujo: Dibujo) {
 }
 
 /** Pantallas que se abren encima de las pestañas. */
-enum class Superpuesta { AJUSTES, TEST, PERFIL }
+enum class Superpuesta(val dibujo: Dibujo) {
+    AJUSTES(Dibujo.RODAMIENTO),
+    TEST(Dibujo.RESORTE),
+    PERFIL(Dibujo.RESORTE),
+    ESTADISTICAS(Dibujo.TURBINA),
+}
 
 /**
  * Disposición según el tamaño de pantalla (WindowSizeClass):
@@ -124,6 +129,9 @@ fun AppCorrelativas(
     val critico by vm.critico.collectAsStateWithLifecycle()
     val preferencias by vm.preferencias.collectAsStateWithLifecycle()
     val desbloqueo by vm.desbloqueo.collectAsStateWithLifecycle()
+    val libreta by vm.libreta.collectAsStateWithLifecycle()
+    val estadisticas by vm.estadisticas.collectAsStateWithLifecycle()
+    val pedirNota by vm.pedirNota.collectAsStateWithLifecycle()
     // Todo el estado de navegación se guarda arriba de todo, antes de elegir la disposición,
     // para que girar la pantalla (o pasar de celular a tablet) no pierda dónde estabas.
     var pestania by rememberSaveable { mutableStateOf(pestaniaInicial) }
@@ -170,6 +178,8 @@ fun AppCorrelativas(
                         onLista = { filtroLista = it; irA(Pestania.LISTA) },
                         onLogros = { irA(Pestania.LOGROS) },
                         onAjustes = { superpuesta = Superpuesta.AJUSTES },
+                        estadisticas = estadisticas,
+                        onEstadisticas = { superpuesta = Superpuesta.ESTADISTICAS },
                         onTest = { superpuesta = Superpuesta.TEST },
                         onPerfil = { resultadoNuevo = null; superpuesta = Superpuesta.PERFIL },
                         onVerCamino = { vistaMapa.mostrarCritico(); irA(Pestania.MAPA) },
@@ -248,7 +258,13 @@ fun AppCorrelativas(
         }
     }
 
-    CompositionLocalProvider(LocalCritico provides critico) {
+    // Materia a la que se le está agregando un aplazo (diálogo abierto).
+    var aplazoPara by rememberSaveable { mutableStateOf<Int?>(null) }
+    val accionesNotas = remember(libreta) {
+        AccionesNotas(libreta, editarFinal = vm::editarNota, agregarAplazo = { aplazoPara = it }, borrarAplazo = vm::borrarAplazo)
+    }
+
+    CompositionLocalProvider(LocalCritico provides critico, LocalNotas provides accionesNotas) {
         if (disposicion.amplia) {
             // Tablet y horizontal: barra de navegación lateral.
             Row(Modifier.fillMaxSize().background(C.fondo)) {
@@ -345,6 +361,22 @@ fun AppCorrelativas(
             if (prefs != null && !prefs.nombrePreguntado && superpuesta == null && desbloqueo == null) {
                 PreguntaNombre(onGuardar = vm::cambiarNombre, onOmitir = vm::omitirNombre)
             }
+            // Nota del final: al aprobar (después de la celebración) o al tocar "Editar" en el detalle.
+            pedirNota?.let { id ->
+                val m = a.plan[id]
+                if (m != null && desbloqueo == null) {
+                    DialogoNotaFinal(
+                        m, libreta.finales[id],
+                        onGuardar = { vm.guardarFinal(id, it) },
+                        onCerrar = { vm.editarNota(null) },
+                    )
+                }
+            }
+            aplazoPara?.let { id ->
+                a.plan[id]?.let { m ->
+                    DialogoAplazo(m, onGuardar = { nota, fecha -> vm.agregarAplazo(id, nota, fecha); aplazoPara = null }, onCerrar = { aplazoPara = null })
+                }
+            }
         }
     }
 }
@@ -423,6 +455,7 @@ private fun Superpuestas(
 ) {
     val avance by vm.avance.collectAsStateWithLifecycle()
     val preferencias by vm.preferencias.collectAsStateWithLifecycle()
+    val estadisticas by vm.estadisticas.collectAsStateWithLifecycle()
     val a = avance
     if (a != null) {
         AnimatedContent(
@@ -438,7 +471,7 @@ private fun Superpuestas(
                 Modifier.fillMaxSize().background(C.fondo),
                 contentAlignment = Alignment.TopCenter,
             ) {
-                CapaFondo(if (s == Superpuesta.AJUSTES) Dibujo.RODAMIENTO else Dibujo.RESORTE, Modifier.matchParentSize())
+                CapaFondo(s.dibujo, Modifier.matchParentSize())
                 Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing), contentAlignment = Alignment.TopCenter) {
                 // En tablet las pantallas superpuestas no se estiran de borde a borde.
                 Box(Modifier.widthIn(max = 760.dp)) {
@@ -456,7 +489,17 @@ private fun Superpuestas(
                         onVerPerfil = { onResultado(null); onSuperpuesta(Superpuesta.PERFIL) },
                         onBorrar = vm::borrarTodo,
                         onVolver = { onSuperpuesta(null) },
+                        onEstadisticas = { onSuperpuesta(Superpuesta.ESTADISTICAS) },
+                        copia = AccionesCopia(
+                            datos = vm::datosBackup,
+                            leerJson = vm::leerBackupJson,
+                            leerQr = vm::leerBackupQr,
+                            importar = vm::importar,
+                        ),
                     )
+                    Superpuesta.ESTADISTICAS -> estadisticas?.let { e ->
+                        PantallaEstadisticas(e, onAbrir = onAbrir, onVolver = { onSuperpuesta(null) })
+                    }
                     Superpuesta.TEST -> PantallaTest(
                         test = vm.test,
                         onTerminar = { respuestas ->
