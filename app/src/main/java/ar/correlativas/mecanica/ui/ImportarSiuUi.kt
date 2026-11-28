@@ -202,89 +202,94 @@ private fun iconoEstado(e: Estado): Int = when (e) {
  * van destacadas y desmarcadas; las filas que no se reconocieron, aparte. Pantalla completa en el
  * celular y una columna centrada en tablet. "Atrás" cancela (es un diálogo).
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VistaPreviaSiu(imp: ImportacionSiu, onAplicar: (List<CambioSiu>) -> Unit, onCancelar: () -> Unit) {
+    Dialog(onDismissRequest = onCancelar, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        ContenidoVistaPreviaSiu(imp, onAplicar, onCancelar)
+    }
+}
+
+/** El contenido de [VistaPreviaSiu], sin el diálogo (también sirve para sacar capturas). */
+@Composable
+fun ContenidoVistaPreviaSiu(imp: ImportacionSiu, onAplicar: (List<CambioSiu>) -> Unit, onCancelar: () -> Unit) {
     val conCambios = imp.conCambios
     // Elegidas por id de materia; IntArray para que se guarde al rotar.
     var elegidas by rememberSaveable(imp) { mutableStateOf(conCambios.filter { it.marcadoPorDefecto }.map { it.materia.id }.toIntArray()) }
     val bajas = conCambios.count { it.baja }
 
-    Dialog(onDismissRequest = onCancelar, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(Modifier.fillMaxSize().background(C.fondo), contentAlignment = Alignment.TopCenter) {
-            Column(Modifier.widthIn(max = 720.dp).fillMaxSize()) {
-                Row(Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, top = 18.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Ic(R.drawable.ic_importar, C.disponible, tam = 24.dp)
-                    Column(Modifier.padding(start = 10.dp).weight(1f)) {
+    Box(Modifier.fillMaxSize().background(C.fondo), contentAlignment = Alignment.TopCenter) {
+        Column(Modifier.widthIn(max = 720.dp).fillMaxSize()) {
+            Row(Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, top = 18.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Ic(R.drawable.ic_importar, C.disponible, tam = 24.dp)
+                Column(Modifier.padding(start = 10.dp).weight(1f)) {
+                    Text(
+                        "Historia académica del SIU",
+                        Modifier.semantics { heading() },
+                        color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                    )
+                    Text(
+                        "${imp.cambios.size} materias leídas · ${conCambios.size} con cambios" +
+                            if (imp.noReconocidas.isNotEmpty()) " · ${imp.noReconocidas.size} sin reconocer" else "",
+                        color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp,
+                    )
+                }
+            }
+            HorizontalDivider(color = C.borde)
+            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                if (bajas > 0) {
+                    item(key = "aviso-bajas", contentType = "aviso") {
                         Text(
-                            "Historia académica del SIU",
-                            Modifier.semantics { heading() },
-                            color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                            if (bajas == 1) "1 cambio bajaría el estado que tenés ahora: está destacado y desmarcado."
+                            else "$bajas cambios bajarían el estado que tenés ahora: están destacados y desmarcados.",
+                            Modifier.fillMaxWidth().clip(C.formas.chica).background(C.peligro.copy(alpha = 0.10f)).padding(10.dp),
+                            color = C.texto, fontFamily = C.fuente, fontSize = 13.5.sp,
                         )
+                    }
+                }
+                if (conCambios.isEmpty()) {
+                    item(key = "nada", contentType = "aviso") {
+                        Text("Todo lo del PDF ya está cargado en la app: no hay nada para cambiar.", Modifier.padding(6.dp), color = C.texto2, fontFamily = C.fuente)
+                    }
+                }
+                items(conCambios, key = { it.materia.id }, contentType = { "cambio" }) { c ->
+                    val elegida = c.materia.id in elegidas
+                    FilaCambio(c, elegida) { si ->
+                        elegidas = if (si) elegidas + c.materia.id else elegidas.filter { it != c.materia.id }.toIntArray()
+                    }
+                }
+                if (imp.sinCambios.isNotEmpty()) {
+                    item(key = "h-sin", contentType = "titulo") { TituloSeccion("SIN CAMBIOS · ${imp.sinCambios.size}") }
+                    items(imp.sinCambios, key = { "s-${it.materia.id}" }, contentType = { "sin" }) { c ->
                         Text(
-                            "${imp.cambios.size} materias leídas · ${conCambios.size} con cambios" +
-                                if (imp.noReconocidas.isNotEmpty()) " · ${imp.noReconocidas.size} sin reconocer" else "",
+                            "${c.materia.nombre} · ${nombreEstado(c.actual, c.materia.tipo)}",
+                            Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp,
                         )
                     }
                 }
-                HorizontalDivider(color = C.borde)
-                LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    if (bajas > 0) {
-                        item(key = "aviso-bajas", contentType = "aviso") {
-                            Text(
-                                if (bajas == 1) "1 cambio bajaría el estado que tenés ahora: está destacado y desmarcado."
-                                else "$bajas cambios bajarían el estado que tenés ahora: están destacados y desmarcados.",
-                                Modifier.fillMaxWidth().clip(C.formas.chica).background(C.peligro.copy(alpha = 0.10f)).padding(10.dp),
-                                color = C.texto, fontFamily = C.fuente, fontSize = 13.5.sp,
-                            )
-                        }
-                    }
-                    if (conCambios.isEmpty()) {
-                        item(key = "nada", contentType = "aviso") {
-                            Text("Todo lo del PDF ya está cargado en la app: no hay nada para cambiar.", Modifier.padding(6.dp), color = C.texto2, fontFamily = C.fuente)
-                        }
-                    }
-                    items(conCambios, key = { it.materia.id }, contentType = { "cambio" }) { c ->
-                        val elegida = c.materia.id in elegidas
-                        FilaCambio(c, elegida) { si ->
-                            elegidas = if (si) elegidas + c.materia.id else elegidas.filter { it != c.materia.id }.toIntArray()
-                        }
-                    }
-                    if (imp.sinCambios.isNotEmpty()) {
-                        item(key = "h-sin", contentType = "titulo") { TituloSeccion("SIN CAMBIOS · ${imp.sinCambios.size}") }
-                        items(imp.sinCambios, key = { "s-${it.materia.id}" }, contentType = { "sin" }) { c ->
-                            Text(
-                                "${c.materia.nombre} · ${nombreEstado(c.actual, c.materia.tipo)}",
-                                Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                color = C.texto2, fontFamily = C.fuente, fontSize = 13.5.sp,
-                            )
-                        }
-                    }
-                    if (imp.noReconocidas.isNotEmpty()) {
-                        item(key = "h-no", contentType = "titulo") { TituloSeccion("NO RECONOCIDAS · ${imp.noReconocidas.size}") }
-                        items(imp.noReconocidas.withIndex().toList(), key = { "n-${it.index}" }, contentType = { "no" }) { (_, n) -> FilaNoReconocida(n) }
-                    }
+                if (imp.noReconocidas.isNotEmpty()) {
+                    item(key = "h-no", contentType = "titulo") { TituloSeccion("NO RECONOCIDAS · ${imp.noReconocidas.size}") }
+                    items(imp.noReconocidas.withIndex().toList(), key = { "n-${it.index}" }, contentType = { "no" }) { (_, n) -> FilaNoReconocida(n) }
                 }
-                HorizontalDivider(color = C.borde)
-                Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp)) {
-                    Text(
-                        "Antes de aplicar se guarda una copia automática: podés deshacerlo desde Ajustes.",
-                        color = C.texto2, fontFamily = C.fuente, fontSize = 12.5.sp,
-                    )
-                    Row(Modifier.fillMaxWidth().padding(top = 6.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = onCancelar) { Text("Cancelar", color = C.texto2, fontFamily = C.fuente, fontSize = 15.sp) }
-                        val n = elegidas.size
-                        TextButton(
-                            onClick = { onAplicar(conCambios.filter { it.materia.id in elegidas }) },
-                            enabled = n > 0,
-                        ) {
-                            Text(
-                                if (n == 0) "Aplicar" else "Aplicar ($n)",
-                                color = if (n > 0) C.disponible else C.apagado,
-                                fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 15.sp,
-                            )
-                        }
+            }
+            HorizontalDivider(color = C.borde)
+            Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp)) {
+                Text(
+                    "Antes de aplicar se guarda una copia automática: podés deshacerlo desde Ajustes.",
+                    color = C.texto2, fontFamily = C.fuente, fontSize = 12.5.sp,
+                )
+                Row(Modifier.fillMaxWidth().padding(top = 6.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = onCancelar) { Text("Cancelar", color = C.texto2, fontFamily = C.fuente, fontSize = 15.sp) }
+                    val n = elegidas.size
+                    TextButton(
+                        onClick = { onAplicar(conCambios.filter { it.materia.id in elegidas }) },
+                        enabled = n > 0,
+                    ) {
+                        Text(
+                            if (n == 0) "Aplicar" else "Aplicar ($n)",
+                            color = if (n > 0) C.disponible else C.apagado,
+                            fontFamily = C.fuente, fontWeight = FontWeight.Bold, fontSize = 15.sp,
+                        )
                     }
                 }
             }
