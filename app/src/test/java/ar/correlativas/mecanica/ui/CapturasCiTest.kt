@@ -3,9 +3,8 @@ package ar.correlativas.mecanica.ui
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
-import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onLast
+import androidx.compose.ui.test.onRoot
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.Estilo
@@ -47,9 +46,9 @@ class CapturasCiTest(private val nombre: String, private val ancho: Int, private
         val plan = Plan.parse(listOf(File("../correlativas.json"), File("correlativas.json")).first { it.exists() }.readText())
         val filas = (HistoriaSiu.leer(PdfDePrueba.historia()) as LecturaHistoria.Ok).filas
         val imp = ImportacionSiu.armar(filas, Avance(plan, mapOf(2 to Estado.REGULARIZADA, 9 to Estado.APROBADA)), Libreta())
-        rule.setContent { TemaJuego(modo, estilo) { VistaPreviaSiu(imp, onAplicar = {}, onCancelar = {}) } }
+        rule.setContent { TemaJuego(modo, estilo) { ContenidoVistaPreviaSiu(imp, onAplicar = {}, onCancelar = {}) } }
         rule.mainClock.advanceTimeBy(800)
-        val bmp = rule.onAllNodes(isRoot()).onLast().captureToImage().asAndroidBitmap()
+        val bmp = rule.onRoot().captureToImage().asAndroidBitmap()
         val dir = File("build/capturas").apply { mkdirs() }
         File(dir, "vista-previa-$nombre.png").outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }

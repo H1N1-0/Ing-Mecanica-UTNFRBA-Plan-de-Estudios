@@ -45,7 +45,7 @@ jobs:
       - name: Capturas (temporal)
         if: always()
         run: |
-          for f in app/build/capturas/*.png; do echo "=== $(basename "$f")"; base64 -w 120 "$f"; echo "=== fin"; done
+          shopt -s nullglob; for f in app/build/capturas/*.png; do echo "=== $(basename "$f")"; base64 -w 120 "$f"; echo "=== fin"; done
 
       - name: Renombrar APK
         if: github.event_name != 'pull_request'
