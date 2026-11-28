@@ -41,12 +41,6 @@ jobs:
       - name: Tests y APK release
         run: ./gradlew --no-daemon testDebugUnitTest :app:assembleRelease
 
-      # TEMPORAL (se revierte antes del merge): imprime las capturas del PR en base64.
-      - name: Capturas (temporal)
-        if: always()
-        run: |
-          shopt -s nullglob; for f in app/build/capturas/*.png; do echo "=== $(basename "$f")"; base64 -w 120 "$f"; echo "=== fin"; done
-
       - name: Renombrar APK
         if: github.event_name != 'pull_request'
         run: cp app/build/outputs/apk/release/app-release.apk "correlativas-mecanica-${{ github.run_number }}.apk"
