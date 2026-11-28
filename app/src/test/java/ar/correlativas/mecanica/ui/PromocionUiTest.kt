@@ -21,6 +21,7 @@ import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.ModoTema
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -85,8 +86,12 @@ class PromocionUiTest(private val nombre: String, private val ancho: Int, privat
     private fun elegirPromocionada() {
         rule.runOnIdle { vm.cambiar(4, Estado.PROMOCIONADA) }
         rule.mainClock.advanceTimeBy(500)
-        // El diálogo es el de Física I, no el de otra materia.
-        rule.onNodeWithText("Física I. Para promocionarla", substring = true).assertExists()
+        // El diálogo es el de Física I, no el de otra materia. Cada caso falla en su propia línea.
+        val dialogos = rule.onAllNodesWithText("Física I. Para promocionarla", substring = true).fetchSemanticsNodes().size
+        assertEquals("$nombre: el ViewModel pide la promoción", 4, vm.pedirPromocion.value)
+        assertTrue("$nombre: la app tiene el avance", vm.avance.value != null)
+        assertTrue("$nombre: hay diálogo", dialogos > 0)
+        assertEquals("$nombre: un solo diálogo", 1, dialogos)
     }
 
     @Test fun sinNotaNoSePuedePromocionarYCancelarNoCambiaNada() {
