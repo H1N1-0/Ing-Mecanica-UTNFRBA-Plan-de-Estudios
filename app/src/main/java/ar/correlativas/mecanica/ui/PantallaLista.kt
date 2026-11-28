@@ -80,7 +80,9 @@ fun PantallaLista(
     } + Grupo("Electivas", plan.electivas)).map { g ->
         g.copy(materias = g.materias.filter { m ->
             (filtro == null || avance.estadoNodo(m) == filtro ||
-                (filtro == EstadoNodo.REGULARIZADA && avance.estadoNodo(m) == EstadoNodo.PARA_RENDIR)) &&
+                (filtro == EstadoNodo.REGULARIZADA && avance.estadoNodo(m) == EstadoNodo.PARA_RENDIR) ||
+                // "Aprobadas" incluye las promocionadas; "Promocionadas" muestra solo esas.
+                (filtro == EstadoNodo.APROBADA && avance.estadoNodo(m) == EstadoNodo.PROMOCIONADA)) &&
                 m.coincide(q)
         })
     }.filter { it.materias.isNotEmpty() } }
@@ -114,6 +116,7 @@ fun PantallaLista(
                 EstadoNodo.PARA_RENDIR to "Para rendir",
                 EstadoNodo.REGULARIZADA to "Regularizadas",
                 EstadoNodo.APROBADA to "Aprobadas",
+                EstadoNodo.PROMOCIONADA to "Promocionadas",
                 EstadoNodo.BLOQUEADA to "Bloqueadas",
             )
             LazyRow(

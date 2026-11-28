@@ -35,6 +35,7 @@ import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
+import ar.correlativas.mecanica.data.aprobada
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Plan
 import ar.correlativas.mecanica.data.estadoNodo
@@ -258,7 +259,7 @@ private fun FilaPrioridad(
 @Composable
 fun BloqueCritico(materia: Materia, avance: Avance, modifier: Modifier = Modifier) {
     val critico = LocalCritico.current ?: return
-    if (materia.id !in critico.grafo.ids || avance.estado(materia.id) == Estado.APROBADA) return
+    if (materia.id !in critico.grafo.ids || avance.estado(materia.id).aprobada) return
     val traba = critico.trabaDe(materia.id)
     val enCamino = critico.enCamino(materia.id)
     val cuello = critico.esCuello(materia.id)

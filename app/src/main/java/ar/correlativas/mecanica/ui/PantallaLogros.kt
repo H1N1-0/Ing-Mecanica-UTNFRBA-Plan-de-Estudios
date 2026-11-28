@@ -43,6 +43,7 @@ import kotlin.math.sin
 fun iconoLogro(i: IconoLogro): Int = when (i) {
     IconoLogro.PASO -> R.drawable.ic_rayo
     IconoLogro.FINAL -> R.drawable.ic_estrella
+    IconoLogro.PROMOCION -> R.drawable.ic_promocion
     IconoLogro.NIVEL -> R.drawable.ic_trofeo
     IconoLogro.DECENA -> R.drawable.ic_medalla
     IconoLogro.MITAD -> R.drawable.ic_mitad

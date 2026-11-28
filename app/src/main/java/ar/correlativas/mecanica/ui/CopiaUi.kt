@@ -182,7 +182,11 @@ internal fun ConfirmarImportacion(l: LecturaBackup.Ok, onReemplazar: () -> Unit,
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 if (d.exportado != LocalDate.MIN) Text("Copia del ${formatearFecha(d.exportado)}:", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold)
-                Text("• ${d.aprobadas} aprobadas y ${d.regularizadas} regularizadas", color = C.texto, fontFamily = C.fuente)
+                Text(
+                    "• ${d.aprobadas} aprobadas" + (if (d.promocionadas > 0) " (${d.promocionadas} por promoción)" else "") +
+                        " y ${d.regularizadas} regularizadas",
+                    color = C.texto, fontFamily = C.fuente,
+                )
                 Text("• ${d.notas} notas y ${d.libreta.aplazos.size} aplazos", color = C.texto, fontFamily = C.fuente)
                 Text("• Test vocacional: ${if (d.perfil != null) "hecho" else "sin hacer"}", color = C.texto, fontFamily = C.fuente)
                 Text("• Estilo ${d.estilo.texto}, tema ${d.tema.texto.lowercase()}", color = C.texto, fontFamily = C.fuente)

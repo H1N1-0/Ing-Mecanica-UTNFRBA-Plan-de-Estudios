@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ar.correlativas.mecanica.R
+import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.ModoTema
@@ -133,6 +134,7 @@ fun AppCorrelativas(
     val libreta by vm.libreta.collectAsStateWithLifecycle()
     val estadisticas by vm.estadisticas.collectAsStateWithLifecycle()
     val pedirNota by vm.pedirNota.collectAsStateWithLifecycle()
+    val pedirPromocion by vm.pedirPromocion.collectAsStateWithLifecycle()
     // Todo el estado de navegación se guarda arriba de todo, antes de elegir la disposición,
     // para que girar la pantalla (o pasar de celular a tablet) no pierda dónde estabas.
     var pestania by rememberSaveable { mutableStateOf(pestaniaInicial) }
@@ -377,6 +379,7 @@ fun AppCorrelativas(
                 PreguntaNombre(onGuardar = vm::cambiarNombre, onOmitir = vm::omitirNombre)
             }
             // Nota del final: al aprobar (después de la celebración) o al tocar "Editar" en el detalle.
+            // Si la materia está promocionada, la nota es obligatoria: no se puede dejar sin nota.
             pedirNota?.let { id ->
                 val m = a.plan[id]
                 if (m != null && desbloqueo == null) {
@@ -384,6 +387,18 @@ fun AppCorrelativas(
                         m, libreta.finales[id],
                         onGuardar = { vm.guardarFinal(id, it) },
                         onCerrar = { vm.editarNota(null) },
+                        promocion = a.estado(id) == Estado.PROMOCIONADA,
+                    )
+                }
+            }
+            // Promocionar: primero la nota (obligatoria); el estado cambia al guardarla.
+            pedirPromocion?.let { id ->
+                a.plan[id]?.let { m ->
+                    DialogoNotaFinal(
+                        m, libreta.finales[id],
+                        onGuardar = { nf -> nf?.let { vm.promocionar(id, it) } },
+                        onCerrar = vm::cancelarPromocion,
+                        promocion = true,
                     )
                 }
             }

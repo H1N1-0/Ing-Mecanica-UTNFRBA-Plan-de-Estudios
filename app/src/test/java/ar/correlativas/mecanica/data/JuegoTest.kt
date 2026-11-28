@@ -37,7 +37,9 @@ class JuegoTest {
 
     @Test fun logros() {
         assertTrue(logros.none { it.cumplido(avance(emptyMap())) })
-        assertTrue(logros.all { it.cumplido(avance(todo), testHecho = true) })
+        // Con todo aprobado por final falta solo "Primera promoción"; con una promoción, están todos.
+        assertEquals(listOf("primera-promocion"), logros.filterNot { it.cumplido(avance(todo), testHecho = true) }.map { it.id })
+        assertTrue(logros.all { it.cumplido(avance(todo + (1 to Estado.PROMOCIONADA)), testHecho = true) })
         assertFalse(logros.first { it.id == "test" }.cumplido(avance(todo)))
         val nivel1 = plan.obligatorias.filter { it.nivel == 1 }.associate { it.id to Estado.APROBADA }
         val conseguidos = logros.filter { it.cumplido(avance(nivel1)) }.map { it.id }.toSet()

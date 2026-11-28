@@ -202,6 +202,7 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
     )
     val accion = when (avance.estado(d.materia.id)) {
         Estado.APROBADA -> if (d.materia.id == avance.plan.pps.id) "Acreditaste" else "Aprobaste"
+        Estado.PROMOCIONADA -> "Promocionaste"
         Estado.REGULARIZADA -> "Regularizaste"
         Estado.SIN_CURSAR -> "Cambiaste"
     }

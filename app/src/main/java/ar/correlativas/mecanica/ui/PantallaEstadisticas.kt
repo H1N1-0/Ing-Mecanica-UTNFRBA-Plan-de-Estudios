@@ -60,15 +60,21 @@ fun PantallaEstadisticas(e: Estadisticas, onAbrir: (Int) -> Unit, onVolver: () -
                 DatoGrande("Promedio", formatearPromedio(e.promedioSinAplazos), "sin aplazos", C.disponible, Modifier.weight(1f))
                 DatoGrande("Promedio", formatearPromedio(e.promedioConAplazos), "con aplazos", C.regular, Modifier.weight(1f))
             }
+            // Cómo se aprobó cada materia: con final o por promoción (sin final, con nota).
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                DatoGrande("Finales rendidos", "${e.finalesRendidos}", "${e.aprobadas.size} aprobados · ${e.aplazos.size} aplazos", C.texto, Modifier.weight(1f))
+                DatoGrande("Por final", "${e.porFinal}", "de ${e.aprobadas.size} aprobadas", C.oro, Modifier.weight(1f))
+                DatoGrande("Por promoción", "${e.porPromocion}", "de ${e.aprobadas.size} aprobadas", C.oro, Modifier.weight(1f))
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                DatoGrande("Finales rendidos", "${e.finalesRendidos}", "${e.porFinal} aprobados · ${e.aplazos.size} aplazos", C.texto, Modifier.weight(1f))
                 DatoGrande("Con nota", "${e.notas.size}", "de ${e.aprobadas.size} aprobadas", C.texto, Modifier.weight(1f))
             }
             if (!e.hayDatos) {
                 Tarjeta(Modifier.fillMaxWidth()) {
                     Text(
                         "Todavía no cargaste notas. Cuando marcás una materia como aprobada podés poner la nota y la fecha " +
-                            "del final; también podés hacerlo desde el detalle de cada materia, junto con los aplazos.",
+                            "del final (al promocionarla, la nota es obligatoria); también podés hacerlo desde el detalle " +
+                            "de cada materia, junto con los aplazos.",
                         Modifier.padding(16.dp),
                         color = C.texto2, fontFamily = C.fuente, fontSize = 14.sp, lineHeight = 19.sp,
                     )

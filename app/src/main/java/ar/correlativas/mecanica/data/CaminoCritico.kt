@@ -72,7 +72,7 @@ data class Prioridad(
 class CaminoCritico(val avance: Avance, val grafo: GrafoPlan = GrafoPlan(avance.plan)) {
     private val plan = avance.plan
 
-    private fun pendiente(id: Int) = avance.estado(id) != Estado.APROBADA
+    private fun pendiente(id: Int) = !avance.estado(id).aprobada
 
     /** Materias sin cursar: cada una es una cursada que falta. */
     private val sinCursar: Set<Int> = grafo.ids.filter { avance.estado(it) == Estado.SIN_CURSAR }.toSet()

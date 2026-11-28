@@ -72,7 +72,10 @@ baselineprofile/         Módulo de test: genera el Baseline Profile y mide el a
 
 ## Cálculo de correlativas (`data/Calculo.kt`)
 
-- Estados por materia: `SIN_CURSAR`, `REGULARIZADA`, `APROBADA`.
+- Estados por materia: `SIN_CURSAR`, `REGULARIZADA`, `APROBADA`, `PROMOCIONADA` (aprobada sin
+  final). Para correlativas, horas de electivas, avance y logros, Promocionada cuenta igual que
+  Aprobada: compará con `estado.aprobada` (y `EstadoNodo.completada`), nunca con `== APROBADA`,
+  salvo que importe cómo se aprobó (por ejemplo, el logro "Primer final" pide un final).
 - Cursar: las de `cursar.regularizadas` tienen que estar regularizadas o aprobadas; las de
   `cursar.aprobadas`, aprobadas.
 - Rendir: tener la materia regularizada y cumplir `rendir` (en obligatorias, todas aprobadas).
@@ -80,7 +83,8 @@ baselineprofile/         Módulo de test: genera el Baseline Profile y mide el a
   aprobadas. Una electiva con `horas_anuales` null no suma.
 - PPS: se empieza con los mismos requisitos que para cursar Proyecto Final; no se rinde.
 - `Avance.estadoNodo()` (en Juego.kt) traduce eso a BLOQUEADA / DISPONIBLE / REGULARIZADA /
-  PARA_RENDIR / APROBADA para la UI.
+  PARA_RENDIR / APROBADA / PROMOCIONADA para la UI. Promocionada usa el color de Aprobada (`C.oro`)
+  y se distingue por el ícono (`ic_promocion`, estrella en un aro) y un segundo aro en el `Nodo`.
 
 ## Camino crítico (`data/CaminoCritico.kt`)
 
@@ -122,13 +126,16 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
 
 ## Notas y estadísticas (`data/Notas.kt`)
 
+- Promocionar pide la nota ANTES de cambiar el estado (`pedirPromocion` en el ViewModel): sin nota
+  no se confirma y cancelar deja la materia como estaba. La nota va en `finales`, como la de un final.
 - Al aprobar una materia (no la PPS) se ofrece cargar nota (1–10) y fecha, después de la
   celebración; también desde el detalle ("Final"), junto con los aplazos (nota 1–5, fecha). Todo
   es opcional: sin nota, la materia cuenta igual como aprobada. Las notas NO tocan las correlativas.
 - Se guardan en el DataStore `notas` (clave `libreta`, JSON de `CodecLibreta` con `version`),
   aparte del progreso. Si cambia el formato, subí `CodecLibreta.VERSION` y migrá en `deJson`.
-- `Estadisticas(avance, libreta)`: solo cuentan las notas de materias hoy aprobadas; promedio sin y
-  con aplazos, finales rendidos (aprobadas + aplazos), mejor/peor, evolución acumulada por año (las
+- `Estadisticas(avance, libreta)`: solo cuentan las notas de materias hoy aprobadas (por final o
+  promoción: `porFinal` / `porPromocion`); promedio sin y con aplazos, finales rendidos (aprobadas
+  por final + aplazos; las promociones no son finales), mejor/peor, evolución acumulada por año (las
   notas sin fecha cuentan en el promedio pero no en el gráfico).
 - "Reiniciar mi progreso" borra también las notas.
 
@@ -148,7 +155,8 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
   almacenamiento). QR: `CMEC1:` + JSON comprimido (deflate) en Base64 URL.
 - Importar valida (formato, versión, materias que existen, rangos de notas), muestra un resumen y
   pide confirmación antes de reemplazar. Si cambia el formato, subí `Backup.VERSION` (y el prefijo
-  del QR) y seguí leyendo las versiones viejas.
+  del QR), migrá en `Backup.migrar` y seguí leyendo las versiones viejas. Versión 2 (`CMEC2:`) suma
+  PROMOCIONADA; la 1 (`CMEC1:`) se sigue importando. `PromocionTest` tiene una copia v1 literal.
 - La app NO tiene permiso de internet: el manifiesto lo quita con `tools:node="remove"` (hay un test).
   La cámara se pide solo al escanear.
 

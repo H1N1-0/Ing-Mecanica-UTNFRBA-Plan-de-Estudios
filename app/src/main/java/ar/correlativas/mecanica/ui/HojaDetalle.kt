@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Estado
+import ar.correlativas.mecanica.data.aprobada
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Nivel
@@ -137,7 +138,8 @@ fun ContenidoDetalle(
         SelectorEstado(materia.tipo, avance.estado(materia.id), onCambio, Modifier.fillMaxWidth().padding(top = 14.dp))
 
         if (materia.tipo != Tipo.PPS) {
-            Titulo("Final", R.drawable.ic_estrella, C.oro)
+            val promocionada = avance.estado(materia.id) == Estado.PROMOCIONADA
+            Titulo(if (promocionada) "Promoción" else "Final", if (promocionada) R.drawable.ic_promocion else R.drawable.ic_estrella, C.oro)
             BloqueFinal(materia, avance)
         }
 
@@ -206,6 +208,7 @@ private fun Banner(materia: Materia, avance: Avance, e: EstadoNodo) {
         }
         EstadoNodo.PARA_RENDIR -> "¡Final disponible!" to "Cumplís todo: ya podés rendir el final."
         EstadoNodo.APROBADA -> "¡Completada!" to if (materia.tipo == Tipo.PPS) "PPS acreditada." else "Materia aprobada. Bien ahí."
+        EstadoNodo.PROMOCIONADA -> "¡Promocionada!" to "Aprobada sin final. Para las correlativas cuenta como aprobada."
     }
     val color = colorEstado(e)
     Row(
@@ -282,13 +285,14 @@ private fun Lista(titulo: String, nivel: Nivel, ids: List<Int>, avance: Avance, 
     )
     ids.mapNotNull { avance.plan[it] }.forEach { m ->
         val est = avance.estado(m.id)
-        val cumple = if (nivel == Nivel.APROBADA) est == Estado.APROBADA else est != Estado.SIN_CURSAR
+        val cumple = if (nivel == Nivel.APROBADA) est.aprobada else est != Estado.SIN_CURSAR
         FilaMateria(
             m, avance,
             when (est) {
                 Estado.SIN_CURSAR -> "Sin cursar"
                 Estado.REGULARIZADA -> "Regularizada"
                 Estado.APROBADA -> "Aprobada"
+                Estado.PROMOCIONADA -> "Promocionada"
             },
             cumple, onAbrir,
         )
