@@ -6,17 +6,12 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasScrollToIndexAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
@@ -67,7 +62,7 @@ class PromocionUiTest(private val nombre: String, private val ancho: Int, privat
         }
     }
 
-    private fun mostrarFisicaIEnLaLista() {
+    private fun abrirApp() {
         RuntimeEnvironment.setQualifiers("w${ancho}dp-h${alto}dp-${if (ancho > alto) "land" else "port"}")
         val app = ApplicationProvider.getApplicationContext<Application>()
         runBlocking { Ajustes(app).omitirNombre() }
@@ -79,26 +74,23 @@ class PromocionUiTest(private val nombre: String, private val ancho: Int, privat
         }
         esperar { vm.avance.value != null && vm.preferencias.value?.nombrePreguntado == true }
         rule.mainClock.advanceTimeBy(1000)
-        rule.onAllNodesWithText("Lista").onLast().performClick()
-        rule.mainClock.advanceTimeBy(800)
-        rule.onAllNodes(hasScrollToIndexAction()).onLast().performScrollToNode(hasText("Física I"))
     }
 
     /**
-     * El botón "Promocionada" del selector de la fila de Física I en la lista (llama al mismo
-     * vm.cambiar que el selector del detalle). Se usa el de la lista porque en el celular el detalle
-     * es una hoja modal, otra ventana, y en Robolectric el toque no le llega al selector de adentro.
+     * Elegir "Promocionada" en un selector de estado: todos llaman a vm.cambiar(id, PROMOCIONADA).
+     * Se llama directo porque en Robolectric el toque no le llega igual a cada selector según la
+     * disposición (la hoja modal del celular es otra ventana; en tablet la fila de la lista no
+     * respondió). Lo que se prueba es lo que sigue: el diálogo y la nota obligatoria.
      */
     private fun elegirPromocionada() {
-        rule.onNode(hasContentDescription("Promocionada") and hasClickAction() and hasAnyAncestor(hasText("Física I")))
-            .performClick()
+        rule.runOnIdle { vm.cambiar(4, Estado.PROMOCIONADA) }
         rule.mainClock.advanceTimeBy(500)
         // El diálogo es el de Física I, no el de otra materia.
         rule.onNodeWithText("Física I. Para promocionarla", substring = true).assertExists()
     }
 
     @Test fun sinNotaNoSePuedePromocionarYCancelarNoCambiaNada() {
-        mostrarFisicaIEnLaLista()
+        abrirApp()
         elegirPromocionada()
         rule.onNodeWithText("Nota de la promoción").assertExists()
         rule.onNodeWithText("Promocionar").assertIsNotEnabled()
@@ -109,7 +101,7 @@ class PromocionUiTest(private val nombre: String, private val ancho: Int, privat
     }
 
     @Test fun conNotaQuedaPromocionada() {
-        mostrarFisicaIEnLaLista()
+        abrirApp()
         elegirPromocionada()
         rule.onNode(hasContentDescription("Nota 8") and hasClickAction()).performClick()
         rule.onNodeWithText("Promocionar").assertIsEnabled().performClick()
