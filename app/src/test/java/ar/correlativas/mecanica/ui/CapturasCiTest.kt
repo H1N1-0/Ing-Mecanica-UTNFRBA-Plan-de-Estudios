@@ -1,10 +1,9 @@
 package ar.correlativas.mecanica.ui
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.captureToImage
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
+import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import android.graphics.Canvas
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.Estilo
@@ -39,7 +38,7 @@ class CapturasCiTest(private val nombre: String, private val ancho: Int, private
         )
     }
 
-    @get:Rule val rule = createComposeRule()
+    @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test fun vistaPrevia() {
         RuntimeEnvironment.setQualifiers("w${ancho}dp-h${alto}dp-${if (ancho > alto) "land" else "port"}-mdpi")
@@ -48,7 +47,11 @@ class CapturasCiTest(private val nombre: String, private val ancho: Int, private
         val imp = ImportacionSiu.armar(filas, Avance(plan, mapOf(2 to Estado.REGULARIZADA, 9 to Estado.APROBADA)), Libreta())
         rule.setContent { TemaJuego(modo, estilo) { ContenidoVistaPreviaSiu(imp, onAplicar = {}, onCancelar = {}) } }
         rule.mainClock.advanceTimeBy(800)
-        val bmp = rule.onRoot().captureToImage().asAndroidBitmap()
+        rule.waitForIdle()
+        // captureToImage espera un dibujado de la ventana que en Robolectric no llega: se dibuja la vista a mano.
+        val vista = rule.activity.window.decorView
+        val bmp = Bitmap.createBitmap(vista.width, vista.height, Bitmap.Config.ARGB_8888)
+        rule.runOnUiThread { vista.draw(Canvas(bmp)) }
         val dir = File("build/capturas").apply { mkdirs() }
         File(dir, "vista-previa-$nombre.png").outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
