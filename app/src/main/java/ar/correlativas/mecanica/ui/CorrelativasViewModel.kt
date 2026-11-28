@@ -29,6 +29,7 @@ import ar.correlativas.mecanica.data.Plan
 import ar.correlativas.mecanica.data.Preferencias
 import ar.correlativas.mecanica.data.Progreso
 import ar.correlativas.mecanica.data.TestVocacional
+import ar.correlativas.mecanica.data.aprobada
 import ar.correlativas.mecanica.data.logros
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -116,23 +117,53 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
     private val _desbloqueo = MutableStateFlow<Desbloqueo?>(null)
     val desbloqueo: StateFlow<Desbloqueo?> = _desbloqueo.asStateFlow()
 
+    /**
+     * Materia que se está por promocionar: la promoción lleva nota obligatoria, así que el estado
+     * recién cambia cuando se guarda la nota ([promocionar]). Cancelar la deja como estaba.
+     */
+    private val _pedirPromocion = MutableStateFlow<Int?>(null)
+    val pedirPromocion: StateFlow<Int?> = _pedirPromocion.asStateFlow()
+
     fun cambiar(id: Int, estado: Estado) {
         val materia = plan[id] ?: return
+        if (estado == Estado.PROMOCIONADA) {
+            if (materia.tipo != Tipo.PPS && avance.value?.estado(id) != Estado.PROMOCIONADA) _pedirPromocion.value = id
+            return
+        }
+        viewModelScope.launch { aplicar(materia, estado) }
+    }
+
+    /** Guarda la nota (obligatoria) y recién ahí marca la materia como promocionada. */
+    fun promocionar(id: Int, nf: NotaFinal) {
+        val materia = plan[id] ?: return
+        if (nf.nota == null) return
+        _pedirPromocion.value = null
         viewModelScope.launch {
-            val antes = Avance(plan, progreso.estados.first())
-            if (antes.estado(id) == estado) return@launch
-            progreso.cambiar(id, estado)
-            val despues = Avance(plan, progreso.estados.first())
-            val testHecho = preferencias.value?.perfil != null
-            val frase = if (estado == Estado.APROBADA) {
-                frases.paraMateria(id, semilla = id * 31L + System.currentTimeMillis() / 60_000)
-            } else null
-            val d = calcularDesbloqueo(materia, antes, despues, logros, testHecho).copy(frase = frase)
-            if (!d.vacio) _desbloqueo.value = d
-            // Al aprobar, se ofrece cargar la nota (es opcional). La PPS no se rinde.
-            if (estado == Estado.APROBADA && materia.tipo != Tipo.PPS && libreta.value.finales[id]?.nota == null) {
-                _pedirNota.value = id
-            }
+            notas.guardarFinal(id, nf)
+            aplicar(materia, Estado.PROMOCIONADA)
+        }
+    }
+
+    fun cancelarPromocion() {
+        _pedirPromocion.value = null
+    }
+
+    private suspend fun aplicar(materia: Materia, estado: Estado) {
+        val id = materia.id
+        val antes = Avance(plan, progreso.estados.first())
+        if (antes.estado(id) == estado) return
+        progreso.cambiar(id, estado)
+        val despues = Avance(plan, progreso.estados.first())
+        val testHecho = preferencias.value?.perfil != null
+        val frase = if (estado.aprobada) {
+            frases.paraMateria(id, semilla = id * 31L + System.currentTimeMillis() / 60_000)
+        } else null
+        val d = calcularDesbloqueo(materia, antes, despues, logros, testHecho).copy(frase = frase)
+        if (!d.vacio) _desbloqueo.value = d
+        // Al aprobar con final, se ofrece cargar la nota (es opcional). La PPS no se rinde.
+        // Al promocionar no hace falta: la nota se pidió antes.
+        if (estado == Estado.APROBADA && materia.tipo != Tipo.PPS && libreta.value.finales[id]?.nota == null) {
+            _pedirNota.value = id
         }
     }
 

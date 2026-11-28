@@ -486,7 +486,8 @@ fun colorEstado(e: EstadoNodo): Color = when (e) {
     EstadoNodo.DISPONIBLE -> C.disponible
     EstadoNodo.REGULARIZADA -> C.regular
     EstadoNodo.PARA_RENDIR -> C.rendir
-    EstadoNodo.APROBADA -> C.oro
+    // Misma familia que Aprobada; se distingue por el ícono y el doble aro del nodo.
+    EstadoNodo.APROBADA, EstadoNodo.PROMOCIONADA -> C.oro
 }
 
 fun textoEstado(e: EstadoNodo, pps: Boolean = false): String = when (e) {
@@ -495,6 +496,7 @@ fun textoEstado(e: EstadoNodo, pps: Boolean = false): String = when (e) {
     EstadoNodo.REGULARIZADA -> "Regularizada"
     EstadoNodo.PARA_RENDIR -> "Lista para rendir"
     EstadoNodo.APROBADA -> if (pps) "Acreditada" else "Aprobada"
+    EstadoNodo.PROMOCIONADA -> "Promocionada"
 }
 
 fun iconoEstado(e: EstadoNodo): Int = when (e) {
@@ -503,6 +505,7 @@ fun iconoEstado(e: EstadoNodo): Int = when (e) {
     EstadoNodo.REGULARIZADA -> R.drawable.ic_mitad
     EstadoNodo.PARA_RENDIR -> R.drawable.ic_llama
     EstadoNodo.APROBADA -> R.drawable.ic_estrella
+    EstadoNodo.PROMOCIONADA -> R.drawable.ic_promocion
 }
 
 // ---------------------------------------------------------------- áreas de las frases

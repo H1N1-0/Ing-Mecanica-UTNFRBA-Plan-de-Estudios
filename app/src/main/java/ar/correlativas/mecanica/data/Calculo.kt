@@ -1,6 +1,15 @@
 package ar.correlativas.mecanica.data
 
-enum class Estado { SIN_CURSAR, REGULARIZADA, APROBADA }
+/**
+ * Estado de una materia. PROMOCIONADA es aprobada sin final (por promoción): para las correlativas
+ * (cursar y rendir), las horas de electivas y el avance cuenta exactamente igual que APROBADA, y
+ * lleva nota obligatoria. Se guarda por nombre en `CodecEstados` ("12:PROMOCIONADA"), con el mismo
+ * formato de siempre: agregar un valor no cambia cómo se leen los estados ya guardados.
+ */
+enum class Estado { SIN_CURSAR, REGULARIZADA, APROBADA, PROMOCIONADA }
+
+/** Aprobada por final o por promoción: así la ven las correlativas. */
+val Estado.aprobada: Boolean get() = this == Estado.APROBADA || this == Estado.PROMOCIONADA
 
 /** Qué nivel de una correlativa pide una materia. */
 enum class Nivel { REGULARIZADA, APROBADA }
@@ -16,6 +25,7 @@ data class Habilitacion(val materia: Materia, val paraCursar: Nivel?, val paraRe
  *  - Proyecto Final se rinde con todas las obligatorias aprobadas y 10 hs anuales de electivas aprobadas.
  *  - PPS: se empieza con los mismos requisitos que para cursar Proyecto Final.
  *  - Electivas: horas_anuales null no suma.
+ *  - Promocionada cuenta en todo como aprobada (ver [Estado]).
  */
 class Avance(val plan: Plan, val estados: Map<Int, Estado>) {
 
@@ -23,7 +33,7 @@ class Avance(val plan: Plan, val estados: Map<Int, Estado>) {
 
     private fun cumple(id: Int, pide: Nivel) = when (pide) {
         Nivel.REGULARIZADA -> estado(id) != Estado.SIN_CURSAR
-        Nivel.APROBADA -> estado(id) == Estado.APROBADA
+        Nivel.APROBADA -> estado(id).aprobada
     }
 
     private fun faltantes(r: Requisitos): List<Faltante> =
@@ -31,17 +41,17 @@ class Avance(val plan: Plan, val estados: Map<Int, Estado>) {
             r.aprobadas.filterNot { cumple(it, Nivel.APROBADA) }.map { Faltante(it, Nivel.APROBADA) }
 
     val horasElectivas: Double = plan.electivas
-        .filter { estado(it.id) == Estado.APROBADA }
+        .filter { estado(it.id).aprobada }
         .sumOf { it.horasAnuales ?: 0.0 }
 
-    val aprobadasObligatorias: Int = plan.obligatorias.count { estado(it.id) == Estado.APROBADA }
+    val aprobadasObligatorias: Int = plan.obligatorias.count { estado(it.id).aprobada }
 
     fun faltantesCursar(m: Materia): List<Faltante> = faltantes(m.cursar)
 
     /** Lo que falta para rendir, sin contar la condición de tenerla regularizada. */
     fun faltantesRendir(m: Materia): List<Faltante> = when {
         m.reglaRendir != null -> plan.obligatorias
-            .filter { it.id != m.id && estado(it.id) != Estado.APROBADA }
+            .filter { it.id != m.id && !estado(it.id).aprobada }
             .map { Faltante(it.id, Nivel.APROBADA) }
         m.rendir != null -> faltantes(m.rendir)
         else -> emptyList()

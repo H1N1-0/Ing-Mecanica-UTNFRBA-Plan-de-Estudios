@@ -43,6 +43,7 @@ import ar.correlativas.mecanica.MainActivity
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.ui.Paleta
 import ar.correlativas.mecanica.ui.esquemaMaterial
@@ -288,6 +289,11 @@ private fun Encabezado(avance: Avance, colores: ColoresWidget) {
     Spacer(GlanceModifier.height(10.dp))
     Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Dato(colores, R.drawable.ic_estrella, colores.oro, "${avance.aprobadasObligatorias}/${avance.plan.obligatorias.size}", GlanceModifier.defaultWeight())
+        // Promocionadas (ya incluidas en las aprobadas), con su propio ícono; solo si hay lugar.
+        val promocionadas = promocionadasObligatorias(avance)
+        if (promocionadas > 0 && LocalSize.current.width.value >= 260f) {
+            Dato(colores, R.drawable.ic_promocion, colores.oro, "$promocionadas promo", GlanceModifier.defaultWeight())
+        }
         Dato(
             colores, R.drawable.ic_reloj, colores.rosa,
             "${formatearHoras(avance.horasElectivas)}/${formatearHoras(Plan.HORAS_ELECTIVAS_REQUERIDAS)} hs",
@@ -298,6 +304,10 @@ private fun Encabezado(avance: Avance, colores: ColoresWidget) {
     Spacer(GlanceModifier.height(10.dp))
     Box(GlanceModifier.fillMaxWidth().height(1.dp).background(colores.linea)) {}
 }
+
+/** Obligatorias aprobadas por promoción (ya cuentan en `aprobadasObligatorias`). */
+internal fun promocionadasObligatorias(avance: Avance): Int =
+    avance.plan.obligatorias.count { avance.estado(it.id) == Estado.PROMOCIONADA }
 
 /** Reparte las líneas disponibles entre cursar y rendir, sin dejar lugar vacío. */
 internal fun repartir(lineas: Int, cursar: Int, rendir: Int): Pair<Int, Int> {

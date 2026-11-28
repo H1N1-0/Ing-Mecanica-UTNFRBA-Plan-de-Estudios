@@ -60,6 +60,7 @@ import ar.correlativas.mecanica.data.Frases
 import ar.correlativas.mecanica.data.ResultadoPerfil
 import ar.correlativas.mecanica.data.TestVocacional
 import ar.correlativas.mecanica.data.EstadoNodo
+import ar.correlativas.mecanica.data.completada
 import ar.correlativas.mecanica.data.Logro
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Plan
@@ -396,7 +397,7 @@ private fun Camino(avance: Avance, plan: Plan) {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 (1..5).forEach { n ->
                     val materias = plan.obligatorias.filter { it.nivel == n }
-                    val hechas = materias.count { avance.estadoNodo(it) == EstadoNodo.APROBADA }
+                    val hechas = materias.count { avance.estadoNodo(it).completada }
                     val completo = hechas == materias.size
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(

@@ -8,13 +8,13 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023).
 
 ## App Android
 
-- Lista por nivel (1 a 5 y Electivas). Cada materia se marca como sin cursar, regularizada o aprobada; la PPS, pendiente o acreditada.
+- Lista por nivel (1 a 5 y Electivas). Cada materia se marca como sin cursar, regularizada, aprobada o promocionada (aprobada sin final, con nota obligatoria); la PPS, pendiente o acreditada.
 - Calcula qué podés cursar y rendir según las reglas del JSON (Proyecto Final pide además 10 hs anuales de electivas aprobadas).
 - Detalle de cada materia: qué te pide y qué habilita, con su sigla (AM1, IyS, PF…) y su código SIU.
 - Siglas en el mapa, el camino crítico y el widget, donde el nombre completo no entra. El buscador encuentra por sigla, nombre, número o código SIU.
 - Camino crítico: cuántas materias traba cada una, la cadena más larga hasta recibirte (años mínimos de cursada), cuellos de botella y una tarjeta de prioridad con las 3 materias que más conviene aprobar.
 - Tres estilos visuales a elección en Ajustes, combinables con claro/oscuro: **Plano técnico** (blueprint u hoja de dibujo, dibujos técnicos, rótulo de lámina y manómetro), **Gamificado** y **Material You** (colores del fondo de pantalla en Android 12+). El widget sigue el estilo.
-- Notas y promedio: al aprobar podés cargar nota y fecha del final (opcional), y también aplazos. Pantalla de estadísticas con promedio con y sin aplazos, finales rendidos, evolución por año y mejor y peor nota.
+- Notas y promedio: al aprobar podés cargar nota y fecha del final (opcional), y también aplazos. Pantalla de estadísticas con promedio con y sin aplazos, aprobadas por final y por promoción, finales rendidos, evolución por año y mejor y peor nota.
 - Copia de seguridad en Ajustes: exportá progreso, notas, test y ajustes como archivo JSON o código QR, e importalos en otro celular (con confirmación). Todo local: la app no usa internet.
 - Frases con medallón del autor (iniciales, color e ícono según su área).
 - Versión para tablet y horizontal: barra lateral, lista y detalle lado a lado, mapa con panel de detalle e inicio en columnas.

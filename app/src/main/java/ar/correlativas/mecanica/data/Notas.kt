@@ -14,7 +14,9 @@ import java.time.LocalDate
 /*
  * Notas de finales y aplazos. Van en un DataStore propio ("notas"), aparte del progreso: el
  * progreso ("progreso" / "estados") NO cambia de formato, así que actualizar la app no lo toca.
- * Las notas son opcionales: una materia aprobada sin nota sigue contando como aprobada.
+ * Las notas son opcionales: una materia aprobada sin nota sigue contando como aprobada. La
+ * excepción es la promoción: la app pide la nota antes de marcarla (ver CorrelativasViewModel).
+ * La nota de una promocionada se guarda igual que la de un final, en `finales`.
  */
 
 const val NOTA_MIN = 1
@@ -23,7 +25,7 @@ const val NOTA_MAX = 10
 /** Nota de un aplazo: un final desaprobado (en la UTN se aprueba con 6). */
 const val APLAZO_MAX = 5
 
-/** Nota y fecha del final con que se aprobó una materia. Las dos son opcionales. */
+/** Nota y fecha con que se aprobó una materia (por final o por promoción). */
 data class NotaFinal(val nota: Int?, val fecha: LocalDate?) {
     val vacia get() = nota == null && fecha == null
 }
@@ -160,8 +162,12 @@ data class NotaDeMateria(val materia: Materia, val nota: Int, val fecha: LocalDa
 class Estadisticas(val avance: Avance, val libreta: Libreta) {
     private val plan = avance.plan
 
-    /** Materias aprobadas que se rinden con final (todas menos la PPS). */
-    val aprobadas: List<Materia> = plan.todas.filter { it.tipo != Tipo.PPS && avance.estado(it.id) == Estado.APROBADA }
+    /** Materias aprobadas, por final o por promoción (todas menos la PPS, que no lleva nota). */
+    val aprobadas: List<Materia> = plan.todas.filter { it.tipo != Tipo.PPS && avance.estado(it.id).aprobada }
+
+    /** Cuántas de las [aprobadas] fueron por promoción y cuántas por final. */
+    val porPromocion: Int = aprobadas.count { avance.estado(it.id) == Estado.PROMOCIONADA }
+    val porFinal: Int = aprobadas.size - porPromocion
 
     val notas: List<NotaDeMateria> = aprobadas.mapNotNull { m ->
         libreta.finales[m.id]?.let { nf -> nf.nota?.let { NotaDeMateria(m, it, nf.fecha) } }
@@ -173,8 +179,8 @@ class Estadisticas(val avance: Avance, val libreta: Libreta) {
 
     val promedioConAplazos: Double? = (notas.map { it.nota } + aplazos.map { it.nota }).promedio()
 
-    /** Finales rendidos: los aprobados (con o sin nota cargada) más los aplazos. */
-    val finalesRendidos: Int = aprobadas.size + aplazos.size
+    /** Finales rendidos: los aprobados por final (con o sin nota cargada) más los aplazos. Las promociones no son finales. */
+    val finalesRendidos: Int = porFinal + aplazos.size
 
     val mejor: NotaDeMateria? = notas.maxWithOrNull(compareBy<NotaDeMateria> { it.nota }.thenByDescending { it.fecha ?: LocalDate.MAX })
 

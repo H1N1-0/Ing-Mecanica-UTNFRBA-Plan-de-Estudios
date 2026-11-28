@@ -15,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -52,12 +53,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.EstadoNodo
+import ar.correlativas.mecanica.data.completada
 import ar.correlativas.mecanica.data.Estilo
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Tipo
@@ -96,7 +99,7 @@ fun Nodo(
     val carga by animateFloatAsState(
         when (estado) {
             EstadoNodo.REGULARIZADA, EstadoNodo.PARA_RENDIR -> 0.5f
-            EstadoNodo.APROBADA -> 1f
+            EstadoNodo.APROBADA, EstadoNodo.PROMOCIONADA -> 1f
             else -> 0f
         },
         tween(500), label = "carga",
@@ -120,7 +123,7 @@ fun Nodo(
             numero,
             Modifier.align(Alignment.Center),
             color = when (estado) {
-                EstadoNodo.APROBADA -> C.sobreOro
+                EstadoNodo.APROBADA, EstadoNodo.PROMOCIONADA -> C.sobreOro
                 EstadoNodo.BLOQUEADA -> C.bloqueadaTexto
                 EstadoNodo.DISPONIBLE -> C.disponible
                 else -> C.texto
@@ -160,7 +163,7 @@ private fun DrawScope.nodoGamificado(estado: EstadoNodo, color: Color, pulso: St
         drawCircle(color.copy(alpha = 0.18f), radius = r * 1.12f)
     }
     drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.bloqueada else C.fondoAlto, radius = r)
-    if (estado == EstadoNodo.APROBADA) {
+    if (estado.completada) {
         drawCircle(
             Brush.radialGradient(listOf(Color(0xFFFFE89A), Color(0xFFFFCB3D), Color(0xFFE39A00)), center = Offset(r * 0.7f, r * 0.6f), radius = r * 1.6f),
             radius = r,
@@ -170,11 +173,14 @@ private fun DrawScope.nodoGamificado(estado: EstadoNodo, color: Color, pulso: St
         drawArc(color.copy(alpha = 0.45f), 0f, 180f, useCenter = true, topLeft = Offset.Zero, size = Size(r * 2, r * 2), alpha = (carga / 0.5f).coerceIn(0f, 1f))
     }
     drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.borde else color, radius = r - anillo / 2, style = Stroke(anillo))
+    // Promocionada: un segundo aro por fuera (el doble aro la distingue de Aprobada).
+    if (estado == EstadoNodo.PROMOCIONADA) drawCircle(color, radius = r + anillo * 1.1f, style = Stroke(anillo * 0.6f))
 }
 
 /**
  * Nodo de plano: circunferencia a tinta con ejes en cruz que asoman. Bloqueada = línea oculta
- * (de trazos); regularizada = media sección rayada; aprobada = rellena con doble circunferencia.
+ * (de trazos); regularizada = media sección rayada; aprobada = rellena con doble circunferencia;
+ * promocionada = igual, con otra circunferencia por fuera.
  */
 /** Efectos de trazo del nodo de plano, armados una vez por tamaño. */
 private class TrazosNodo(d: Float, size: Size) {
@@ -201,7 +207,7 @@ private fun DrawScope.nodoPlano(estado: EstadoNodo, color: Color, pulso: State<F
     }
     drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.bloqueada else C.fondoAlto, radius = r)
     when {
-        estado == EstadoNodo.APROBADA -> {
+        estado.completada -> {
             drawCircle(color, radius = r)
             drawCircle(C.fondoAlto.copy(alpha = 0.7f), radius = r * 0.82f, style = t.fina)
         }
@@ -221,6 +227,8 @@ private fun DrawScope.nodoPlano(estado: EstadoNodo, color: Color, pulso: State<F
     }
     val borde = if (estado == EstadoNodo.BLOQUEADA) t.oculta else t.llena
     drawCircle(if (estado == EstadoNodo.BLOQUEADA) C.bloqueadaTexto else color, radius = r - borde.width / 2, style = borde)
+    // Promocionada: circunferencia concéntrica por fuera, como un doble trazo de plano.
+    if (estado == EstadoNodo.PROMOCIONADA) drawCircle(color, radius = r * 1.14f, style = t.llena)
 }
 
 /** Nodo Material: círculo tonal; aprobada, relleno pleno; disponible, contorno y un halo suave. */
@@ -232,6 +240,10 @@ private fun DrawScope.nodoMaterial(estado: EstadoNodo, color: Color, pulso: Stat
     }
     when (estado) {
         EstadoNodo.APROBADA -> drawCircle(color, radius = r)
+        EstadoNodo.PROMOCIONADA -> {
+            drawCircle(color, radius = r)
+            drawCircle(color, radius = r + 3.dp.toPx(), style = Stroke(1.5.dp.toPx()))
+        }
         EstadoNodo.BLOQUEADA -> drawCircle(C.bloqueada, radius = r)
         else -> {
             drawCircle(C.fondoAlto, radius = r)
@@ -312,7 +324,11 @@ fun Pildora(texto: String, color: Color, modifier: Modifier = Modifier, @Drawabl
 
 private data class Opcion(val estado: Estado, val texto: String, val icono: Int, val color: Color)
 
-/** Selector de estado con íconos. [compacto] muestra solo íconos (para la lista). */
+/**
+ * Selector de estado con íconos. [compacto] muestra solo íconos (para la lista); si no, ícono y
+ * texto uno arriba del otro, para que entren las cuatro opciones en un celular.
+ * Promocionada no cambia el estado al tocarla: [onCambio] la recibe y quien llama pide la nota.
+ */
 @Composable
 fun SelectorEstado(
     tipo: Tipo,
@@ -328,11 +344,12 @@ fun SelectorEstado(
         Opcion(Estado.SIN_CURSAR, "Sin cursar", R.drawable.ic_reloj, C.texto2),
         Opcion(Estado.REGULARIZADA, "Regularizada", R.drawable.ic_mitad, C.regular),
         Opcion(Estado.APROBADA, "Aprobada", R.drawable.ic_estrella, C.oro),
+        Opcion(Estado.PROMOCIONADA, "Promocionada", R.drawable.ic_promocion, C.oro),
     )
     val forma = C.formas.chica
     Row(
         modifier
-            .height(if (compacto) 38.dp else 48.dp)
+            .height(if (compacto) 38.dp else 58.dp)
             .clip(forma)
             .background(C.fondo)
             .border(1.dp, C.borde, forma)
@@ -343,28 +360,29 @@ fun SelectorEstado(
             val elegido = o.estado == estado
             val fondo by animateColorAsState(if (elegido) o.color.copy(alpha = 0.20f) else Color.Transparent, label = "f")
             val tinta by animateColorAsState(if (elegido) o.color else C.apagado, label = "t")
-            Row(
+            Column(
                 Modifier
-                    .then(if (compacto) Modifier.width(40.dp) else Modifier.weight(1f))
+                    .then(if (compacto) Modifier.width(36.dp) else Modifier.weight(1f))
                     .fillMaxHeight()
                     .clip(C.formas.mini)
                     .background(fondo)
                     .then(if (elegido) Modifier.border(1.dp, o.color.copy(alpha = 0.6f), C.formas.mini) else Modifier)
                     .semantics { selected = elegido; contentDescription = o.texto }
                     .clickable(role = Role.RadioButton) { onCambio(o.estado) },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
                 Ic(o.icono, tinta, tam = 18.dp)
                 if (!compacto) {
                     Text(
                         o.texto,
-                        Modifier.padding(start = 6.dp),
+                        Modifier.padding(top = 3.dp),
                         color = tinta,
                         fontFamily = C.fuente,
                         fontWeight = if (elegido) FontWeight.Bold else FontWeight.Medium,
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }

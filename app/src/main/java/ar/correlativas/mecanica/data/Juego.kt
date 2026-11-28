@@ -3,10 +3,14 @@ package ar.correlativas.mecanica.data
 import kotlin.math.min
 
 /** Estado visual de una materia en el juego. */
-enum class EstadoNodo { BLOQUEADA, DISPONIBLE, REGULARIZADA, PARA_RENDIR, APROBADA }
+enum class EstadoNodo { BLOQUEADA, DISPONIBLE, REGULARIZADA, PARA_RENDIR, APROBADA, PROMOCIONADA }
+
+/** Aprobada por final o por promoción. */
+val EstadoNodo.completada: Boolean get() = this == EstadoNodo.APROBADA || this == EstadoNodo.PROMOCIONADA
 
 fun Avance.estadoNodo(m: Materia): EstadoNodo = when (estado(m.id)) {
     Estado.APROBADA -> EstadoNodo.APROBADA
+    Estado.PROMOCIONADA -> EstadoNodo.PROMOCIONADA
     Estado.REGULARIZADA -> if (puedeRendir(m)) EstadoNodo.PARA_RENDIR else EstadoNodo.REGULARIZADA
     Estado.SIN_CURSAR -> if (puedeCursar(m)) EstadoNodo.DISPONIBLE else EstadoNodo.BLOQUEADA
 }
@@ -19,7 +23,7 @@ fun Avance.estadoNodo(m: Materia): EstadoNodo = when (estado(m.id)) {
  */
 val Avance.porcentajeCarrera: Double
     get() {
-        val pps = if (estado(plan.pps.id) == Estado.APROBADA) 1.0 else 0.0
+        val pps = if (estado(plan.pps.id).aprobada) 1.0 else 0.0
         val electivas = min(horasElectivas, Plan.HORAS_ELECTIVAS_REQUERIDAS) / Plan.HORAS_ELECTIVAS_REQUERIDAS
         return (aprobadasObligatorias + pps + electivas) / (plan.obligatorias.size + 2.0)
     }
@@ -41,7 +45,7 @@ fun siguienteRango(r: Rango): Rango? = RANGOS.getOrNull(r.numero)
 
 // ---------------------------------------------------------------- logros
 
-enum class IconoLogro { PASO, FINAL, NIVEL, DECENA, MITAD, IDIOMA, ENGRANAJE, ELECTIVA, RELOJ, TITULO, PPS, PROYECTO, CORONA, BRUJULA }
+enum class IconoLogro { PASO, FINAL, PROMOCION, NIVEL, DECENA, MITAD, IDIOMA, ENGRANAJE, ELECTIVA, RELOJ, TITULO, PPS, PROYECTO, CORONA, BRUJULA }
 
 data class Logro(
     val id: String,
@@ -62,7 +66,7 @@ data class Logro(
     fun cumplido(a: Avance, testHecho: Boolean = false): Boolean = progreso(a, testHecho).let { (h, t) -> h >= t }
 }
 
-private fun Avance.aprobada(id: Int) = estado(id) == Estado.APROBADA
+private fun Avance.aprobada(id: Int) = estado(id).aprobada
 private fun Avance.contar(ids: List<Int>) = ids.count { aprobada(it) }.toDouble()
 
 private val NOMBRES_NIVEL = mapOf(
@@ -94,6 +98,9 @@ fun logros(plan: Plan): List<Logro> {
         },
         Logro("primer-final", "Primer final", "Aprobá tu primera materia.", IconoLogro.FINAL) { a ->
             (if (a.estados.values.any { it == Estado.APROBADA }) 1.0 else 0.0) to 1.0
+        },
+        Logro("primera-promocion", "Primera promoción", "Promocioná tu primera materia (aprobada sin final).", IconoLogro.PROMOCION) { a ->
+            (if (a.estados.values.any { it == Estado.PROMOCIONADA }) 1.0 else 0.0) to 1.0
         },
     ) + niveles + listOf(
         Logro("decena", "Decena", "Aprobá 10 materias obligatorias.", IconoLogro.DECENA) { a ->

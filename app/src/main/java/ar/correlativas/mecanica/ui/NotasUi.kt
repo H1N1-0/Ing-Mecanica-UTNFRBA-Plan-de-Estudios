@@ -48,6 +48,7 @@ import ar.correlativas.mecanica.data.NOTA_MAX
 import ar.correlativas.mecanica.data.NOTA_MIN
 import ar.correlativas.mecanica.data.NotaFinal
 import ar.correlativas.mecanica.data.Tipo
+import ar.correlativas.mecanica.data.aprobada
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -68,36 +69,53 @@ private val formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 fun formatearFecha(f: LocalDate?): String = f?.format(formatoFecha) ?: "Sin fecha"
 
 /**
- * Nota y fecha del final al aprobar una materia. Todo es opcional: "Sin nota" guarda la materia
- * como aprobada igual.
+ * Nota y fecha al aprobar una materia. Con final todo es opcional: "Sin nota" guarda la materia
+ * como aprobada igual. Con [promocion] la nota es obligatoria: "Guardar" no se activa sin nota y
+ * cerrar el diálogo cancela (la materia no se promociona).
  */
 @Composable
-fun DialogoNotaFinal(materia: Materia, inicial: NotaFinal?, onGuardar: (NotaFinal?) -> Unit, onCerrar: () -> Unit) {
+fun DialogoNotaFinal(
+    materia: Materia,
+    inicial: NotaFinal?,
+    onGuardar: (NotaFinal?) -> Unit,
+    onCerrar: () -> Unit,
+    promocion: Boolean = false,
+) {
     var nota by rememberSaveable { mutableStateOf(inicial?.nota) }
     var fecha by rememberSaveable { mutableStateOf(inicial?.fecha?.toString()) }
+    val puedeGuardar = !promocion || nota != null
     AlertDialog(
         onDismissRequest = onCerrar,
         containerColor = C.tarjeta,
         shape = C.formas.grande,
-        title = { Text("Nota del final", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold) },
+        title = {
+            Text(if (promocion) "Nota de la promoción" else "Nota del final", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.Bold)
+        },
         text = {
             Column {
                 Text(
-                    "${materia.nombre}. Es opcional: sin nota, la materia cuenta igual como aprobada.",
+                    if (promocion) "${materia.nombre}. Para promocionarla, elegí la nota (es obligatoria)."
+                    else "${materia.nombre}. Es opcional: sin nota, la materia cuenta igual como aprobada.",
                     color = C.texto2, fontFamily = C.fuente, fontSize = 14.sp,
                 )
                 SelectorNumero(NOTA_MIN..NOTA_MAX, nota, { nota = it }, Modifier.padding(top = 14.dp))
-                CampoFecha(fecha?.let(LocalDate::parse), { fecha = it?.toString() }, Modifier.padding(top = 12.dp))
+                CampoFecha(
+                    fecha?.let(LocalDate::parse), { fecha = it?.toString() }, Modifier.padding(top = 12.dp),
+                    rotulo = if (promocion) "Fecha de la promoción (opcional)" else "Fecha del final (opcional)",
+                )
             }
         },
         confirmButton = {
-            TextButton(onClick = { onGuardar(NotaFinal(nota, fecha?.let(LocalDate::parse))) }) {
-                Text("Guardar", color = C.disponible, fontFamily = C.fuente, fontWeight = FontWeight.Bold)
+            TextButton(onClick = { onGuardar(NotaFinal(nota, fecha?.let(LocalDate::parse))) }, enabled = puedeGuardar) {
+                Text(
+                    if (promocion && inicial?.nota == null) "Promocionar" else "Guardar",
+                    color = if (puedeGuardar) C.disponible else C.apagado, fontFamily = C.fuente, fontWeight = FontWeight.Bold,
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onCerrar) {
-                Text(if (inicial == null) "Sin nota" else "Cancelar", color = C.texto2, fontFamily = C.fuente)
+                Text(if (inicial == null && !promocion) "Sin nota" else "Cancelar", color = C.texto2, fontFamily = C.fuente)
             }
         },
     )
@@ -158,12 +176,12 @@ private fun SelectorNumero(rango: IntRange, elegido: Int?, onElegir: (Int?) -> U
 /** Fecha opcional con el selector de fecha de Material. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CampoFecha(fecha: LocalDate?, onCambio: (LocalDate?) -> Unit, modifier: Modifier = Modifier) {
+private fun CampoFecha(fecha: LocalDate?, onCambio: (LocalDate?) -> Unit, modifier: Modifier = Modifier, rotulo: String = "Fecha del final (opcional)") {
     var abierto by rememberSaveable { mutableStateOf(false) }
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Ic(R.drawable.ic_reloj, C.texto2, tam = 18.dp)
         Text(
-            if (fecha == null) "Fecha del final (opcional)" else formatearFecha(fecha),
+            if (fecha == null) rotulo else formatearFecha(fecha),
             Modifier.padding(start = 8.dp).weight(1f),
             color = if (fecha == null) C.texto2 else C.texto,
             fontFamily = C.fuente,
@@ -202,7 +220,9 @@ private fun CampoFecha(fecha: LocalDate?, onCambio: (LocalDate?) -> Unit, modifi
 fun BloqueFinal(materia: Materia, avance: Avance, modifier: Modifier = Modifier) {
     val notas = LocalNotas.current ?: return
     if (materia.tipo == Tipo.PPS) return
-    val aprobada = avance.estado(materia.id) == Estado.APROBADA
+    val estado = avance.estado(materia.id)
+    val aprobada = estado.aprobada
+    val promocionada = estado == Estado.PROMOCIONADA
     val nf = notas.libreta.finales[materia.id]
     val aplazos = notas.libreta.aplazosDe(materia.id)
     Column(modifier.fillMaxWidth()) {
@@ -221,7 +241,12 @@ fun BloqueFinal(materia: Materia, avance: Avance, modifier: Modifier = Modifier)
                 }
                 Column(Modifier.padding(start = 12.dp).weight(1f)) {
                     Text(
-                        if (nf?.nota != null) "Aprobada con ${nf.nota}" else "Aprobada, sin nota cargada",
+                        when {
+                            promocionada && nf?.nota != null -> "Promocionada con ${nf.nota}"
+                            promocionada -> "Promocionada: falta cargar la nota"
+                            nf?.nota != null -> "Aprobada con ${nf.nota}"
+                            else -> "Aprobada, sin nota cargada"
+                        },
                         color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp,
                     )
                     Text(formatearFecha(nf?.fecha), color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)

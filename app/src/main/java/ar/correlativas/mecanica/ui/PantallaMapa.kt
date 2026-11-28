@@ -64,7 +64,9 @@ import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
+import ar.correlativas.mecanica.data.aprobada
 import ar.correlativas.mecanica.data.EstadoNodo
+import ar.correlativas.mecanica.data.completada
 import ar.correlativas.mecanica.data.Mapa
 import ar.correlativas.mecanica.data.NodoMapa
 import ar.correlativas.mecanica.data.Nivel
@@ -236,7 +238,7 @@ fun PantallaMapa(
                 BotonCritico(vista.verCritico) { if (vista.verCritico) vista.verCritico = false else vista.mostrarCritico() }
             }
             FlowRow(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                listOf(EstadoNodo.BLOQUEADA, EstadoNodo.DISPONIBLE, EstadoNodo.REGULARIZADA, EstadoNodo.PARA_RENDIR, EstadoNodo.APROBADA).forEach { e ->
+                EstadoNodo.entries.forEach { e ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Ic(iconoEstado(e), colorEstado(e), tam = 13.dp)
                         Text(
@@ -245,7 +247,8 @@ fun PantallaMapa(
                                 EstadoNodo.DISPONIBLE -> "Disponible"
                                 EstadoNodo.REGULARIZADA -> "Regular"
                                 EstadoNodo.PARA_RENDIR -> "Rendir"
-                                else -> "Aprobada"
+                                EstadoNodo.APROBADA -> "Aprobada"
+                                EstadoNodo.PROMOCIONADA -> "Promoción"
                             },
                             Modifier.padding(start = 4.dp),
                             color = C.texto2,
@@ -391,7 +394,7 @@ private fun ContenidoMapa(
         mapa.aristas.associateWith { a ->
             when (a.pide) {
                 Nivel.REGULARIZADA -> avance.estado(a.desde) != Estado.SIN_CURSAR
-                Nivel.APROBADA -> avance.estado(a.desde) == Estado.APROBADA
+                Nivel.APROBADA -> avance.estado(a.desde).aprobada
             }
         }
     }
@@ -414,7 +417,7 @@ private fun ContenidoMapa(
         }
         trazos.forEach { (a, camino) ->
             val cumple = cumplidas.getValue(a)
-            val recorrida = estados[a.hasta] == EstadoNodo.APROBADA
+            val recorrida = estados[a.hasta]?.completada == true
             val base = when {
                 !cumple -> C.borde.copy(alpha = 0.5f)
                 recorrida -> C.oro.copy(alpha = 0.16f)
