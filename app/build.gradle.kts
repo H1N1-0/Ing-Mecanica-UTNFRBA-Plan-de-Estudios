@@ -136,5 +136,7 @@ dependencies {
     // Tests de interfaz en la JVM: Robolectric + Compose UI Test (sin emulador).
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.compose.ui:ui-test-junit4")
+    // "Atrás" del sistema en los tests (va a la ventana con foco: diálogo, hoja o actividad).
+    testImplementation("androidx.test.espresso:espresso-core:3.6.1")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
