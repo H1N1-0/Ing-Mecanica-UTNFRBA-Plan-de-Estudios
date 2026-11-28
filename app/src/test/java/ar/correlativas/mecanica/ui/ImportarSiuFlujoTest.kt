@@ -53,6 +53,8 @@ class ImportarSiuFlujoTest {
 
     private fun estados() = runBlocking { Progreso(app).estados.first() }
 
+    private fun nota(id: Int) = runBlocking { Notas(app).libreta.first() }.finales[id]?.nota
+
     @Test fun unPdfQueNoEsDelSiuNoCambiaNada() {
         val antes = estados()
         val motivo = runBlocking { vm.prepararSiu("no es un pdf".toByteArray()) }
@@ -66,13 +68,14 @@ class ImportarSiuFlujoTest {
         assertNull(runBlocking { vm.prepararSiu(PdfDePrueba.historia()) })
         val imp = vm.importacionSiu.value!!
         vm.aplicarSiu(imp.conCambios.filter { it.marcadoPorDefecto })
-        esperar { estados()[5] == Estado.PROMOCIONADA }
+        // Se guarda primero el progreso y después las notas: se espera a las dos cosas.
+        esperar { estados()[5] == Estado.PROMOCIONADA && nota(5) == 9 && vm.mensajeSiu.value != null }
 
         val despues = estados()
         assertEquals(Estado.PROMOCIONADA, despues[5])
         assertEquals(Estado.APROBADA, despues[1])
         assertEquals(Estado.REGULARIZADA, despues[2]) // la baja (En curso) no se marcó
-        assertEquals(9, runBlocking { Notas(app).libreta.first() }.finales[5]?.nota)
+        assertEquals(9, nota(5))
         assertNull(vm.importacionSiu.value)
         assertTrue(vm.hayCopiaAutomatica.value)
         assertNotNull(vm.mensajeSiu.value)
