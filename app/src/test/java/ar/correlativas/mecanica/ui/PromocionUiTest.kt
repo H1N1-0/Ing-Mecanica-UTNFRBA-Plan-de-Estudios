@@ -16,6 +16,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -81,10 +82,18 @@ class PromocionUiTest(private val nombre: String, private val ancho: Int, privat
         rule.mainClock.advanceTimeBy(1000)
     }
 
-    /** El botón "Promocionada" del selector grande del detalle (el último: la lista también tiene uno). */
+    /**
+     * El botón "Promocionada" del selector del detalle. Es el único que muestra el texto: los de las
+     * filas de la lista son solo íconos (y en tablet están a la vista al lado del detalle, así que
+     * no sirve tomar "el último"). Se scrollea a la vista porque en el celular puede quedar abajo.
+     */
     private fun elegirPromocionada() {
-        rule.onAllNodes(hasContentDescription("Promocionada") and hasClickAction()).onLast().performClick()
+        rule.onNode(hasContentDescription("Promocionada") and hasText("Promocionada") and hasClickAction())
+            .performScrollTo()
+            .performClick()
         rule.mainClock.advanceTimeBy(500)
+        // El diálogo es el de Física I, no el de otra materia.
+        rule.onNodeWithText("Física I. Para promocionarla", substring = true).assertExists()
     }
 
     @Test fun sinNotaNoSePuedePromocionarYCancelarNoCambiaNada() {
