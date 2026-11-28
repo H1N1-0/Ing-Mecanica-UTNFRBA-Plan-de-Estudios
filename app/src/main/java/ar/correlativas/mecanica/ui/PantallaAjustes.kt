@@ -68,6 +68,7 @@ fun PantallaAjustes(
     onVolver: () -> Unit,
     onEstadisticas: () -> Unit = {},
     copia: AccionesCopia? = null,
+    siu: AccionesSiu? = null,
 ) {
     BackHandler(onBack = onVolver)
     var confirmar by remember { mutableStateOf(false) }
@@ -157,6 +158,11 @@ fun PantallaAjustes(
                     }
                     Text("›", color = C.apagado, fontSize = 22.sp)
                 }
+            }
+
+            if (siu != null) {
+                Subtitulo("HISTORIA ACADÉMICA (SIU)")
+                SeccionSiu(siu)
             }
 
             if (copia != null) {

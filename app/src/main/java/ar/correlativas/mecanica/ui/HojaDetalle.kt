@@ -40,6 +40,7 @@ import ar.correlativas.mecanica.R
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.aprobada
+import ar.correlativas.mecanica.data.regularizada
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Nivel
@@ -148,7 +149,7 @@ fun ContenidoDetalle(
 
         if (materia.tipo != Tipo.PPS) {
             Titulo("Para rendir el final", R.drawable.ic_llama, C.rendir)
-            Condicion("Tenerla regularizada", avance.estado(materia.id) != Estado.SIN_CURSAR)
+            Condicion("Tenerla regularizada", avance.estado(materia.id).regularizada)
             when {
                 materia.reglaRendir != null -> {
                     val faltan = avance.faltantesRendir(materia)
@@ -208,6 +209,7 @@ private fun Banner(materia: Materia, avance: Avance, e: EstadoNodo) {
         }
         EstadoNodo.PARA_RENDIR -> "¡Final disponible!" to "Cumplís todo: ya podés rendir el final."
         EstadoNodo.APROBADA -> "¡Completada!" to if (materia.tipo == Tipo.PPS) "PPS acreditada." else "Materia aprobada. Bien ahí."
+        EstadoNodo.CURSANDO -> "Cursando" to "La estás cursando. Cuando la regularices, marcala como Regularizada."
         EstadoNodo.PROMOCIONADA -> "¡Promocionada!" to "Aprobada sin final. Para las correlativas cuenta como aprobada."
     }
     val color = colorEstado(e)
@@ -285,11 +287,12 @@ private fun Lista(titulo: String, nivel: Nivel, ids: List<Int>, avance: Avance, 
     )
     ids.mapNotNull { avance.plan[it] }.forEach { m ->
         val est = avance.estado(m.id)
-        val cumple = if (nivel == Nivel.APROBADA) est.aprobada else est != Estado.SIN_CURSAR
+        val cumple = if (nivel == Nivel.APROBADA) est.aprobada else est.regularizada
         FilaMateria(
             m, avance,
             when (est) {
                 Estado.SIN_CURSAR -> "Sin cursar"
+                Estado.CURSANDO -> "Cursando"
                 Estado.REGULARIZADA -> "Regularizada"
                 Estado.APROBADA -> "Aprobada"
                 Estado.PROMOCIONADA -> "Promocionada"

@@ -204,6 +204,7 @@ private fun Encabezado(d: Desbloqueo, avance: Avance) {
         Estado.APROBADA -> if (d.materia.id == avance.plan.pps.id) "Acreditaste" else "Aprobaste"
         Estado.PROMOCIONADA -> "Promocionaste"
         Estado.REGULARIZADA -> "Regularizaste"
+        Estado.CURSANDO -> "Empezaste a cursar"
         Estado.SIN_CURSAR -> "Cambiaste"
     }
     Text(

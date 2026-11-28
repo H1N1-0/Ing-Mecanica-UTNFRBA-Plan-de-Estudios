@@ -99,6 +99,8 @@ fun Nodo(
     val carga by animateFloatAsState(
         when (estado) {
             EstadoNodo.REGULARIZADA, EstadoNodo.PARA_RENDIR -> 0.5f
+            // Cursando: la media carga más tenue (la cursada empezó pero no terminó).
+            EstadoNodo.CURSANDO -> 0.25f
             EstadoNodo.APROBADA, EstadoNodo.PROMOCIONADA -> 1f
             else -> 0f
         },
@@ -322,7 +324,8 @@ fun Pildora(texto: String, color: Color, modifier: Modifier = Modifier, @Drawabl
     }
 }
 
-private data class Opcion(val estado: Estado, val texto: String, val icono: Int, val color: Color)
+/** [texto] es lo que lee TalkBack; [corto], lo que se ve (para que entren cinco opciones). */
+private data class Opcion(val estado: Estado, val texto: String, val icono: Int, val color: Color, val corto: String = texto)
 
 /**
  * Selector de estado con íconos. [compacto] muestra solo íconos (para la lista); si no, ícono y
@@ -339,12 +342,14 @@ fun SelectorEstado(
 ) {
     val opciones = if (tipo == Tipo.PPS) listOf(
         Opcion(Estado.SIN_CURSAR, "Pendiente", R.drawable.ic_reloj, C.texto2),
+        Opcion(Estado.CURSANDO, "En curso", R.drawable.ic_libro, C.violeta),
         Opcion(Estado.APROBADA, "Acreditada", R.drawable.ic_estrella, C.oro),
     ) else listOf(
         Opcion(Estado.SIN_CURSAR, "Sin cursar", R.drawable.ic_reloj, C.texto2),
-        Opcion(Estado.REGULARIZADA, "Regularizada", R.drawable.ic_mitad, C.regular),
+        Opcion(Estado.CURSANDO, "Cursando", R.drawable.ic_libro, C.violeta),
+        Opcion(Estado.REGULARIZADA, "Regularizada", R.drawable.ic_mitad, C.regular, corto = "Regular"),
         Opcion(Estado.APROBADA, "Aprobada", R.drawable.ic_estrella, C.oro),
-        Opcion(Estado.PROMOCIONADA, "Promocionada", R.drawable.ic_promocion, C.oro),
+        Opcion(Estado.PROMOCIONADA, "Promocionada", R.drawable.ic_promocion, C.oro, corto = "Promoción"),
     )
     val forma = C.formas.chica
     Row(
@@ -362,7 +367,7 @@ fun SelectorEstado(
             val tinta by animateColorAsState(if (elegido) o.color else C.apagado, label = "t")
             Column(
                 Modifier
-                    .then(if (compacto) Modifier.width(36.dp) else Modifier.weight(1f))
+                    .then(if (compacto) Modifier.width(32.dp) else Modifier.weight(1f))
                     .fillMaxHeight()
                     .clip(C.formas.mini)
                     .background(fondo)
@@ -375,7 +380,7 @@ fun SelectorEstado(
                 Ic(o.icono, tinta, tam = 18.dp)
                 if (!compacto) {
                     Text(
-                        o.texto,
+                        o.corto,
                         Modifier.padding(top = 3.dp),
                         color = tinta,
                         fontFamily = C.fuente,

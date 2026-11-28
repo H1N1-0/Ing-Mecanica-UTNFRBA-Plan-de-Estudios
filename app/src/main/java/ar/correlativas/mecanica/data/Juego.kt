@@ -3,7 +3,7 @@ package ar.correlativas.mecanica.data
 import kotlin.math.min
 
 /** Estado visual de una materia en el juego. */
-enum class EstadoNodo { BLOQUEADA, DISPONIBLE, REGULARIZADA, PARA_RENDIR, APROBADA, PROMOCIONADA }
+enum class EstadoNodo { BLOQUEADA, DISPONIBLE, CURSANDO, REGULARIZADA, PARA_RENDIR, APROBADA, PROMOCIONADA }
 
 /** Aprobada por final o por promoción. */
 val EstadoNodo.completada: Boolean get() = this == EstadoNodo.APROBADA || this == EstadoNodo.PROMOCIONADA
@@ -13,6 +13,7 @@ fun Avance.estadoNodo(m: Materia): EstadoNodo = when (estado(m.id)) {
     Estado.PROMOCIONADA -> EstadoNodo.PROMOCIONADA
     Estado.REGULARIZADA -> if (puedeRendir(m)) EstadoNodo.PARA_RENDIR else EstadoNodo.REGULARIZADA
     Estado.SIN_CURSAR -> if (puedeCursar(m)) EstadoNodo.DISPONIBLE else EstadoNodo.BLOQUEADA
+    Estado.CURSANDO -> EstadoNodo.CURSANDO
 }
 
 // ---------------------------------------------------------------- progreso y rango
@@ -94,7 +95,7 @@ fun logros(plan: Plan): List<Logro> {
     val tituloIntermedio = (1..3).flatMap { idsNivel.getValue(it) } - NO_PIDE_TITULO_INTERMEDIO
     return listOf(
         Logro("primer-paso", "Primer paso", "Regularizá tu primera materia.", IconoLogro.PASO) { a ->
-            (if (a.estados.values.any { it != Estado.SIN_CURSAR }) 1.0 else 0.0) to 1.0
+            (if (a.estados.values.any { it.regularizada }) 1.0 else 0.0) to 1.0
         },
         Logro("primer-final", "Primer final", "Aprobá tu primera materia.", IconoLogro.FINAL) { a ->
             (if (a.estados.values.any { it == Estado.APROBADA }) 1.0 else 0.0) to 1.0

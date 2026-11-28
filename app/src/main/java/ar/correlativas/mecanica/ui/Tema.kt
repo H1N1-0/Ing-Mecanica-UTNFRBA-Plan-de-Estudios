@@ -484,6 +484,7 @@ object C {
 fun colorEstado(e: EstadoNodo): Color = when (e) {
     EstadoNodo.BLOQUEADA -> C.bloqueadaTexto
     EstadoNodo.DISPONIBLE -> C.disponible
+    EstadoNodo.CURSANDO -> C.violeta
     EstadoNodo.REGULARIZADA -> C.regular
     EstadoNodo.PARA_RENDIR -> C.rendir
     // Misma familia que Aprobada; se distingue por el ícono y el doble aro del nodo.
@@ -493,6 +494,7 @@ fun colorEstado(e: EstadoNodo): Color = when (e) {
 fun textoEstado(e: EstadoNodo, pps: Boolean = false): String = when (e) {
     EstadoNodo.BLOQUEADA -> "Bloqueada"
     EstadoNodo.DISPONIBLE -> if (pps) "Podés empezarla" else "Disponible"
+    EstadoNodo.CURSANDO -> "Cursando"
     EstadoNodo.REGULARIZADA -> "Regularizada"
     EstadoNodo.PARA_RENDIR -> "Lista para rendir"
     EstadoNodo.APROBADA -> if (pps) "Acreditada" else "Aprobada"
@@ -502,6 +504,7 @@ fun textoEstado(e: EstadoNodo, pps: Boolean = false): String = when (e) {
 fun iconoEstado(e: EstadoNodo): Int = when (e) {
     EstadoNodo.BLOQUEADA -> R.drawable.ic_candado
     EstadoNodo.DISPONIBLE -> R.drawable.ic_rayo
+    EstadoNodo.CURSANDO -> R.drawable.ic_libro
     EstadoNodo.REGULARIZADA -> R.drawable.ic_mitad
     EstadoNodo.PARA_RENDIR -> R.drawable.ic_llama
     EstadoNodo.APROBADA -> R.drawable.ic_estrella

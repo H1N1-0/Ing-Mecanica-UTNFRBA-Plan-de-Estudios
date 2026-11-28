@@ -34,6 +34,9 @@ app/
       Ajustes.kt         Tema, estilo, nombre y resultado del test (DataStore aparte, "ajustes")
       Notas.kt           Notas de finales y aplazos (DataStore "notas", versionado) y Estadisticas
       Backup.kt          Copia de seguridad: JSON del archivo y texto comprimido del QR, con validación
+      CopiaAutomatica.kt Copia automática (almacenamiento interno) antes de importar la historia del SIU
+      LectorPdf.kt       Lector de PDF propio (Inflater, textos con posición), sin librerías
+      HistoriaSiu.kt     Tabla de la historia académica del SIU y mapeo a estados (ImportacionSiu)
       Qr.kt              Generar y leer QR con ZXing (sin red)
       Juego.kt           EstadoNodo, porcentaje, rangos, logros y layout del mapa (Mapa)
       CaminoCritico.kt   Grafo de dependencias, materias que traba cada una, camino crítico
@@ -49,6 +52,7 @@ app/
       NotasUi.kt         Diálogos de nota y aplazo, bloque "Final" del detalle (LocalNotas)
       PantallaEstadisticas.kt  Promedios, finales, gráfico de evolución por año, mejor y peor nota
       CopiaUi.kt, EscanerQr.kt  Exportar/importar en Ajustes (archivo, QR, cámara con CameraX, imagen)
+      ImportarSiuUi.kt   Importar la historia del SIU en Ajustes: selector de PDF, vista previa, deshacer
       Tema.kt            Tokens de los 3 estilos × claro/oscuro (objeto C): paletas, fuentes, formas, movimiento
       Estilizados.kt     Componentes que cambian por estilo: Fondo, Medidor/Manómetro, Medallón, marcas de plano
       Dibujos.kt         Dibujos técnicos del Plano técnico (engranajes, pistón, bomba, turbina, rodamiento, resorte)
@@ -72,10 +76,12 @@ baselineprofile/         Módulo de test: genera el Baseline Profile y mide el a
 
 ## Cálculo de correlativas (`data/Calculo.kt`)
 
-- Estados por materia: `SIN_CURSAR`, `REGULARIZADA`, `APROBADA`, `PROMOCIONADA` (aprobada sin
-  final). Para correlativas, horas de electivas, avance y logros, Promocionada cuenta igual que
-  Aprobada: compará con `estado.aprobada` (y `EstadoNodo.completada`), nunca con `== APROBADA`,
-  salvo que importe cómo se aprobó (por ejemplo, el logro "Primer final" pide un final).
+- Estados por materia: `SIN_CURSAR`, `CURSANDO`, `REGULARIZADA`, `APROBADA`, `PROMOCIONADA`
+  (aprobada sin final). Para correlativas, horas de electivas, avance y logros, Promocionada cuenta
+  igual que Aprobada: compará con `estado.aprobada` (y `EstadoNodo.completada`), nunca con
+  `== APROBADA`, salvo que importe cómo se aprobó (por ejemplo, el logro "Primer final" pide un final).
+- Cursando cuenta como sin cursar para las correlativas y el camino crítico (no habilita nada), pero
+  ya no se ofrece para cursar. "Regularizada o más" es `estado.regularizada`: nunca `!= SIN_CURSAR`.
 - Cursar: las de `cursar.regularizadas` tienen que estar regularizadas o aprobadas; las de
   `cursar.aprobadas`, aprobadas.
 - Rendir: tener la materia regularizada y cumplir `rendir` (en obligatorias, todas aprobadas).
@@ -83,7 +89,7 @@ baselineprofile/         Módulo de test: genera el Baseline Profile y mide el a
   aprobadas. Una electiva con `horas_anuales` null no suma.
 - PPS: se empieza con los mismos requisitos que para cursar Proyecto Final; no se rinde.
 - `Avance.estadoNodo()` (en Juego.kt) traduce eso a BLOQUEADA / DISPONIBLE / REGULARIZADA /
-  PARA_RENDIR / APROBADA / PROMOCIONADA para la UI. Promocionada usa el color de Aprobada (`C.oro`)
+  PARA_RENDIR / APROBADA / PROMOCIONADA / CURSANDO para la UI (Cursando: `C.violeta`, `ic_libro`). Promocionada usa el color de Aprobada (`C.oro`)
   y se distingue por el ícono (`ic_promocion`, estrella en un aro) y un segundo aro en el `Nodo`.
 
 ## Camino crítico (`data/CaminoCritico.kt`)
@@ -156,9 +162,28 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
 - Importar valida (formato, versión, materias que existen, rangos de notas), muestra un resumen y
   pide confirmación antes de reemplazar. Si cambia el formato, subí `Backup.VERSION` (y el prefijo
   del QR), migrá en `Backup.migrar` y seguí leyendo las versiones viejas. Versión 2 (`CMEC2:`) suma
-  PROMOCIONADA; la 1 (`CMEC1:`) se sigue importando. `PromocionTest` tiene una copia v1 literal.
+  PROMOCIONADA y la 3 (`CMEC3:`), CURSANDO; las anteriores se siguen importando. `PromocionTest`
+  tiene una copia v1 literal.
 - La app NO tiene permiso de internet: el manifiesto lo quita con `tools:node="remove"` (hay un test).
   La cámara se pide solo al escanear.
+
+## Historia académica del SIU (`data/LectorPdf.kt`, `data/HistoriaSiu.kt`)
+
+- En Ajustes, "Importar PDF del SIU": el PDF se elige con el selector del sistema (`OpenDocument`,
+  sin permisos) y se lee en el celular. Sin internet y sin librerías: `LectorPdf` descomprime los
+  streams FlateDecode con `Inflater` e interpreta los operadores de texto (el SIU usa Courier con
+  WinAnsiEncoding). Si un PDF trae fuentes con codificación propia, no se lee: se muestra el error.
+- `HistoriaSiu.filas`: columnas por la x de los encabezados de cada página; une los nombres de dos
+  líneas (el código entre paréntesis marca el final del nombre). Si no hay encabezado, error y no
+  cambia nada.
+- `ImportacionSiu`: busca por `codigo_siu` y si no por nombre normalizado. Regularidad aprobada →
+  Regularizada (su nota no se guarda: no es un final); Examen aprobado → Aprobada con nota; Examen
+  reprobado → aplazo (nota 1–5, sin duplicar); Promoción → Promocionada con nota; En curso →
+  Cursando; Equivalencia → Aprobada. Con varias filas gana la de mayor `rango`.
+- Vista previa (`VistaPreviaSiu`): actual → nuevo y nota; las bajas van destacadas y desmarcadas; las
+  filas no reconocidas, aparte. Aplicar guarda antes una copia automática (`CopiaAutomatica`) que se
+  restaura desde Ajustes ("Deshacer la última importación").
+- Tests con un PDF inventado que arma `PdfDePrueba` (nunca un PDF real: tiene datos personales).
 
 ## Disposición adaptativa (`ui/App.kt`)
 

@@ -65,6 +65,7 @@ import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.CaminoCritico
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.aprobada
+import ar.correlativas.mecanica.data.regularizada
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.completada
 import ar.correlativas.mecanica.data.Mapa
@@ -245,6 +246,7 @@ fun PantallaMapa(
                             when (e) {
                                 EstadoNodo.BLOQUEADA -> "Bloqueada"
                                 EstadoNodo.DISPONIBLE -> "Disponible"
+                                EstadoNodo.CURSANDO -> "Cursando"
                                 EstadoNodo.REGULARIZADA -> "Regular"
                                 EstadoNodo.PARA_RENDIR -> "Rendir"
                                 EstadoNodo.APROBADA -> "Aprobada"
@@ -393,7 +395,7 @@ private fun ContenidoMapa(
     val cumplidas = remember(avance, mapa) {
         mapa.aristas.associateWith { a ->
             when (a.pide) {
-                Nivel.REGULARIZADA -> avance.estado(a.desde) != Estado.SIN_CURSAR
+                Nivel.REGULARIZADA -> avance.estado(a.desde).regularizada
                 Nivel.APROBADA -> avance.estado(a.desde).aprobada
             }
         }

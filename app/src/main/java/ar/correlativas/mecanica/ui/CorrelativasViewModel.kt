@@ -6,6 +6,11 @@ import androidx.lifecycle.viewModelScope
 import ar.correlativas.mecanica.data.Ajustes
 import ar.correlativas.mecanica.data.Avance
 import ar.correlativas.mecanica.data.Backup
+import ar.correlativas.mecanica.data.CambioSiu
+import ar.correlativas.mecanica.data.CopiaAutomatica
+import ar.correlativas.mecanica.data.HistoriaSiu
+import ar.correlativas.mecanica.data.ImportacionSiu
+import ar.correlativas.mecanica.data.LecturaHistoria
 import ar.correlativas.mecanica.data.DatosBackup
 import ar.correlativas.mecanica.data.Estadisticas
 import ar.correlativas.mecanica.data.LecturaBackup
@@ -42,6 +47,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** Lo que pasó al cambiar una materia, para la animación de desbloqueo. */
 data class Desbloqueo(
@@ -249,5 +255,76 @@ class CorrelativasViewModel(app: Application) : AndroidViewModel(app) {
             notas.reemplazar(d.libreta)
             ajustes.importar(d)
         }
+    }
+
+    // ------------------------------------------------------------ historia académica del SIU
+
+    private val _hayCopiaAutomatica = MutableStateFlow(CopiaAutomatica.existe(app))
+    /** Hay una copia guardada antes de la última importación del SIU (para deshacerla). */
+    val hayCopiaAutomatica: StateFlow<Boolean> = _hayCopiaAutomatica.asStateFlow()
+
+    /** Importación lista para la vista previa (vive acá para sobrevivir a la rotación). */
+    private val _importacionSiu = MutableStateFlow<ImportacionSiu?>(null)
+    val importacionSiu: StateFlow<ImportacionSiu?> = _importacionSiu.asStateFlow()
+
+    /** Resultado de la última acción de la importación, para mostrarlo en Ajustes. */
+    private val _mensajeSiu = MutableStateFlow<String?>(null)
+    val mensajeSiu: StateFlow<String?> = _mensajeSiu.asStateFlow()
+
+    /**
+     * Lee el PDF y arma la vista previa comparando con el progreso y las notas de ahora.
+     * Devuelve el motivo si no se pudo (no es una historia del SIU, PDF dañado…): no cambia nada.
+     */
+    suspend fun prepararSiu(bytes: ByteArray): String? {
+        val lectura = withContext(Dispatchers.Default) { HistoriaSiu.leer(bytes) }
+        val filas = when (lectura) {
+            is LecturaHistoria.Error -> return lectura.motivo
+            is LecturaHistoria.Ok -> lectura.filas
+        }
+        if (filas.isEmpty()) return "La historia académica no tiene materias para importar."
+        val actual = Avance(plan, progreso.estados.first())
+        val l = notas.libreta.first()
+        _importacionSiu.value = withContext(Dispatchers.Default) { ImportacionSiu.armar(filas, actual, l) }
+        return null
+    }
+
+    fun cancelarSiu() {
+        _importacionSiu.value = null
+    }
+
+    fun limpiarMensajeSiu() {
+        _mensajeSiu.value = null
+    }
+
+    /**
+     * Aplica los cambios elegidos. Antes guarda una copia automática de todo; si no se puede
+     * guardar, no cambia nada. Corre en el scope del ViewModel: rotar no lo corta a la mitad.
+     */
+    fun aplicarSiu(elegidos: List<CambioSiu>) {
+        _importacionSiu.value = null
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val copia = runCatching {
+                val json = Backup.aJson(datosBackup())
+                withContext(Dispatchers.IO) { CopiaAutomatica.guardar(app, json) }
+            }
+            if (copia.isFailure) {
+                _mensajeSiu.value = "No se pudo guardar la copia automática, así que no se cambió nada."
+                return@launch
+            }
+            _hayCopiaAutomatica.value = true
+            val (estados, nuevaLibreta) = ImportacionSiu.aplicar(elegidos, progreso.estados.first(), notas.libreta.first())
+            progreso.reemplazar(estados)
+            notas.reemplazar(nuevaLibreta)
+            _mensajeSiu.value = "Listo: ${if (elegidos.size == 1) "1 materia actualizada" else "${elegidos.size} materias actualizadas"}. " +
+                "Si algo no quedó bien, podés deshacerlo."
+        }
+    }
+
+    /** La copia automática, para confirmarla y restaurarla con [importar]. */
+    suspend fun leerCopiaAutomatica(): LecturaBackup {
+        val texto = withContext(Dispatchers.IO) { runCatching { CopiaAutomatica.leer(getApplication()) }.getOrNull() }
+            ?: return LecturaBackup.Error("No hay una copia automática guardada.")
+        return Backup.deJson(texto, plan)
     }
 }
