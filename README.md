@@ -8,7 +8,8 @@ Correlativas de Ingeniería Mecánica (UTN FRBA, plan 2023).
 
 ## App Android
 
-- Lista por nivel (1 a 5 y Electivas). Cada materia se marca como sin cursar, regularizada, aprobada o promocionada (aprobada sin final, con nota obligatoria); la PPS, pendiente o acreditada.
+- Lista por nivel (1 a 5 y Electivas). Cada materia se marca como sin cursar, cursando, regularizada, aprobada o promocionada (aprobada sin final, con nota obligatoria); la PPS, pendiente, en curso o acreditada.
+- Importar la historia académica del SIU Guaraní desde el PDF: muestra una vista previa de cada cambio antes de aplicarlo y guarda una copia automática para deshacerlo. Se lee en el celular, sin internet.
 - Calcula qué podés cursar y rendir según las reglas del JSON (Proyecto Final pide además 10 hs anuales de electivas aprobadas).
 - Detalle de cada materia: qué te pide y qué habilita, con su sigla (AM1, IyS, PF…) y su código SIU.
 - Siglas en el mapa, el camino crítico y el widget, donde el nombre completo no entra. El buscador encuentra por sigla, nombre, número o código SIU.

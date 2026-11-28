@@ -170,11 +170,11 @@ class PromocionTest {
             )
         }
         val json = Backup.aJson(datos)
-        assertEquals(2, org.json.JSONObject(json).getInt("version"))
+        assertEquals(Backup.VERSION, org.json.JSONObject(json).getInt("version"))
         assertTrue(org.json.JSONObject(json).getString("progreso").contains("4:PROMOCIONADA"))
         assertEquals(datos, ok(Backup.deJson(json, plan)).datos)
         val qr = Backup.aQr(datos)
-        assertTrue(qr.startsWith("CMEC2:"))
+        assertTrue(qr.startsWith(Backup.PREFIJO_QR))
         assertEquals(datos, ok(Backup.deQr(qr, plan)).datos)
     }
 

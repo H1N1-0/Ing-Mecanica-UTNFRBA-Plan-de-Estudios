@@ -184,7 +184,7 @@ internal fun ConfirmarImportacion(l: LecturaBackup.Ok, onReemplazar: () -> Unit,
                 if (d.exportado != LocalDate.MIN) Text("Copia del ${formatearFecha(d.exportado)}:", color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold)
                 Text(
                     "• ${d.aprobadas} aprobadas" + (if (d.promocionadas > 0) " (${d.promocionadas} por promoción)" else "") +
-                        " y ${d.regularizadas} regularizadas",
+                        ", ${d.regularizadas} regularizadas" + (if (d.cursando > 0) " y ${d.cursando} cursando" else ""),
                     color = C.texto, fontFamily = C.fuente,
                 )
                 Text("• ${d.notas} notas y ${d.libreta.aplazos.size} aplazos", color = C.texto, fontFamily = C.fuente)

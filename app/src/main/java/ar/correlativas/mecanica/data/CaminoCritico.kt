@@ -75,7 +75,8 @@ class CaminoCritico(val avance: Avance, val grafo: GrafoPlan = GrafoPlan(avance.
     private fun pendiente(id: Int) = !avance.estado(id).aprobada
 
     /** Materias sin cursar: cada una es una cursada que falta. */
-    private val sinCursar: Set<Int> = grafo.ids.filter { avance.estado(it) == Estado.SIN_CURSAR }.toSet()
+    // Cursando cuenta como sin cursar: todavía falta terminar esa cursada.
+    private val sinCursar: Set<Int> = grafo.ids.filter { !avance.estado(it).regularizada }.toSet()
 
     /** Para cada materia pendiente, cuántas materias pendientes traba (directa o indirectamente). */
     val traba: Map<Int, Int> = grafo.ids.filter { pendiente(it) }.associateWith { id ->

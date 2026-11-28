@@ -69,7 +69,7 @@ class BackupTest {
         assertTrue(nueva.motivo.contains("más nueva"))
         assertTrue(Backup.deQr("https://example.com", plan) is LecturaBackup.Error)
         assertTrue(Backup.deQr("CMEC1:%%%dañado", plan) is LecturaBackup.Error)
-        assertTrue((Backup.deQr("CMEC3:abc", plan) as LecturaBackup.Error).motivo.contains("más nueva"))
+        assertTrue((Backup.deQr("CMEC4:abc", plan) as LecturaBackup.Error).motivo.contains("más nueva"))
     }
 
     @Test fun laAppNoPidePermisoDeInternet() {

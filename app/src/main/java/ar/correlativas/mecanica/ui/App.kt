@@ -486,6 +486,9 @@ private fun Superpuestas(
     val avance by vm.avance.collectAsStateWithLifecycle()
     val preferencias by vm.preferencias.collectAsStateWithLifecycle()
     val estadisticas by vm.estadisticas.collectAsStateWithLifecycle()
+    val importacionSiu by vm.importacionSiu.collectAsStateWithLifecycle()
+    val mensajeSiu by vm.mensajeSiu.collectAsStateWithLifecycle()
+    val hayCopiaSiu by vm.hayCopiaAutomatica.collectAsStateWithLifecycle()
     val a = avance
     if (a != null) {
         AnimatedContent(
@@ -525,6 +528,17 @@ private fun Superpuestas(
                             leerJson = vm::leerBackupJson,
                             leerQr = vm::leerBackupQr,
                             importar = vm::importar,
+                        ),
+                        siu = AccionesSiu(
+                            importacion = importacionSiu,
+                            preparar = vm::prepararSiu,
+                            cancelar = vm::cancelarSiu,
+                            aplicar = vm::aplicarSiu,
+                            mensaje = mensajeSiu,
+                            limpiarMensaje = vm::limpiarMensajeSiu,
+                            hayCopia = hayCopiaSiu,
+                            leerCopia = vm::leerCopiaAutomatica,
+                            restaurar = vm::importar,
                         ),
                     )
                     Superpuesta.ESTADISTICAS -> estadisticas?.let { e ->

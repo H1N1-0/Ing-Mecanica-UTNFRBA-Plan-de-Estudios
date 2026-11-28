@@ -1,12 +1,16 @@
 package ar.correlativas.mecanica.data
 
 /**
- * Estado de una materia. PROMOCIONADA es aprobada sin final (por promoción): para las correlativas
+ * Estado de una materia. CURSANDO es la cursada en curso: para las correlativas cuenta como sin
+ * cursar (no habilita nada), pero ya no se ofrece para cursar. PROMOCIONADA es aprobada sin final (por promoción): para las correlativas
  * (cursar y rendir), las horas de electivas y el avance cuenta exactamente igual que APROBADA, y
  * lleva nota obligatoria. Se guarda por nombre en `CodecEstados` ("12:PROMOCIONADA"), con el mismo
  * formato de siempre: agregar un valor no cambia cómo se leen los estados ya guardados.
  */
-enum class Estado { SIN_CURSAR, REGULARIZADA, APROBADA, PROMOCIONADA }
+enum class Estado { SIN_CURSAR, CURSANDO, REGULARIZADA, APROBADA, PROMOCIONADA }
+
+/** Regularizada o más (aprobada o promocionada): lo que piden las correlativas "regularizadas". */
+val Estado.regularizada: Boolean get() = this == Estado.REGULARIZADA || aprobada
 
 /** Aprobada por final o por promoción: así la ven las correlativas. */
 val Estado.aprobada: Boolean get() = this == Estado.APROBADA || this == Estado.PROMOCIONADA
@@ -32,7 +36,7 @@ class Avance(val plan: Plan, val estados: Map<Int, Estado>) {
     fun estado(id: Int): Estado = estados[id] ?: Estado.SIN_CURSAR
 
     private fun cumple(id: Int, pide: Nivel) = when (pide) {
-        Nivel.REGULARIZADA -> estado(id) != Estado.SIN_CURSAR
+        Nivel.REGULARIZADA -> estado(id).regularizada
         Nivel.APROBADA -> estado(id).aprobada
     }
 

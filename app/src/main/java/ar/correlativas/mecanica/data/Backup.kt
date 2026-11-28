@@ -17,7 +17,8 @@ import java.util.zip.Inflater
  *  - 1: estados SIN_CURSAR, REGULARIZADA y APROBADA. QR con prefijo "CMEC1:".
  *  - 2: suma PROMOCIONADA (con su nota en `notas.finales`). QR "CMEC2:". Se subió la versión para
  *    que una app vieja rechace la copia ("actualizala") en vez de perder las promociones en silencio.
- *  Una copia 1 se migra a 2 sin cambios: tiene los mismos campos y ningún estado que haya cambiado.
+ *  - 3: suma CURSANDO. QR "CMEC3:". Mismo motivo: una app vieja la rechaza en vez de perder datos.
+ *  Una copia 1 o 2 se migra sin cambios: tiene los mismos campos y ningún estado que haya cambiado.
  */
 data class DatosBackup(
     val estados: Map<Int, Estado>,
@@ -32,6 +33,7 @@ data class DatosBackup(
     /** Resumen para la confirmación antes de reemplazar. */
     val aprobadas get() = estados.count { it.value.aprobada }
     val promocionadas get() = estados.count { it.value == Estado.PROMOCIONADA }
+    val cursando get() = estados.count { it.value == Estado.CURSANDO }
     val regularizadas get() = estados.count { it.value == Estado.REGULARIZADA }
     val notas get() = libreta.finales.count { it.value.nota != null }
 }
@@ -44,13 +46,13 @@ sealed interface LecturaBackup {
 
 object Backup {
     const val FORMATO = "correlativas-mecanica"
-    const val VERSION = 2
+    const val VERSION = 3
 
     /** Prefijo del QR: identifica el contenido y su versión. */
-    const val PREFIJO_QR = "CMEC2:"
+    const val PREFIJO_QR = "CMEC3:"
 
     /** Prefijos de QR que se siguen leyendo (el actual y los de copias viejas). */
-    private val PREFIJOS_QR = listOf(PREFIJO_QR, "CMEC1:")
+    private val PREFIJOS_QR = listOf(PREFIJO_QR, "CMEC2:", "CMEC1:")
 
     fun aJsonObjeto(d: DatosBackup): JSONObject = JSONObject().apply {
         put("formato", FORMATO)
@@ -127,12 +129,13 @@ object Backup {
 
     /**
      * Lleva una copia de una versión vieja al formato actual, en el mismo objeto.
-     * 1 → 2: no hay nada que transformar (mismos campos; PROMOCIONADA no existía).
+     * 1 → 2 → 3: no hay nada que transformar (mismos campos; PROMOCIONADA y CURSANDO no existían).
      * Si un cambio futuro mueve o renombra campos, la conversión va acá, versión por versión.
      */
     private fun migrar(o: JSONObject, desde: Int) {
         var v = desde
         if (v == 1) v = 2
+        if (v == 2) v = 3
         o.put("version", v)
     }
 

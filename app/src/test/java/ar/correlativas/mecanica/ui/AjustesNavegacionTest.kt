@@ -59,6 +59,7 @@ class AjustesNavegacionTest(
             "RÓTULO DE LA LÁMINA", "Tu nombre",
             "TU PERFIL",
             "TUS NOTAS", "Estadísticas",
+            "HISTORIA ACADÉMICA (SIU)", "Importar PDF del SIU",
             "COPIA DE SEGURIDAD", "Exportar archivo", "Mostrar QR", "Importar archivo", "Escanear QR",
             "Importar QR desde una imagen",
             "DATOS", "Reiniciar mi progreso",
@@ -131,7 +132,7 @@ class AjustesNavegacionTest(
     @Test fun lasOpcionesDeCopiaSeVenYSonTocables() {
         abrirApp()
         abrirAjustes()
-        listOf("Exportar archivo", "Mostrar QR", "Importar archivo", "Escanear QR", "Importar QR desde una imagen").forEach { texto ->
+        listOf("Importar PDF del SIU", "Exportar archivo", "Mostrar QR", "Importar archivo", "Escanear QR", "Importar QR desde una imagen").forEach { texto ->
             rule.onNode(androidx.compose.ui.test.hasText(texto) and hasClickAction(), useUnmergedTree = false)
                 .performScrollTo()
                 .assertIsDisplayed()

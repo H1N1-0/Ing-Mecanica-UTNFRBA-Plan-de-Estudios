@@ -113,6 +113,7 @@ fun PantallaLista(
             val filtros = listOf<Pair<EstadoNodo?, String>>(
                 null to "Todas",
                 EstadoNodo.DISPONIBLE to "Disponibles",
+                EstadoNodo.CURSANDO to "Cursando",
                 EstadoNodo.PARA_RENDIR to "Para rendir",
                 EstadoNodo.REGULARIZADA to "Regularizadas",
                 EstadoNodo.APROBADA to "Aprobadas",
