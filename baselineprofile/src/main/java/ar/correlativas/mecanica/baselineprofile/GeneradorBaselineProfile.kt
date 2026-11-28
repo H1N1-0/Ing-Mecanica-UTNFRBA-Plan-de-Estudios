@@ -44,7 +44,7 @@ fun UiDevice.recorrerApp() {
     waitForIdle()
 
     findObject(By.text("Lista"))?.click()
-    wait(Until.hasObject(By.text("Buscar materia o número")), espera)
+    wait(Until.hasObject(By.text("Buscar por nombre, sigla o número")), espera)
     scrollear()
     findObject(By.text("Física I"))?.click()
     waitForIdle()

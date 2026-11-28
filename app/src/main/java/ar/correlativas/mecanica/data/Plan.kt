@@ -28,6 +28,8 @@ data class Materia(
     val horasAnuales: Double? = null,
     val codigoSiu: String? = null,
     val requeridaTituloIntermedio: Boolean = false,
+    /** Sigla corta (AM1, IyS, PF) para donde el nombre completo no entra. Única en el plan. */
+    val abrev: String = nombre,
 )
 
 data class Plan(
@@ -88,6 +90,7 @@ data class Plan(
                 horasAnuales = if (o.has("horas_anuales") && !o.isNull("horas_anuales")) o.getDouble("horas_anuales") else null,
                 codigoSiu = o.optString("codigo_siu").takeIf { it.isNotEmpty() },
                 requeridaTituloIntermedio = o.optBoolean("requerida_titulo_intermedio", false),
+                abrev = o.optString("abrev").ifEmpty { o.getString("nombre") },
             )
         }
 

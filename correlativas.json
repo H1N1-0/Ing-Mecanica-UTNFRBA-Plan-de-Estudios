@@ -11,6 +11,8 @@
  "obligatorias": [
   {
    "id": 1,
+   "codigo_siu": "950702",
+   "abrev": "AM1",
    "nivel": 1,
    "nombre": "Análisis Matemático I",
    "cursar": {
@@ -24,6 +26,8 @@
   },
   {
    "id": 2,
+   "codigo_siu": "951407",
+   "abrev": "QG",
    "nivel": 1,
    "nombre": "Química General",
    "cursar": {
@@ -37,6 +41,8 @@
   },
   {
    "id": 3,
+   "codigo_siu": "950701",
+   "abrev": "AGA",
    "nivel": 1,
    "nombre": "Álgebra y Geometría Analítica",
    "cursar": {
@@ -50,6 +56,8 @@
   },
   {
    "id": 4,
+   "codigo_siu": "950605",
+   "abrev": "F1",
    "nivel": 1,
    "nombre": "Física I",
    "cursar": {
@@ -63,6 +71,8 @@
   },
   {
    "id": 5,
+   "codigo_siu": "951604",
+   "abrev": "IyS",
    "nivel": 1,
    "nombre": "Ingeniería y Sociedad",
    "cursar": {
@@ -76,6 +86,8 @@
   },
   {
    "id": 6,
+   "codigo_siu": "940820",
+   "abrev": "IM1",
    "nivel": 1,
    "nombre": "Ingeniería Mecánica I",
    "cursar": {
@@ -90,6 +102,8 @@
   },
   {
    "id": 7,
+   "codigo_siu": "951610",
+   "abrev": "SSRR",
    "nivel": 1,
    "nombre": "Sistemas de Representación",
    "cursar": {
@@ -103,6 +117,8 @@
   },
   {
    "id": 8,
+   "codigo_siu": "940861",
+   "abrev": "FI",
    "nivel": 1,
    "nombre": "Fundamentos de Informática",
    "cursar": {
@@ -116,6 +132,8 @@
   },
   {
    "id": 9,
+   "codigo_siu": "230820",
+   "abrev": "MNM",
    "nivel": 2,
    "nombre": "Materiales No Metálicos",
    "cursar": {
@@ -133,6 +151,8 @@
   },
   {
    "id": 10,
+   "codigo_siu": "230821",
+   "abrev": "E1",
    "nivel": 2,
    "nombre": "Estabilidad I",
    "cursar": {
@@ -154,6 +174,8 @@
   },
   {
    "id": 11,
+   "codigo_siu": "230822",
+   "abrev": "MM",
    "nivel": 2,
    "nombre": "Materiales Metálicos",
    "cursar": {
@@ -171,6 +193,8 @@
   },
   {
    "id": 12,
+   "codigo_siu": "950703",
+   "abrev": "AM2",
    "nivel": 2,
    "nombre": "Análisis Matemático II",
    "cursar": {
@@ -190,6 +214,8 @@
   },
   {
    "id": 13,
+   "codigo_siu": "950606",
+   "abrev": "F2",
    "nivel": 2,
    "nombre": "Física II",
    "cursar": {
@@ -209,6 +235,8 @@
   },
   {
    "id": 14,
+   "codigo_siu": "940899",
+   "abrev": "IASI",
    "nivel": 2,
    "nombre": "Ingeniería Ambiental y Seguridad Industrial",
    "cursar": {
@@ -226,6 +254,8 @@
   },
   {
    "id": 15,
+   "codigo_siu": "940825",
+   "abrev": "IM2",
    "nivel": 2,
    "nombre": "Ingeniería Mecánica II",
    "cursar": {
@@ -246,6 +276,8 @@
   },
   {
    "id": 16,
+   "codigo_siu": "951602",
+   "abrev": "Ing1",
    "nivel": 2,
    "nombre": "Inglés I",
    "cursar": {
@@ -259,6 +291,8 @@
   },
   {
    "id": 17,
+   "codigo_siu": "940898",
+   "abrev": "Termo",
    "nivel": 3,
    "nombre": "Termodinámica",
    "cursar": {
@@ -285,6 +319,8 @@
   },
   {
    "id": 18,
+   "codigo_siu": "940897",
+   "abrev": "MR",
    "nivel": 3,
    "nombre": "Mecánica Racional",
    "cursar": {
@@ -311,6 +347,8 @@
   },
   {
    "id": 19,
+   "codigo_siu": "230830",
+   "abrev": "E2",
    "nivel": 3,
    "nombre": "Estabilidad II",
    "cursar": {
@@ -337,6 +375,8 @@
   },
   {
    "id": 20,
+   "codigo_siu": "230831",
+   "abrev": "MyE",
    "nivel": 3,
    "nombre": "Mediciones y Ensayos",
    "cursar": {
@@ -363,6 +403,8 @@
   },
   {
    "id": 21,
+   "codigo_siu": "230832",
+   "abrev": "DM",
    "nivel": 3,
    "nombre": "Diseño Mecánico",
    "cursar": {
@@ -393,6 +435,8 @@
   },
   {
    "id": 22,
+   "codigo_siu": "940848",
+   "abrev": "CA",
    "nivel": 3,
    "nombre": "Cálculo Avanzado",
    "cursar": {
@@ -417,6 +461,8 @@
   },
   {
    "id": 23,
+   "codigo_siu": "940832",
+   "abrev": "IM3",
    "nivel": 3,
    "nombre": "Ingeniería Mecánica III",
    "cursar": {
@@ -448,6 +494,8 @@
   },
   {
    "id": 24,
+   "codigo_siu": "950704",
+   "abrev": "PyE",
    "nivel": 3,
    "nombre": "Probabilidad y Estadística",
    "cursar": {
@@ -467,6 +515,8 @@
   },
   {
    "id": 25,
+   "codigo_siu": "951603",
+   "abrev": "Ing2",
    "nivel": 3,
    "nombre": "Inglés II",
    "cursar": {
@@ -484,6 +534,8 @@
   },
   {
    "id": 26,
+   "codigo_siu": "950309",
+   "abrev": "ECO",
    "nivel": 4,
    "nombre": "Economía",
    "cursar": {
@@ -504,6 +556,8 @@
   },
   {
    "id": 27,
+   "codigo_siu": "940836",
+   "abrev": "EM",
    "nivel": 4,
    "nombre": "Elementos de Máquinas",
    "cursar": {
@@ -537,6 +591,8 @@
   },
   {
    "id": 28,
+   "codigo_siu": "940838",
+   "abrev": "TC",
    "nivel": 4,
    "nombre": "Tecnología del Calor",
    "cursar": {
@@ -559,6 +615,8 @@
   },
   {
    "id": 29,
+   "codigo_siu": "940841",
+   "abrev": "MIC",
    "nivel": 4,
    "nombre": "Metrología e Ingeniería de Calidad",
    "cursar": {
@@ -585,6 +643,8 @@
   },
   {
    "id": 30,
+   "codigo_siu": "940833",
+   "abrev": "MdF",
    "nivel": 4,
    "nombre": "Mecánica de los Fluidos",
    "cursar": {
@@ -607,6 +667,8 @@
   },
   {
    "id": 31,
+   "codigo_siu": "940834",
+   "abrev": "EME",
    "nivel": 4,
    "nombre": "Electrotecnia y Máquinas Eléctricas",
    "cursar": {
@@ -633,6 +695,8 @@
   },
   {
    "id": 32,
+   "codigo_siu": "940835",
+   "abrev": "ESC",
    "nivel": 4,
    "nombre": "Electrónica y Sistemas de Control",
    "cursar": {
@@ -661,6 +725,8 @@
   },
   {
    "id": 33,
+   "codigo_siu": "230840",
+   "abrev": "E3",
    "nivel": 4,
    "nombre": "Estabilidad III",
    "cursar": {
@@ -687,6 +753,8 @@
   },
   {
    "id": 34,
+   "codigo_siu": "230850",
+   "abrev": "TdF",
    "nivel": 5,
    "nombre": "Tecnología de Fabricación",
    "cursar": {
@@ -715,6 +783,8 @@
   },
   {
    "id": 35,
+   "codigo_siu": "940839",
+   "abrev": "MAT",
    "nivel": 5,
    "nombre": "Máquinas Alternativas y Turbomáquinas",
    "cursar": {
@@ -737,6 +807,8 @@
   },
   {
    "id": 36,
+   "codigo_siu": "940843",
+   "abrev": "InsInd",
    "nivel": 5,
    "nombre": "Instalaciones Industriales",
    "cursar": {
@@ -769,6 +841,8 @@
   },
   {
    "id": 37,
+   "codigo_siu": "940831",
+   "abrev": "OI",
    "nivel": 5,
    "nombre": "Organización Industrial",
    "cursar": {
@@ -789,6 +863,8 @@
   },
   {
    "id": 38,
+   "codigo_siu": "950310",
+   "abrev": "Leg",
    "nivel": 5,
    "nombre": "Legislación",
    "cursar": {
@@ -809,6 +885,8 @@
   },
   {
    "id": 39,
+   "codigo_siu": "940840",
+   "abrev": "MANT",
    "nivel": 5,
    "nombre": "Mantenimiento",
    "cursar": {
@@ -839,6 +917,8 @@
   },
   {
    "id": 40,
+   "codigo_siu": "940894",
+   "abrev": "PF",
    "nivel": 5,
    "nombre": "Proyecto Final",
    "cursar": {
@@ -863,6 +943,8 @@
  ],
  "pps": {
   "id": 41,
+  "codigo_siu": "2311699",
+  "abrev": "PPS",
   "nombre": "Práctica Profesional Supervisada",
   "cursar": {
    "regularizadas": [
@@ -883,6 +965,7 @@
   {
    "id": 101,
    "codigo_siu": "940866",
+   "abrev": "D3D",
    "nivel": 2,
    "nombre": "Diseño en 3D",
    "horas_anuales": 2,
@@ -902,6 +985,7 @@
   {
    "id": 102,
    "codigo_siu": "940869",
+   "abrev": "ER",
    "nivel": 3,
    "nombre": "Energías Renovables",
    "horas_anuales": 4,
@@ -923,6 +1007,7 @@
   {
    "id": 104,
    "codigo_siu": "230860",
+   "abrev": "TM",
    "nivel": 3,
    "nombre": "Tecnología Mecánica",
    "horas_anuales": 4,
@@ -953,6 +1038,7 @@
   {
    "id": 103,
    "codigo_siu": "940885",
+   "abrev": "I4.0",
    "nivel": 3,
    "nombre": "Industria 4.0",
    "horas_anuales": 4,
@@ -980,6 +1066,7 @@
   {
    "id": 116,
    "codigo_siu": "959896",
+   "abrev": "IyD",
    "nivel": null,
    "nombre": "Ingeniería y Desarrollo",
    "horas_anuales": 3,
@@ -998,6 +1085,7 @@
   {
    "id": 105,
    "codigo_siu": "940884",
+   "abrev": "AI",
    "nivel": 4,
    "nombre": "Automatización Industrial",
    "horas_anuales": 4,
@@ -1021,6 +1109,7 @@
   {
    "id": 114,
    "codigo_siu": "230862",
+   "abrev": "AUTO4",
    "nivel": 4,
    "nombre": "Automotores",
    "horas_anuales": 4,
@@ -1046,6 +1135,7 @@
   {
    "id": 107,
    "codigo_siu": "940865",
+   "abrev": "CEF",
    "nivel": 4,
    "nombre": "Cálculo por Elementos Finitos",
    "horas_anuales": 2.5,
@@ -1069,6 +1159,7 @@
   {
    "id": 108,
    "codigo_siu": "940871",
+   "abrev": "ITF",
    "nivel": 4,
    "nombre": "Introducción a Tecnologías Ferroviarias",
    "horas_anuales": 4,
@@ -1096,6 +1187,7 @@
   {
    "id": 109,
    "codigo_siu": "230861",
+   "abrev": "CTS",
    "nivel": 4,
    "nombre": "Ciencia y Tecnología de la Soldadura",
    "horas_anuales": 4,
@@ -1123,6 +1215,7 @@
   {
    "id": 115,
    "codigo_siu": "940873",
+   "abrev": "TS",
    "nivel": null,
    "nombre": "Tecnología de la Soldadura",
    "horas_anuales": null,
@@ -1146,6 +1239,7 @@
   {
    "id": 106,
    "codigo_siu": "940851",
+   "abrev": "AUTO5",
    "nivel": 5,
    "nombre": "Automotores",
    "horas_anuales": 4,
@@ -1169,6 +1263,7 @@
   {
    "id": 110,
    "codigo_siu": "940872",
+   "abrev": "EGPIS",
    "nivel": 5,
    "nombre": "Evaluación y Gestión de Proyectos de Ingeniería Sustentables",
    "horas_anuales": 4,
@@ -1194,6 +1289,7 @@
   {
    "id": 111,
    "codigo_siu": "940854",
+   "abrev": "AAR1",
    "nivel": 5,
    "nombre": "Proyecto de Instalación de Aire Acondicionado y Refrigeración",
    "horas_anuales": 4,
@@ -1215,6 +1311,7 @@
   {
    "id": 117,
    "codigo_siu": "230863",
+   "abrev": "AAR2",
    "nivel": 5,
    "nombre": "Proyecto e Instalaciones de Aire Acondicionado y Refrigeración",
    "horas_anuales": null,
@@ -1240,6 +1337,7 @@
   {
    "id": 118,
    "codigo_siu": "230865",
+   "abrev": "AAR3",
    "nivel": 5,
    "nombre": "Proyecto de Instalaciones de Aire Acondicionado y Refrigeración",
    "horas_anuales": null,
@@ -1263,6 +1361,7 @@
   {
    "id": 112,
    "codigo_siu": "952571",
+   "abrev": "RI",
    "nivel": 5,
    "nombre": "Robótica Industrial",
    "horas_anuales": 2.5,
@@ -1292,6 +1391,7 @@
   {
    "id": 113,
    "codigo_siu": "230864",
+   "abrev": "TFT",
    "nivel": 5,
    "nombre": "Transporte de Fluidos por Tuberías",
    "horas_anuales": 4,

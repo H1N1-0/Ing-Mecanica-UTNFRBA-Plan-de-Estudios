@@ -46,16 +46,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.correlativas.mecanica.data.Avance
+import ar.correlativas.mecanica.data.coincide
+import ar.correlativas.mecanica.data.normalizar
 import ar.correlativas.mecanica.data.Estado
 import ar.correlativas.mecanica.data.EstadoNodo
 import ar.correlativas.mecanica.data.Materia
 import ar.correlativas.mecanica.data.Tipo
 import ar.correlativas.mecanica.data.estadoNodo
 import ar.correlativas.mecanica.data.formatearHoras
-import java.text.Normalizer
-
-private fun normalizar(s: String) =
-    Normalizer.normalize(s, Normalizer.Form.NFD).replace(Regex("\\p{M}"), "").lowercase()
 
 private data class Grupo(val titulo: String, val materias: List<Materia>)
 
@@ -83,7 +81,7 @@ fun PantallaLista(
         g.copy(materias = g.materias.filter { m ->
             (filtro == null || avance.estadoNodo(m) == filtro ||
                 (filtro == EstadoNodo.REGULARIZADA && avance.estadoNodo(m) == EstadoNodo.PARA_RENDIR)) &&
-                (q.isEmpty() || normalizar(m.nombre).contains(q) || m.id.toString() == q)
+                m.coincide(q)
         })
     }.filter { it.materias.isNotEmpty() } }
 
@@ -93,7 +91,7 @@ fun PantallaLista(
                 value = busqueda,
                 onValueChange = { busqueda = it },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                placeholder = { Text("Buscar materia o número", fontFamily = C.fuente) },
+                placeholder = { Text("Buscar por nombre, sigla o número", fontFamily = C.fuente) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = C.texto2) },
                 trailingIcon = {
                     if (busqueda.isNotEmpty()) {
@@ -185,6 +183,9 @@ private fun FilaLista(m: Materia, avance: Avance, elegida: Boolean, onCambio: (I
                 overflow = TextOverflow.Ellipsis,
             )
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
+                // La sigla, para ubicarla rápido y porque también se busca por ella.
+                Text(m.abrev, color = C.texto2, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 12.5.sp, maxLines = 1)
+                Text(" · ", color = C.apagado, fontFamily = C.fuente, fontSize = 12.5.sp)
                 Text(textoEstado(e, m.tipo == Tipo.PPS), color = colorEstado(e), fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 12.5.sp)
                 val extra = when {
                     e == EstadoNodo.BLOQUEADA -> avance.faltantesCursar(m).size.let { " · faltan $it" }

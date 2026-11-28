@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -345,16 +346,10 @@ private fun FilaMaterias(materias: List<Materia>, avance: Avance, onAbrir: (Int)
             Tarjeta(Modifier.width(132.dp).clickable { onAbrir(m.id) }) {
                 Column(Modifier.padding(12.dp)) {
                     Nodo(m, e, tam = 42.dp)
-                    Text(
-                        m.nombre,
+                    NombreOAbrev(
+                        m,
+                        TextStyle(color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 18.sp),
                         Modifier.padding(top = 10.dp).height(40.dp),
-                        color = C.texto,
-                        fontFamily = C.fuente,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         m.nivel?.let { "Nivel $it" } ?: "Electiva",
