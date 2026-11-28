@@ -54,7 +54,7 @@ app/
   src/main/res/font/     Chakra Petch (Gamificado), Barlow Semi Condensed y Share Tech Mono (Plano técnico)
   licencias/             Licencias OFL de las tipografías
   src/test/              Tests JVM (JUnit) que leen el correlativas.json real, y tests de interfaz
-                         con Robolectric + Compose UI Test (ui/AjustesNavegacionTest: Ajustes en 5 pantallas)
+                         con Robolectric + Compose UI Test (ui/AjustesNavegacionTest, ui/AtrasTest)
 baselineprofile/         Módulo de test: genera el Baseline Profile y mide el arranque (necesita dispositivo)
 ```
 
@@ -146,6 +146,11 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
 - **Un solo botón de Ajustes** (`BotonAjustes`): en el celular vertical, arriba a la derecha del
   inicio; con barra lateral, arriba de la barra (el inicio no muestra el suyo: `botonAjustes`).
   Ajustes es la misma pantalla en todas las disposiciones; `AjustesNavegacionTest` lo verifica.
+- **Atrás** (botón, gesto y atrás predictivo de Android 14+, `enableOnBackInvokedCallback`), en
+  orden: diálogos y hoja de detalle se cierran solos; Ajustes/Estadísticas/Test/Perfil tienen su
+  `BackHandler`; el de `AppCorrelativas` cierra el panel de detalle (tablet) o vuelve a Inicio. En
+  Inicio sin nada abierto no hay manejador activo: el sistema cierra la app. Si agregás una pantalla
+  superpuesta o un panel, que "atrás" lo cierre. `AtrasTest` lo verifica en celular y tablet.
 - El estado de navegación (pestaña, materia abierta, filtro, scrolls, zoom del mapa) se guarda con
   `rememberSaveable` arriba de todo, antes de elegir la disposición, para sobrevivir a la rotación.
 

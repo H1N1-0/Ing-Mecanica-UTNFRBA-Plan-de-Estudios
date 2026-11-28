@@ -16,7 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Correlativas">
+        android:theme="@style/Theme.Correlativas"
+        android:enableOnBackInvokedCallback="true">
+
+        <!-- enableOnBackInvokedCallback: atrás predictivo (Android 14+). La app maneja "atrás" con
+             BackHandler (AndroidX), que lo soporta; en Inicio sin nada abierto no intercepta y el
+             sistema muestra la animación de volver al inicio del celular. -->
 
         <!-- Permite medir la release con Macrobenchmark (baselineprofile/) sin hacerla depurable. -->
         <profileable android:shell="true" />

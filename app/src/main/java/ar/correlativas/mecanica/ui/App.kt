@@ -1,5 +1,6 @@
 package ar.correlativas.mecanica.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -154,6 +155,21 @@ fun AppCorrelativas(
         pestania = p
     }
     val enPanel = disposicion.amplia && pestania in CON_PANEL && superpuesta == null
+
+    // "Atrás" (botón o gesto, también el predictivo de Android 14+). Va en orden:
+    //  1. Diálogos y la hoja de detalle se cierran solos (son ventanas propias).
+    //  2. Ajustes, Estadísticas, Test y Perfil tienen su BackHandler, que gana porque se compone después.
+    //  3. Este: cierra lo que quede abierto (panel de detalle en tablet) o vuelve a Inicio.
+    // En Inicio sin nada abierto queda desactivado: el sistema cierra la app (con la animación
+    // predictiva de volver al inicio del celular).
+    val detalleEnPanel = enPanel && detalle != null
+    BackHandler(enabled = superpuesta != null || detalleEnPanel || pestania != Pestania.INICIO) {
+        when {
+            superpuesta != null -> superpuesta = null
+            detalleEnPanel -> detalle = null
+            else -> irA(Pestania.INICIO)
+        }
+    }
 
     val contenido: @Composable () -> Unit = {
         val a = avance
