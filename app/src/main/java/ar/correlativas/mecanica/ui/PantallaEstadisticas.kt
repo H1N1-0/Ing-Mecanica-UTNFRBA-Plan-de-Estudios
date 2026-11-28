@@ -128,10 +128,10 @@ private fun NotaDestacada(titulo: String, n: NotaDeMateria, color: Color, icono:
                 Text(titulo, Modifier.padding(start = 6.dp), color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)
             }
             Text("${n.nota}", color = C.texto, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 30.sp)
-            Text(
-                n.materia.nombre,
+            NombreOAbrev(
+                n.materia,
+                TextStyle(color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 17.sp),
                 Modifier.padding(top = 2.dp),
-                color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 17.sp, maxLines = 2,
             )
             Text(formatearFecha(n.fecha), color = C.texto2, fontFamily = C.fuente, fontSize = 12.5.sp)
             Text("Ver materia", Modifier.padding(top = 6.dp).semantics { contentDescription = "Ver ${n.materia.nombre}" }

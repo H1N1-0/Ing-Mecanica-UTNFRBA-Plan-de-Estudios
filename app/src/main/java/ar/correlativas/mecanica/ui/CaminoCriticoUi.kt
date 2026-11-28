@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -120,8 +121,9 @@ fun TarjetaCaminoCritico(critico: CaminoCritico, onVerMapa: () -> Unit, modifier
                 critico.camino.forEachIndexed { i, m ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            m.nombre,
+                            m.abrev,
                             Modifier
+                                .semantics { contentDescription = m.nombre }
                                 .clip(C.formas.mini)
                                 .background(C.critico.copy(alpha = 0.12f))
                                 .border(1.dp, C.critico.copy(alpha = 0.45f), C.formas.mini)
@@ -224,15 +226,9 @@ private fun FilaPrioridad(
         }
         Box(Modifier.padding(start = 10.dp, top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 38.dp, animado = false) }
         Column(Modifier.padding(start = 8.dp).weight(1f)) {
-            Text(
-                m.nombre,
-                color = C.texto,
-                fontFamily = C.fuente,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
-                lineHeight = 18.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+            NombreOAbrev(
+                m,
+                TextStyle(color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp),
             )
             val accion = if (avance.estado(m.id) == Estado.SIN_CURSAR) "Cursala" else "Rendí el final"
             Text(

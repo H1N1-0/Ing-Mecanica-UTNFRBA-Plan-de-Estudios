@@ -154,7 +154,7 @@ class AtrasTest(private val nombre: String, private val ancho: Int, private val 
         atras()
         // Se cerró el detalle, pero seguimos en la lista.
         rule.onAllNodesWithText("Para cursar").fetchSemanticsNodes().let { assertTrue("$nombre: el detalle sigue abierto", it.isEmpty()) }
-        rule.onNodeWithText("Buscar materia o número").assertIsDisplayed()
+        rule.onNodeWithText("Buscar por nombre, sigla o número").assertIsDisplayed()
         assertFalse(actividad.isFinishing)
         atras()
         enInicio()

@@ -30,6 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,8 +100,17 @@ fun ContenidoDetalle(
                     fontSize = 12.sp,
                     letterSpacing = 1.5.sp,
                 )
+                // Nombre completo y, al lado, la sigla (más chica, en la fuente de datos del estilo).
                 Text(
-                    materia.nombre,
+                    buildAnnotatedString {
+                        append(materia.nombre)
+                        if (materia.abrev != materia.nombre) {
+                            append("\u00A0\u00A0")
+                            withStyle(SpanStyle(color = C.texto2, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 16.sp)) {
+                                append(materia.abrev)
+                            }
+                        }
+                    },
                     style = MaterialTheme.typography.headlineSmall,
                     lineHeight = 28.sp,
                     color = C.texto,
@@ -296,7 +308,10 @@ private fun FilaMateria(m: Materia, avance: Avance, detalle: String, cumple: Boo
         Box(Modifier.padding(top = 4.dp, end = 4.dp)) { Nodo(m, avance.estadoNodo(m), tam = 38.dp, animado = false) }
         Column(Modifier.padding(start = 10.dp).weight(1f)) {
             Text(m.nombre, color = C.texto, fontFamily = C.fuente, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 18.sp)
-            Text(detalle, color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(m.abrev, color = C.texto2, fontFamily = C.fuenteDatos, fontWeight = FontWeight.Bold, fontSize = 12.5.sp, maxLines = 1)
+                Text(" · $detalle", color = C.texto2, fontFamily = C.fuente, fontSize = 13.sp)
+            }
         }
         if (cumple != null) Marca(cumple)
     }

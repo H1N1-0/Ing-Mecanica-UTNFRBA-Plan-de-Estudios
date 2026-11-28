@@ -352,6 +352,7 @@ private fun Seccion(
             return@Column
         }
         val visibles = materias.take(mostrar.coerceAtMost(8))
+        val ancho = LocalSize.current.width.value
         visibles.forEachIndexed { i, m ->
             val ultima = i == visibles.lastIndex && materias.size > visibles.size
             Row(GlanceModifier.fillMaxWidth().height(20.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -361,7 +362,7 @@ private fun Seccion(
                     style = TextStyle(color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = colores.fuenteDatos),
                 )
                 Text(
-                    m.nombre,
+                    textoMateria(m, ancho),
                     maxLines = 1,
                     modifier = GlanceModifier.defaultWeight(),
                     style = TextStyle(color = colores.texto, fontSize = 14.sp, fontFamily = colores.fuente),
@@ -378,6 +379,16 @@ private fun Seccion(
             Text("${materias.size} materias · abrí la app", style = TextStyle(color = colores.texto2, fontSize = 13.sp, fontFamily = colores.fuente))
         }
     }
+}
+
+/**
+ * Nombre de la materia para una fila del widget de [anchoDp] de ancho: el nombre completo si entra
+ * en una línea; si no, la sigla. Se estima con ~7,5 dp por letra a 14 sp, descontando márgenes,
+ * el número de la izquierda y el "+N" de la última fila.
+ */
+internal fun textoMateria(m: Materia, anchoDp: Float): String {
+    val lugar = anchoDp - 32f - 10f - 30f - 28f
+    return if (m.nombre.length * 7.5f <= lugar) m.nombre else m.abrev
 }
 
 private fun prefijo(m: Materia) = when (m.tipo) {

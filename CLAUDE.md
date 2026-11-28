@@ -38,11 +38,13 @@ app/
       Juego.kt           EstadoNodo, porcentaje, rangos, logros y layout del mapa (Mapa)
       CaminoCritico.kt   Grafo de dependencias, materias que traba cada una, camino crítico
       Contenido.kt       Frases y test vocacional
+      Busqueda.kt        normalizar() y Materia.coincide(): buscar por sigla, nombre, número o código SIU
     ui/
       App.kt             Navegación y disposición adaptativa (celular / tablet / horizontal)
       CorrelativasViewModel.kt  Flujos de avance, camino crítico, preferencias y desbloqueos
       PantallaInicio.kt, PantallaMapa.kt, PantallaLista.kt, PantallaLogros.kt, ...
       HojaDetalle.kt     ContenidoDetalle (hoja en celular, panel lateral en tablet)
+      NombreMateria.kt   NombreOAbrev: nombre completo si entra, si no la sigla (vistas compactas)
       CaminoCriticoUi.kt Tarjetas "Camino crítico" y "Prioridad", bloque del detalle
       NotasUi.kt         Diálogos de nota y aplazo, bloque "Final" del detalle (LocalNotas)
       PantallaEstadisticas.kt  Promedios, finales, gráfico de evolución por año, mejor y peor nota
@@ -63,6 +65,9 @@ baselineprofile/         Módulo de test: genera el Baseline Profile y mide el a
 - `correlativas.json` tiene `obligatorias` (id 1–40, nivel 1–5), `electivas` (id ≥ 101, con
   `horas_anuales`) y `pps` (id 41). Cada materia tiene `cursar` y `rendir`, con listas de ids
   `regularizadas` y `aprobadas`. Proyecto Final (id 40) tiene `rendir.regla` en vez de listas.
+- Toda materia (obligatorias, PPS y electivas) tiene `codigo_siu` (string) y `abrev` (sigla de hasta
+  6 caracteres: AM1, IyS, PF). Ambos son únicos (la sigla sin distinguir mayúsculas);
+  `AbreviaturasTest` falla si falta alguno o se repite. Si agregás una materia, poné los dos.
 - Para cambiar el plan se edita el JSON de la raíz; la app lo toma en la próxima build.
 
 ## Cálculo de correlativas (`data/Calculo.kt`)
@@ -126,6 +131,15 @@ Tres estilos (`data.Estilo`: PLANO por defecto, GAMIFICADO, MATERIAL) combinable
   con aplazos, finales rendidos (aprobadas + aplazos), mejor/peor, evolución acumulada por año (las
   notas sin fecha cuentan en el promedio pero no en el gráfico).
 - "Reiniciar mi progreso" borra también las notas.
+
+## Siglas (`abrev`)
+
+- Donde el nombre completo no entra se usa `Materia.abrev`: etiquetas de los nodos del mapa, eslabones
+  del camino crítico (tarjeta y banner del mapa) y el widget angosto (`textoMateria`). En tarjetas
+  compactas (inicio, prioridad, estadísticas) `NombreOAbrev` mide y elige. Con la sigla visible, el
+  `contentDescription` lleva el nombre completo para TalkBack.
+- El detalle muestra el nombre completo con la sigla al lado; la lista y las correlativas del detalle
+  muestran la sigla en la línea de abajo. El buscador encuentra por sigla, nombre, número o código SIU.
 
 ## Copia de seguridad (`data/Backup.kt`)
 

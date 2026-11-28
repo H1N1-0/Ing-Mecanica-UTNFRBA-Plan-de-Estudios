@@ -330,8 +330,10 @@ private fun BannerCritico(critico: CaminoCritico, modifier: Modifier) {
         }
         Text(
             if (critico.anios == 0) "Ya cursaste todo: solo te quedan finales."
-            else critico.camino.joinToString("  ›  ") { it.nombre },
-            Modifier.padding(top = 4.dp),
+            else critico.camino.joinToString("  ›  ") { it.abrev },
+            Modifier.padding(top = 4.dp).semantics {
+                if (critico.anios > 0) contentDescription = critico.camino.joinToString(", ") { it.nombre }
+            },
             color = C.texto,
             fontFamily = C.fuente,
             fontWeight = FontWeight.SemiBold,
@@ -480,16 +482,17 @@ private fun ContenidoMapa(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Nodo(n.materia, e, tam = TAM_NODO.dp)
+            // El nombre completo no entra abajo del nodo: va la sigla (el nombre queda para TalkBack y el detalle).
             Text(
-                n.materia.nombre,
+                n.materia.abrev,
                 Modifier.padding(top = 6.dp, start = 2.dp, end = 2.dp),
                 color = if (e == EstadoNodo.BLOQUEADA) C.bloqueadaTexto else C.texto,
-                fontFamily = C.fuente,
-                fontWeight = if (e == EstadoNodo.BLOQUEADA) FontWeight.Medium else FontWeight.SemiBold,
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
+                fontFamily = C.fuenteDatos,
+                fontWeight = if (e == EstadoNodo.BLOQUEADA) FontWeight.Medium else FontWeight.Bold,
+                fontSize = 14.sp,
+                lineHeight = 16.sp,
                 textAlign = TextAlign.Center,
-                maxLines = 3,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             if (resaltar && paso != null) {
